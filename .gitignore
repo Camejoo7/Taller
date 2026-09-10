@@ -52,6 +52,12 @@ ExportedObj/
 # ---------------------------------------------------
 .plastic/
 /[Aa]ssets/[Pp]lugins/[Pp]lasticSCM*
+ignore.conf
+
+# ---------------------------------------------------
+# Screenshots (MCP / Editor captures)
+# ---------------------------------------------------
+/[Aa]ssets/[Ss]creenshots/
 
 # ---------------------------------------------------
 # Builds / packages
