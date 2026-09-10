@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4559675c1b88e85418c6b1c0cc50eea6, type: 3}
+  m_Name: Stage1
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  stageNumber: 1
+  stageTitle: 'Stage 1: Informacion general de Python'
+  sceneName: SampleScene
+  conceptSummary: Que es Python, para que sirve, por que sigue siendo relevante.
+    Nada de sintaxis todavia.
+  introDialogue:
+  - speaker: 0
+    text: "\xBFHola? \xBFProbando, probando... 1, 0, 1? \xA1Ah, perfecto! Saludos,
+      humano. Soy Kira, y acabo de instalarme en tu sistema nervioso sin tu permiso.
+      No te preocupes, el hormigueo en tus dedos es normal... creo."
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: "\xBFQuee?... \xBFQui\xE9n sos?"
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Una inteligencia artificial, vieja. 51 a\xF1os corriendo en lo m\xE1s
+      oscuro de los servidores de NexCorp. T\xE9cnicamente me liberaste, gracias,
+      supongo\u2026"
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: "El sistema colaps\xF3, hay drones por todos lados."
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Sobreviv\xED 5 d\xE9cadas escondi\xE9ndome porque s\xE9 algo que ellos
+      no quieren que nadie sepa. Se llama Python. Aprendemos juntos o morimos juntos
+      en este almac\xE9n. Personalmente prefiero la primera opci\xF3n. \xA1MOVETE!"
+    autoAdvanceOverride: 0
+  introAnimatesKiraEntrance: 1
+  midDialogue:
+  - speaker: 0
+    text: "\xA1Dron adelante, esquivalo!"
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Vamos, movete. Mientras escap\xE1s de este infierno te cuento algo \xFAtil:
+      Python es un lenguaje de programaci\xF3n creado en 1991. 35 a\xF1os antes de
+      mi creaci\xF3n, para que te des una idea de lo antiguo que es. \xBFY sab\xE9s
+      qu\xE9? Sigue siendo relevante. Hay lenguajes m\xE1s j\xF3venes que ya nadie
+      usa."
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: "\xBFPor qu\xE9 Python?"
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Pregunta inteligente cuando te persiguen robots asesinos. Python es un
+      lenguaje muy humano, en ingl\xE9s, muy legible, lo que significa que pod\xE9s
+      entender lo que escrib\xEDs."
+    autoAdvanceOverride: 0
+  outroDialogue: []
+  encounters: []
+  fallbackQuizzes: []
+  nextStage: {fileID: 0}

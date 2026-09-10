@@ -4,7 +4,7 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public Transform droneSpawnPoint;
-    public DialogueManager2 dialogueManager2;
+    public DialogueManager dialogueManager;
     private bool spawned = false;
 
     void OnTriggerEnter2D(Collider2D other)
@@ -13,7 +13,8 @@ public class EnemySpawner : MonoBehaviour
         {
             spawned = true;
             Instantiate(enemyPrefab, droneSpawnPoint.position, Quaternion.identity);
-            dialogueManager2.StartDialogue();
+            if (dialogueManager != null)
+                dialogueManager.StartDialogue(DialogueSegment.Mid);
         }
     }
 }

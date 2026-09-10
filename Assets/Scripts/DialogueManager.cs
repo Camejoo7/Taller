@@ -1,13 +1,30 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+/// <summary>
+/// Segmento de diálogo dentro de una stage. Define el comportamiento:
+/// - Intro: congela al jugador, anima la entrada del dron de Kira (si el
+///   StageData lo pide), permite avance manual, y al terminar arranca el
+///   KiraFollower.
+/// - Mid: no congela, sin animación de dron, solo avance automático.
+/// - Outro: congela al jugador, solo avance automático.
+/// </summary>
+public enum DialogueSegment { Intro, Mid, Outro }
+
+/// <summary>
+/// Manager único de diálogo. Lee el contenido de un StageData
+/// (intro / mid / outro) en vez de tenerlo hardcodeado.
+/// Reemplaza al viejo par DialogueManager + DialogueManager2.
+/// </summary>
 public class DialogueManager : MonoBehaviour
 {
-    public float autoAdvanceTime = 3f; // segundos entre cada línea
-    private float autoAdvanceTimer = 0f;
+    [Header("Contenido")]
+    public StageData stageData;
+
     [Header("UI")]
     public GameObject dialogueCanvas;
     public TextMeshProUGUI speakerNameText;
@@ -21,44 +38,68 @@ public class DialogueManager : MonoBehaviour
 
     [Header("Configuración")]
     public float typingSpeed = 0.03f;
+    public float autoAdvanceIntro = 3f;
+    public float autoAdvanceMid = 4f;
+    public float autoAdvanceOutro = 3.5f;
 
-    private string[] lines;
-    private string[] speakers;
-    private int currentLine = 0;
-    private bool isTyping = false;
-    private bool dialogueActive = false;
+    static readonly Color KiraColor = new Color(0f, 1f, 1f);   // cyan
+    static readonly Color NxColor = new Color(1f, 1f, 0f);     // amarillo
+
+    private List<DialogueLine> lines;
+    private DialogueSegment segment;
+    private int currentLine;
+    private bool isTyping;
+    private bool dialogueActive;
+    private float autoAdvanceTimer;
     private PlayerMovement playerMovement;
 
-    void Awake()
-    {
-        speakers = new string[]
-        {
-            "KIRA",
-            "...",
-            "KIRA",
-            "...",
-            "KIRA"
-        };
+    private bool FreezesPlayer => segment == DialogueSegment.Intro || segment == DialogueSegment.Outro;
+    private bool AllowsManualAdvance => segment == DialogueSegment.Intro;
+    private bool AnimatesKiraEntrance =>
+        segment == DialogueSegment.Intro && stageData != null && stageData.introAnimatesKiraEntrance;
 
-        lines = new string[]
+    private float CurrentAutoAdvance
+    {
+        get
         {
-            "¿Hola? ¿Probando, probando... 1, 0, 1? ¡Ah, perfecto! Saludos, humano. Soy Kira, y acabo de instalarme en tu sistema nervioso sin tu permiso. No te preocupes, el hormigueo en tus dedos es normal... creo.",
-            "Quee?... ¿Quién sos?",
-            "Una inteligencia artificial, vieja. 51 años corriendo en lo más oscuro de los servidores de NexCorp. Técnicamente me liberaste, gracias, supongo…",
-            "El sistema colapsó, hay drones por todos lados.",
-            "Sobreviví 5 décadas escondiéndome porque sé algo que ellos no quieren que nadie sepa. Se llama Python. Aprendemos juntos o morimos juntos en este almacén. Personalmente prefiero la primera opción. ¡MOVETE!"
-        };
+            float baseTime = segment == DialogueSegment.Intro ? autoAdvanceIntro
+                           : segment == DialogueSegment.Mid ? autoAdvanceMid
+                           : autoAdvanceOutro;
+            float ov = lines[currentLine].autoAdvanceOverride;
+            return ov > 0f ? ov : baseTime;
+        }
     }
 
-    public void StartDialogue(PlayerMovement player)
+    /// <summary>
+    /// Dispara un segmento de diálogo del StageData. <paramref name="player"/>
+    /// solo hace falta para los segmentos que congelan al jugador (Intro / Outro).
+    /// </summary>
+    public void StartDialogue(DialogueSegment which, PlayerMovement player = null)
     {
+        if (dialogueActive) return;
+        if (stageData == null)
+        {
+            Debug.LogWarning("DialogueManager: no hay StageData asignado.", this);
+            return;
+        }
+
+        segment = which;
+        lines = which == DialogueSegment.Intro ? stageData.introDialogue
+              : which == DialogueSegment.Mid ? stageData.midDialogue
+              : stageData.outroDialogue;
+
+        if (lines == null || lines.Count == 0) return;
+
         playerMovement = player;
-        playerMovement.SetCanMove(false);
+        if (FreezesPlayer && playerMovement != null)
+            playerMovement.SetCanMove(false);
+
         dialogueActive = true;
         currentLine = 0;
+        autoAdvanceTimer = 0f;
         dialogueCanvas.SetActive(true);
 
-        if (kiraDrone != null)
+        if (AnimatesKiraEntrance && kiraDrone != null && kiraSpawnBelow != null && kiraTargetPos != null)
             StartCoroutine(KiraEnterFromBelow());
         else
             ShowCurrentLine();
@@ -84,15 +125,15 @@ public class DialogueManager : MonoBehaviour
 
         kiraDrone.transform.position = end;
 
-        // Flotar mientras dura el dialogo
         StartCoroutine(KiraFloat());
-
         yield return new WaitForSeconds(0.4f);
         ShowCurrentLine();
     }
 
     IEnumerator KiraFloat()
     {
+        if (kiraDrone == null || kiraTargetPos == null) yield break;
+
         Vector3 basePos = kiraTargetPos.position;
         float floatSpeed = 1.2f;
         float floatAmount = 0.15f;
@@ -107,15 +148,14 @@ public class DialogueManager : MonoBehaviour
 
     void ShowCurrentLine()
     {
-        speakerNameText.text = speakers[currentLine];
+        DialogueLine line = lines[currentLine];
 
-        if (speakers[currentLine] == "KIRA")
-            speakerNameText.color = new Color(0f, 1f, 1f);
-        else
-            speakerNameText.color = new Color(1f, 1f, 0f);
+        speakerNameText.text = line.speaker == Speaker.Kira ? "KIRA" : "NX-7";
+        speakerNameText.color = line.speaker == Speaker.Kira ? KiraColor : NxColor;
 
+        autoAdvanceTimer = 0f;
         StopCoroutine("TypeLine");
-        StartCoroutine(TypeLine(lines[currentLine]));
+        StartCoroutine("TypeLine", line.text);
     }
 
     IEnumerator TypeLine(string line)
@@ -134,16 +174,14 @@ public class DialogueManager : MonoBehaviour
     {
         if (!dialogueActive) return;
 
-        // Saltar con Space
-        if (Keyboard.current.spaceKey.wasPressedThisFrame ||
-            Keyboard.current.enterKey.wasPressedThisFrame)
+        if (AllowsManualAdvance && Keyboard.current != null &&
+            (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame))
         {
             if (isTyping)
             {
-                StopAllCoroutines();
-                dialogueText.text = lines[currentLine];
+                StopCoroutine("TypeLine");
+                dialogueText.text = lines[currentLine].text;
                 isTyping = false;
-                StartCoroutine(KiraFloat());
                 autoAdvanceTimer = 0f;
             }
             else
@@ -153,26 +191,19 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Avance automático
         if (!isTyping)
         {
             autoAdvanceTimer += Time.deltaTime;
-            if (autoAdvanceTimer >= autoAdvanceTime)
-            {
-                autoAdvanceTimer = 0f;
+            if (autoAdvanceTimer >= CurrentAutoAdvance)
                 AdvanceLine();
-            }
         }
     }
 
     void AdvanceLine()
     {
         currentLine++;
-        if (currentLine < lines.Length)
-        {
-            autoAdvanceTimer = 0f;
+        if (currentLine < lines.Count)
             ShowCurrentLine();
-        }
         else
             EndDialogue();
     }
@@ -181,10 +212,12 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueActive = false;
         dialogueCanvas.SetActive(false);
-        playerMovement.SetCanMove(true);
 
-        // Activar el seguimiento de Kira
-        if (kiraDrone != null)
+        if (FreezesPlayer && playerMovement != null)
+            playerMovement.SetCanMove(true);
+
+        // Tras la intro, el dron acaba de aparecer: que empiece a seguir al jugador.
+        if (segment == DialogueSegment.Intro && kiraDrone != null && playerMovement != null)
         {
             KiraFollower follower = kiraDrone.GetComponent<KiraFollower>();
             if (follower != null)
