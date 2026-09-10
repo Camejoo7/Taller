@@ -1,0 +1,1014 @@
+fileFormatVersion: 2
+guid: 2f1fc27ecc804104da1d7bf6385932c9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6298089010867381587
+    second: ColoredHeart_Red_0
+  - first:
+      213: 4317517376919246019
+    second: ColoredHeart_Red_1
+  - first:
+      213: 1299249255293301339
+    second: ColoredHeart_Red_2
+  - first:
+      213: 432331436543223350
+    second: ColoredHeart_Red_3
+  - first:
+      213: 3224753011364192016
+    second: ColoredHeart_Red_4
+  - first:
+      213: 3911894224855700177
+    second: ColoredHeart_Red_5
+  - first:
+      213: -778618228002604143
+    second: ColoredHeart_Red_6
+  - first:
+      213: 4699491889593177402
+    second: ColoredHeart_Red_7
+  - first:
+      213: -1268336538853159347
+    second: ColoredHeart_Red_8
+  - first:
+      213: -779945553630225133
+    second: ColoredHeart_Red_9
+  - first:
+      213: -4375984680051698189
+    second: ColoredHeart_Red_10
+  - first:
+      213: -4683890324170553985
+    second: ColoredHeart_Red_11
+  - first:
+      213: -321179986233159993
+    second: ColoredHeart_Red_12
+  - first:
+      213: -1282474104889505832
+    second: ColoredHeart_Red_13
+  - first:
+      213: 4382724938003356124
+    second: ColoredHeart_Red_14
+  - first:
+      213: -8370005217568315932
+    second: ColoredHeart_Red_15
+  - first:
+      213: 1205229973614232092
+    second: ColoredHeart_Red_16
+  - first:
+      213: -2377970681120854814
+    second: ColoredHeart_Red_17
+  - first:
+      213: 8685659282492260576
+    second: ColoredHeart_Red_18
+  - first:
+      213: -8271430646751961270
+    second: ColoredHeart_Red_19
+  - first:
+      213: 2639101174458057509
+    second: ColoredHeart_Red_20
+  - first:
+      213: -782711404028925119
+    second: ColoredHeart_Red_21
+  - first:
+      213: -7549140312446439560
+    second: ColoredHeart_Red_22
+  - first:
+      213: -3889962700184979481
+    second: ColoredHeart_Red_23
+  - first:
+      213: 5933753937276167130
+    second: ColoredHeart_Red_24
+  - first:
+      213: -6747390703144135131
+    second: ColoredHeart_Red_25
+  - first:
+      213: -6229816531814075607
+    second: ColoredHeart_Red_26
+  - first:
+      213: 7998352733381704342
+    second: ColoredHeart_Red_27
+  - first:
+      213: 1396325602954847364
+    second: ColoredHeart_Red_28
+  - first:
+      213: 8757371926756911601
+    second: ColoredHeart_Red_29
+  - first:
+      213: 5077215076392721440
+    second: ColoredHeart_Red_30
+  - first:
+      213: 2670456945938004360
+    second: ColoredHeart_Red_31
+  - first:
+      213: 7980937618152576013
+    second: ColoredHeart_Red_32
+  - first:
+      213: -4871955333046446319
+    second: ColoredHeart_Red_33
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ColoredHeart_Red_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 355aa80369e476750800000000000000
+      internalID: 6298089010867381587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_1
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c419dadd27eaeb30800000000000000
+      internalID: 4317517376919246019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_2
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b52b270605cd70210800000000000000
+      internalID: 1299249255293301339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_3
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 636a464a623fff500800000000000000
+      internalID: 432331436543223350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_4
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01fdbb247cf90cc20800000000000000
+      internalID: 3224753011364192016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_5
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 72
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d21d674217d94630800000000000000
+      internalID: 3911894224855700177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_6
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 75
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19bb240d8dac135f0800000000000000
+      internalID: -778618228002604143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_7
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 72
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35d70089f2f73140800000000000000
+      internalID: 4699491889593177402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_8
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 75
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4e420a43a6f56ee0800000000000000
+      internalID: -1268336538853159347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_9
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 72
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31d99bbb6a31d25f0800000000000000
+      internalID: -779945553630225133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 60
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f597f25e116543c0800000000000000
+      internalID: -4375984680051698189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_11
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 60
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f75cce4019a7ffeb0800000000000000
+      internalID: -4683890324170553985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_12
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 62
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ce8b931180fa8bf0800000000000000
+      internalID: -321179986233159993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_13
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 56
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d78c60b89cb33ee0800000000000000
+      internalID: -1282474104889505832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_14
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 62
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd99fe54c1192dc30800000000000000
+      internalID: 4382724938003356124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_15
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 56
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e5acaec994c7db80800000000000000
+      internalID: -8370005217568315932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c120ee18646d9b010800000000000000
+      internalID: 1205229973614232092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_17
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 48
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec6f79b340cffed0800000000000000
+      internalID: -2377970681120854814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_18
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 50
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e0860d4919a98870800000000000000
+      internalID: 8685659282492260576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_19
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 44
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4fd11496a9f53d80800000000000000
+      internalID: -8271430646751961270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_20
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 50
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52383ed1988ff9420800000000000000
+      internalID: 2639101174458057509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_21
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 44
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14b653100204325f0800000000000000
+      internalID: -782711404028925119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_22
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87f6c0502e01c3790800000000000000
+      internalID: -7549140312446439560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_23
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 36
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e774f9b883140ac0800000000000000
+      internalID: -3889962700184979481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_24
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 38
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad3ebef74cde85250800000000000000
+      internalID: 5933753937276167130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_25
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 32
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 526125a97e37c52a0800000000000000
+      internalID: -6747390703144135131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_26
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 38
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 923bd5d0fde3b89a0800000000000000
+      internalID: -6229816531814075607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_27
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 32
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69abd751f6bdffe60800000000000000
+      internalID: 7998352733381704342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 24
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48428e2ecbeb06310800000000000000
+      internalID: 1396325602954847364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_29
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 12
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f9e25c6e5f688970800000000000000
+      internalID: 8757371926756911601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_30
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 24
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02c55a43634e57640800000000000000
+      internalID: 5077215076392721440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_31
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 12
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 889fb92917e5f0520800000000000000
+      internalID: 2670456945938004360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0459889a7cf1ce60800000000000000
+      internalID: 7980937618152576013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ColoredHeart_Red_33
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 34
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1175234ff66536cb0800000000000000
+      internalID: -4871955333046446319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ColoredHeart_Red_0: 6298089010867381587
+      ColoredHeart_Red_1: 4317517376919246019
+      ColoredHeart_Red_10: -4375984680051698189
+      ColoredHeart_Red_11: -4683890324170553985
+      ColoredHeart_Red_12: -321179986233159993
+      ColoredHeart_Red_13: -1282474104889505832
+      ColoredHeart_Red_14: 4382724938003356124
+      ColoredHeart_Red_15: -8370005217568315932
+      ColoredHeart_Red_16: 1205229973614232092
+      ColoredHeart_Red_17: -2377970681120854814
+      ColoredHeart_Red_18: 8685659282492260576
+      ColoredHeart_Red_19: -8271430646751961270
+      ColoredHeart_Red_2: 1299249255293301339
+      ColoredHeart_Red_20: 2639101174458057509
+      ColoredHeart_Red_21: -782711404028925119
+      ColoredHeart_Red_22: -7549140312446439560
+      ColoredHeart_Red_23: -3889962700184979481
+      ColoredHeart_Red_24: 5933753937276167130
+      ColoredHeart_Red_25: -6747390703144135131
+      ColoredHeart_Red_26: -6229816531814075607
+      ColoredHeart_Red_27: 7998352733381704342
+      ColoredHeart_Red_28: 1396325602954847364
+      ColoredHeart_Red_29: 8757371926756911601
+      ColoredHeart_Red_3: 432331436543223350
+      ColoredHeart_Red_30: 5077215076392721440
+      ColoredHeart_Red_31: 2670456945938004360
+      ColoredHeart_Red_32: 7980937618152576013
+      ColoredHeart_Red_33: -4871955333046446319
+      ColoredHeart_Red_4: 3224753011364192016
+      ColoredHeart_Red_5: 3911894224855700177
+      ColoredHeart_Red_6: -778618228002604143
+      ColoredHeart_Red_7: 4699491889593177402
+      ColoredHeart_Red_8: -1268336538853159347
+      ColoredHeart_Red_9: -779945553630225133
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

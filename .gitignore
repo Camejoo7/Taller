@@ -1,0 +1,87 @@
+# ---------------------------------------------------
+# Unity generated / cache folders
+# ---------------------------------------------------
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
+
+# Unity3D generated / crash files
+sysinfo.txt
+crashlytics-build.properties
+*.stackdump
+
+# ---------------------------------------------------
+# IDE / editor files
+# ---------------------------------------------------
+.vs/
+.vsconfig
+.vscode/
+.idea/
+.gradle/
+ExportedObj/
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# ---------------------------------------------------
+# Plastic SCM (project was previously under Plastic)
+# ---------------------------------------------------
+.plastic/
+/[Aa]ssets/[Pp]lugins/[Pp]lasticSCM*
+
+# ---------------------------------------------------
+# Builds / packages
+# ---------------------------------------------------
+*.apk
+*.aab
+*.app
+*.unitypackage
+*.unitypackage.meta
+
+# ---------------------------------------------------
+# Addressables
+# ---------------------------------------------------
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# ---------------------------------------------------
+# OS files
+# ---------------------------------------------------
+.DS_Store
+.DS_Store.meta
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# ---------------------------------------------------
+# Unity MCP
+# ---------------------------------------------------
+~UnityDirMonSyncFile~*
