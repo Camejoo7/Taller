@@ -4,7 +4,7 @@
 
 ## 📍 Dónde estamos ahora
 
-**Fase actual: Fase 0 — Fundaciones** (4 de 6 ítems completos)
+**Fase actual: Fase 0 — Fundaciones** (5 de 6 ítems completos)
 
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
@@ -36,8 +36,8 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 - [x] **Git**: `git init`, `.gitignore` de Unity, primer commit y push a origin/main.
 - [x] **CLAUDE.md actualizado** con el flujo de trabajo cerrado.
 - [x] **ScriptableObjects de contenido**: `StageData`, `DialogueLine`, `QuizQuestion`, `CodeBlasterEncounter`. Scripts creados y compilando (sin `.assets` todavía).
-- [ ] **DialogueManager unificado**: fusionar `DialogueManager` + `DialogueManager2` en un solo manager que lea de `StageData` (intro/mid/outro), en vez de diálogo hardcodeado en `Awake()`.
-- [x] **Arreglar bug del `PausaCanvas`**: el menú de pausa nunca se había terminado de armar (panel de 2×2 px, 9 botones duplicados sin texto ni `onClick`, título a escala 0.02). Rearmado desde cero en `SampleScene`: dimmer a pantalla completa + panel centrado con "PAUSA" y 3 botones (Reanudar / Reiniciar / Menú Principal). `PauseMenu.cs` ahora cablea los `onClick` por código en `Start()` y suma `Reiniciar()` (recarga la escena activa). Verificado en Play mode. — El otro bug (Slice / Aseprite en el Tile Palette) se movió a Fase 2, ver abajo.
+- [x] **DialogueManager unificado**: `DialogueManager` + `DialogueManager2` fusionados en un solo `DialogueManager` con `enum DialogueSegment { Intro, Mid, Outro }`. Lee el contenido de un `StageData` (`introDialogue` / `midDialogue` / `outroDialogue`), ya no hardcodeado en `Awake()`. Intro congela al jugador + anima el dron + avance manual + handoff a `KiraFollower`; Mid/Outro sin congelar y solo auto-avance. Speaker por `enum` → "KIRA" cyan / "NX-7" amarillo. `KiraTriggerZone` y `EnemySpawner` actualizados; `DialogueManager2` borrado. Creado `Assets/Data/Stage1.asset` con las 5 líneas de intro + 4 de media migradas. Verificado en Play mode.
+- [x] **Arreglar bug del `PausaCanvas`**: el menú de pausa nunca se había terminado de armar (panel de 2×2 px, 9 botones duplicados sin texto ni `onClick`, título a escala 0.02). Rearmado desde cero en `SampleScene` con el kit visual del Menú Principal: panel `FrameMap_9` (tinte `#2A3450`), botones `FrameMap_7`, fuente `CyberpunkCraftpixPixel SDF`, texto `#C0C0C0`, dimmer al 55%. Botones: Reanudar / Reiniciar / Menú Principal, con `onClick` persistentes en la escena (`Reanudar` / `Reiniciar` / `IrAlMenu`). `PauseMenu.cs` suma `Reiniciar()` (recarga la escena activa). Verificado en Play mode. — El otro bug (Slice / Aseprite en el Tile Palette) se movió a Fase 2, ver abajo.
 - [ ] **Sistema de proyectiles + CodeBlasterTarget**: el jugador dispara, el proyectil detecta contra qué fragmento de código pegó, dispara el evento correcto/incorrecto.
 
 ## Fase 1 — Stage 1 como plantilla completa

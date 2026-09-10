@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefab: {fileID: 4314836228333647973, guid: 2371263bb24c44747a9f88f65cad35a6, type: 3}
   droneSpawnPoint: {fileID: 153405352}
-  dialogueManager2: {fileID: 2019354673}
+  dialogueManager: {fileID: 1414682834}
 --- !u!61 &710457507
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2107,7 +2107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.16470589, g: 0.20392157, b: 0.3137255, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -44633,7 +44633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa39346b3efb734428cdf411df7c5864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
-  autoAdvanceTime: 3
+  stageData: {fileID: 11400000, guid: 00500c9b073e81341876173fbd381f34, type: 2}
   dialogueCanvas: {fileID: 652609908}
   speakerNameText: {fileID: 1002530741}
   dialogueText: {fileID: 1276174621}
@@ -44642,6 +44642,9 @@ MonoBehaviour:
   kiraSpawnBelow: {fileID: 103690500}
   kiraTargetPos: {fileID: 2003981835}
   typingSpeed: 0.08
+  autoAdvanceIntro: 3
+  autoAdvanceMid: 4
+  autoAdvanceOutro: 3.5
 --- !u!4 &1414682835
 Transform:
   m_ObjectHideFlags: 0
@@ -48889,7 +48892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.55}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -49396,55 +49399,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2019354672
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2019354674}
-  - component: {fileID: 2019354673}
-  m_Layer: 0
-  m_Name: 'DialogueManager2 '
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2019354673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019354672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27cc2fd6b6757c54d9e32c7769914bd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueManager2
-  dialogueCanvas: {fileID: 652609908}
-  speakerNameText: {fileID: 1002530741}
-  dialogueText: {fileID: 1276174621}
-  typingSpeed: 0.02
-  autoAdvanceTime: 1.5
---- !u!4 &2019354674
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019354672}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -24.32321, y: -1.06686, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2050834631
 GameObject:
   m_ObjectHideFlags: 0
@@ -49736,6 +49690,5 @@ SceneRoots:
   - {fileID: 37585185}
   - {fileID: 1932958698}
   - {fileID: 1436014960}
-  - {fileID: 2019354674}
   - {fileID: 293328015}
   - {fileID: 1603492317}

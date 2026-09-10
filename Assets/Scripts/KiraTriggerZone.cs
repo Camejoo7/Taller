@@ -11,7 +11,7 @@ public class KiraTriggerZone : MonoBehaviour
         {
             triggered = true;
             PlayerMovement player = other.GetComponent<PlayerMovement>();
-            dialogueManager.StartDialogue(player);
+            dialogueManager.StartDialogue(DialogueSegment.Intro, player);
         }
     }
 }
