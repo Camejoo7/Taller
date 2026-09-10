@@ -81,8 +81,6 @@ Mapeo rápido de concepto → tipo de pregunta Code Blaster por stage:
 
 Orden sugerido: 2-3 primero (conceptos más simples, valida el patrón de pulido más rápido), después 4-6.
 
-> **Adelanto (hecho fuera de fase):** `SampleScene` recibió una pasada de ambiente — fondo parallax de 5 capas (`ParallaxBackground.cs` + pack `INDUSTRIA`), `Global Light 2D` bajada y enfriada + 4 luces de acento (`SceneLights`), y tinte oscuro en el tilemap `Fondo` para dar profundidad. El tileset del piso quedó igual. Pendiente todavía: ubicar/sacar el tile placeholder verde y los decals "nube", y revisar el parallax en movimiento real.
-
 ## Fase 5 — Audio y remate final
 
 - [ ] Música ambiente + efectos (disparo/impacto/acierto/error)
