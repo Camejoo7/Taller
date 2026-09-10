@@ -153,6 +153,10 @@ public class DialogueManager : MonoBehaviour
         speakerNameText.text = line.speaker == Speaker.Kira ? "KIRA" : "NX-7";
         speakerNameText.color = line.speaker == Speaker.Kira ? KiraColor : NxColor;
 
+        // El retrato es de Kira: mostrarlo solo cuando habla ella.
+        if (kiraAvatar != null)
+            kiraAvatar.gameObject.SetActive(line.speaker == Speaker.Kira);
+
         autoAdvanceTimer = 0f;
         StopCoroutine("TypeLine");
         StartCoroutine("TypeLine", line.text);
