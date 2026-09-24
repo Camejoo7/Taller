@@ -11,6 +11,14 @@ public class CodeBlasterEncounter : ScriptableObject
     [Tooltip("Identificador para que el spawner / trigger referencie este encuentro.")]
     public string encounterId;
 
+    [Tooltip("Número de stage al que pertenece. Solo se usa para el informe.")]
+    public int stageNumber;
+
+    [Tooltip("Concepto que evalúa, en pocas palabras: print, variables, condicionales, bucles... " +
+             "El informe para el docente agrupa por acá, así que conviene escribirlo igual " +
+             "en todos los encuentros del mismo tema.")]
+    public string concept;
+
     [Tooltip("La pregunta. Cada opción se convierte en un fragmento flotante.")]
     public QuizQuestion question;
 
