@@ -5,6 +5,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpForce = 10f;
+    public RuntimeAnimatorController armedController;
+
+    public bool HasWeapon { get; private set; }
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -85,6 +88,14 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionExit2D(Collision2D col)
     {
         isGrounded = false;
+    }
+
+    public void EquipWeapon()
+    {
+        if (HasWeapon) return;
+        HasWeapon = true;
+        if (armedController != null)
+            animator.runtimeAnimatorController = armedController;
     }
 
     public void SetCanMove(bool value)
