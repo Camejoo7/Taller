@@ -41,11 +41,12 @@ Implementado en `Assets/Scripts/Progreso/`:
 
 - `QuestionAttempt` — el resultado de una pregunta: concepto, stage, intentos, segundos, qué opciones equivocadas eligió. El puntaje sale de los intentos: 1 → 100, 2 → 50, 3 → 25, 4 o más → 10. Nunca cero, porque equivocarse y corregirse también es aprender.
 - `ScoreTracker` — singleton que se crea solo (`RuntimeInitializeOnLoadMethod`) y sobrevive los cambios de escena, así que no hay que ponerlo en cada stage. El indicador principal es `FirstTryRate`, el porcentaje de preguntas acertadas de primera.
-- **Informe para el docente** — CSV (separador `;`, UTF-8 con BOM, para que el Excel en español respete las tildes) en `persistentDataPath/Informes/`. Trae el resumen general, el **desglose por concepto** (qué temas falló el grupo, que es lo que le sirve al docente para dar clase) y el detalle pregunta por pregunta. Se guarda solo al cerrar el juego.
 
-Para que el informe agrupe bien, **cada `CodeBlasterEncounter` tiene que tener cargado `concept` y `stageNumber`**, y el mismo tema debe escribirse igual en todos los encuentros.
+**Todo vive solo en memoria: el juego no escribe ningún archivo.** Decisión de Kevin (24/09/2026): la exportación a CSV para el docente se armó y se sacó en el mismo día, por ser una pieza más para mantener y explicar sin que el proyecto la necesite todavía. El puntaje va adentro del juego y listo. Si más adelante hace falta el informe, se arma leyendo del `ScoreTracker` — está en el historial de git (commit `d3dafa6`), no hay que reescribirlo.
 
-Pendiente: pantalla de resumen al terminar una stage (hoy el puntaje solo se ve como "+100" al lado de la explicación de Kira), y algún modo de identificar al alumno si se usa en una clase con varias máquinas.
+Cada `CodeBlasterEncounter` igual conviene que tenga cargados `concept` y `stageNumber`: no cuestan nada y son por donde se agruparía el día que se quiera ver el rendimiento por tema.
+
+Pendiente: pantalla de resumen al terminar una stage. Hoy el puntaje solo se ve como "+100" al lado de la explicación de Kira.
 
 **Fallback si se complica:** separar en dos momentos dentro de la misma escena — primero una zona de combate simple (esquivar/disparar sin preguntas de por medio), después una zona segura donde Kira pregunta con el menú de opción múltiple que ya existe (`fallbackQuizzes` en `StageData`). Mismo contenido educativo, mucha menos ingeniería.
 
