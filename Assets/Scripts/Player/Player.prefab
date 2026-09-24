@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 4056999404798666331}
   - component: {fileID: 880112741110128209}
   - component: {fileID: 5939794676137429985}
+  - component: {fileID: 1556117446049734015}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -207,6 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 3
   jumpForce: 6.7
+  armedController: {fileID: 22100000, guid: c93a5e5a1bcfeca48babc8111b55fafb, type: 2}
 --- !u!70 &5939794676137429985
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -244,3 +246,19 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.007430494}
   m_Size: {x: 0.248887, y: 0.32139307}
   m_Direction: 0
+--- !u!114 &1556117446049734015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060534467011473725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44b58f12fce953d49bfc12fb5183eb61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
+  projectilePrefab: {fileID: 3202347094456098905, guid: 803a129035caa2e4e847e16de7212c34, type: 3}
+  fireCooldown: 0.28
+  gunHeight: 0.02
+  muzzleDistance: 0.22

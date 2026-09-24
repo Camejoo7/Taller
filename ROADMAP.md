@@ -4,7 +4,9 @@
 
 ## 📍 Dónde estamos ahora
 
-**Fase actual: Fase 0 — Fundaciones** (5 de 6 ítems completos)
+**Fase actual: Fase 2 — Pasada horizontal** (Fase 0 cerrada; Stage 2 arrancado)
+
+> La Fase 1 (Stage 1 de punta a punta) quedó pendiente a propósito: Kevin armó primero el mapa del Stage 2 y ahí se probó el Code Blaster. El molde ya existe y funciona, así que volver al Stage 1 es ahora trabajo de contenido, no de sistemas.
 
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
@@ -27,6 +29,8 @@ Un dron o enemigo aparece en pantalla y muestra 3-4 fragmentos de código flotan
 
 **Por qué funciona para este proyecto:** reutiliza el `EnemySpawner` / `EnemyAI` que ya existen, no requiere evaluar código Python real (eso sería construir un intérprete, un proyecto en sí mismo), y el combate ES la verificación de aprendizaje — no son dos sistemas separados compitiendo por el tiempo de desarrollo.
 
+**Cómo quedó implementada (restricciones de escala que costaron encontrar):** el juego es muy chico — el jugador mide 0,38 unidades y la cámara muestra 3,6 de alto. A ese tamaño un dron con fragmentos alrededor no entra en pantalla. Por eso: (1) durante la pelea la cámara **se aleja** a `orthographicSize` 2,6 y **encuadra el punto medio** entre el jugador y el dron, si no el cartel de la pregunta tapa los fragmentos de arriba; (2) la órbita es **ovalada** (`fragmentOrbitVerticalScale`, 0,45 por defecto) porque la pantalla es apaisada; (3) el `fontSize` de TextMeshPro en el mundo **no son unidades** — cada letra ocupa ~0,1 × fontSize, así que los fragmentos usan tamaños cerca de 1,2 y no de 0,15. Valores que se sienten bien hoy: bala a 14 u/s, órbita a 14°/s, fragmento de 1,70 × 0,42. Con la órbita más rápida o los fragmentos más finitos, apuntar se vuelve el desafío en vez de saber la respuesta.
+
 **Fallback si se complica:** separar en dos momentos dentro de la misma escena — primero una zona de combate simple (esquivar/disparar sin preguntas de por medio), después una zona segura donde Kira pregunta con el menú de opción múltiple que ya existe (`fallbackQuizzes` en `StageData`). Mismo contenido educativo, mucha menos ingeniería.
 
 ## Fase 0 — Fundaciones (antes de tocar contenido de cualquier stage)
@@ -38,7 +42,7 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 - [x] **ScriptableObjects de contenido**: `StageData`, `DialogueLine`, `QuizQuestion`, `CodeBlasterEncounter`. Scripts creados y compilando (sin `.assets` todavía).
 - [x] **DialogueManager unificado**: `DialogueManager` + `DialogueManager2` fusionados en un solo `DialogueManager` con `enum DialogueSegment { Intro, Mid, Outro }`. Lee el contenido de un `StageData` (`introDialogue` / `midDialogue` / `outroDialogue`), ya no hardcodeado en `Awake()`. Intro congela al jugador + anima el dron + avance manual + handoff a `KiraFollower`; Mid/Outro sin congelar y solo auto-avance. Speaker por `enum` → "KIRA" cyan / "NX-7" amarillo. `KiraTriggerZone` y `EnemySpawner` actualizados; `DialogueManager2` borrado. Creado `Assets/Data/Stage1.asset` con las 5 líneas de intro + 4 de media migradas. Verificado en Play mode. **Cuadro de diálogo restilado** en `SampleScene` para combinar con el resto del juego: se sacó el borde naranja duro, panel HUD azul oscuro (`#141C2E`) con línea de acento cyan arriba, nombre del hablante en una placa (`FrameMap_7`) arriba a la izquierda, hint "ESPACIO" abajo a la derecha. Fuente: nombre y cuerpo en `PressStart2P` (la del juego, `CyberpunkCraftpixPixel` no tiene acentos ni `¿¡` y renderiza mal K/N/X). Como el `DialogueCanvas` es único, lo heredan las 6 stages.
 - [x] **Arreglar bug del `PausaCanvas`**: el menú de pausa nunca se había terminado de armar (panel de 2×2 px, 9 botones duplicados sin texto ni `onClick`, título a escala 0.02). Rearmado desde cero en `SampleScene` con el kit visual del Menú Principal: panel `FrameMap_9` (tinte `#2A3450`), botones `FrameMap_7`, fuente `CyberpunkCraftpixPixel SDF`, texto `#C0C0C0`, dimmer al 55%. Botones: Reanudar / Reiniciar / Menú Principal, con `onClick` persistentes en la escena (`Reanudar` / `Reiniciar` / `IrAlMenu`). `PauseMenu.cs` suma `Reiniciar()` (recarga la escena activa). Verificado en Play mode. — El otro bug (Slice / Aseprite en el Tile Palette) se movió a Fase 2, ver abajo.
-- [ ] **Sistema de proyectiles + CodeBlasterTarget**: el jugador dispara, el proyectil detecta contra qué fragmento de código pegó, dispara el evento correcto/incorrecto. — *Kevin lo ve como mecánica que recién aparece en Stage 2; a definir si se construye acá como fundación o se mueve a Fase 2.*
+- [x] **Sistema de proyectiles + CodeBlasterTarget**: construido y probado en Play mode dentro del Stage 2. Piezas: `PlayerShooting` (apunta con el mouse, dispara con click izquierdo, solo si `PlayerMovement.HasWeapon`), `Projectile` (se mueve con un `CircleCast` barrido en vez de física — a la escala de este juego una bala rápida con collider normal atraviesa los blancos entre frames; ignora al jugador y los triggers del nivel, solo la frenan las paredes y los fragmentos), `CodeBlasterTarget` (fragmento tonto: muestra su texto y avisa que le pegaron, no sabe si es correcto), `CodeBlasterFight` (arma el encuentro leyendo todo del `CodeBlasterEncounter`) y `CodeBlasterUI` (pregunta fija arriba + respuesta de Kira abajo). El orden de los fragmentos en la órbita **se mezcla** para que la correcta no caiga siempre en el mismo lugar. El daño al errar ya está llamado vía la interfaz `IPlayerDamageable`, que todavía no implementa nadie — cuando exista el sistema de vida solo tiene que implementarla y ponerse en el jugador, sin tocar el combate.
 
 ## Fase 1 — Stage 1 como plantilla completa
 
@@ -49,6 +53,9 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 ## Fase 2 — Pasada horizontal: versión rústica de Stages 2 a 6
 
 - [ ] Stage 2 — nivel rústico + `StageData` placeholder (print, variables, tipos)
+  - [x] Mapa armado (por Kevin), cámara `CameraFollow` igual que Stage 1, arma que el jugador agarra en el garage (`WeaponPickup` + animaciones armadas vía `PJ_Armed.overrideController`).
+  - [x] Primer encuentro Code Blaster funcionando: `Assets/Data/Encuentros/Stage2_Print_01.asset` ("¿Cuál de estas líneas imprime Hola?"), trigger en x=-27.6, dron en (-26, 0.6).
+  - [ ] Falta: `StageData` propio del Stage 2, diálogos de Kira (la escena todavía no tiene `DialogueManager` ni `DialogueCanvas`), más encuentros, y **agregar la escena a Build Settings** (hoy no está).
 - [ ] Stage 3 — nivel rústico + `StageData` placeholder (condicionales)
 - [ ] Stage 4 — nivel rústico + `StageData` placeholder (bucles)
 - [ ] Stage 5 — nivel rústico + `StageData` placeholder (listas y cadenas)

@@ -24,4 +24,8 @@ public class QuizQuestion
     [TextArea(2, 4)]
     [Tooltip("Lo que dice Kira cuando la pregunta se resuelve.")]
     public string explanation;
+
+    [TextArea(2, 4)]
+    [Tooltip("Lo que dice Kira cuando el jugador le pega a un fragmento equivocado. Vacío = frase genérica.")]
+    public string wrongFeedback;
 }
