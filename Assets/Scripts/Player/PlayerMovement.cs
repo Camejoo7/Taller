@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
 
     public bool HasWeapon { get; private set; }
 
+    /// <summary>Si el jugador esta suelto (falso mientras habla Kira).</summary>
+    public bool CanMove { get { return canMove; } }
+
     private Rigidbody2D rb;
     private Animator animator;
     private Transform visual;
@@ -43,10 +46,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb.linearVelocity = new Vector2(moveX * speed, rb.linearVelocity.y);
 
-        if (moveX > 0)
-            visual.localScale = new Vector3(-2, 2, 1);
-        else if (moveX < 0)
-            visual.localScale = new Vector3(2, 2, 1);
+        FaceDirection(moveX);
 
         animator.SetBool("isWalking", moveX != 0);
 
@@ -88,6 +88,17 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionExit2D(Collision2D col)
     {
         isGrounded = false;
+    }
+
+    /// <summary>
+    /// Da vuelta el sprite hacia un lado. Ojo que la escala va invertida:
+    /// mirando a la derecha es -2 y a la izquierda +2.
+    /// </summary>
+    public void FaceDirection(float dirX)
+    {
+        if (visual == null || Mathf.Abs(dirX) < 0.01f) return;
+
+        visual.localScale = dirX > 0f ? new Vector3(-2, 2, 1) : new Vector3(2, 2, 1);
     }
 
     public void EquipWeapon()

@@ -21,8 +21,14 @@ public class CodeBlasterEncounter : ScriptableObject
     [Tooltip("Daño al jugador al dispararle a un fragmento incorrecto.")]
     public int damageOnWrong = 1;
 
-    [Tooltip("Radio al que orbitan los fragmentos alrededor del dron.")]
-    public float fragmentOrbitRadius = 2f;
+    [Tooltip("Radio horizontal al que orbitan los fragmentos alrededor del dron.")]
+    public float fragmentOrbitRadius = 1.6f;
+
+    [Tooltip("Achata la órbita: 1 = círculo, 0.5 = óvalo la mitad de alto. " +
+             "La pantalla es apaisada y la cámara muestra poca altura, así que " +
+             "un óvalo aprovecha mucho mejor el espacio que un círculo.")]
+    [Range(0.2f, 1f)]
+    public float fragmentOrbitVerticalScale = 0.45f;
 
     [Tooltip("Velocidad de órbita de los fragmentos.")]
     public float fragmentOrbitSpeed = 45f;

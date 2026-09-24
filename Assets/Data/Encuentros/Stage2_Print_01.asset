@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aede88a4aeb2904585971a41505f954, type: 3}
+  m_Name: Stage2_Print_01
+  m_EditorClassIdentifier: Assembly-CSharp::CodeBlasterEncounter
+  encounterId: stage2_print_01
+  question:
+    question: "\xBFCu\xE1l de estas l\xEDneas imprime Hola en pantalla?"
+    options:
+    - print("Hola")
+    - print(Hola)
+    - Print("Hola")
+    - print "Hola"
+    correctIndex: 0
+    explanation: "Esa. print va en min\xFAscula, el texto entre comillas y todo adentro
+      de los par\xE9ntesis."
+    wrongFeedback: "No. Mir\xE1 bien: print va en min\xFAscula, el texto va entre
+      comillas y va adentro de los par\xE9ntesis."
+  enemyPrefab: {fileID: 4314836228333647973, guid: 2371263bb24c44747a9f88f65cad35a6, type: 3}
+  damageOnWrong: 1
+  fragmentOrbitRadius: 1.6
+  fragmentOrbitVerticalScale: 0.45
+  fragmentOrbitSpeed: 14
+  timeLimit: 0
