@@ -56,6 +56,12 @@ public class CodeBlasterFight : MonoBehaviour
     private float answerTimer;
     private Vector3 droneBasePos;
 
+    // Registro para el informe: cuantas respuestas dio, cuales fueron las
+    // equivocadas y cuanto tardo. Se arranca al empezar la pelea.
+    private int answersGiven;
+    private float questionStartTime;
+    private List<string> wrongChoices = new List<string>();
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (triggered || !other.CompareTag("Player")) return;
@@ -101,6 +107,10 @@ public class CodeBlasterFight : MonoBehaviour
             if (combatZoom > 0f) cameraFollow.SetZoom(combatZoom);
             cameraFollow.SetSecondaryTarget(dronePoint, 0.5f);
         }
+
+        answersGiven = 0;
+        wrongChoices.Clear();
+        questionStartTime = Time.time;
 
         answerTimer = encounter.timeLimit;
         acceptingAnswers = true;
@@ -214,10 +224,16 @@ public class CodeBlasterFight : MonoBehaviour
 
     IEnumerator AnsweredRight(CodeBlasterTarget target)
     {
+        answersGiven++;
+        QuestionAttempt record = RecordResult();
+
         target.MarkCorrect();
 
         if (ui != null)
-            ui.ShowFeedback(TextOr(encounter.question.explanation, "¡Esa es!"));
+        {
+            string line = TextOr(encounter.question.explanation, "¡Esa es!");
+            ui.ShowFeedback(line + "  (+" + record.Points + ")");
+        }
 
         // Los demas fragmentos se van; queda solo el correcto a la vista.
         foreach (CodeBlasterTarget other in fragments)
@@ -234,6 +250,10 @@ public class CodeBlasterFight : MonoBehaviour
 
     IEnumerator AnsweredWrong(CodeBlasterTarget target)
     {
+        answersGiven++;
+        if (target.label != null)
+            wrongChoices.Add(target.label.text);
+
         target.FlashWrong(wrongLockTime);
 
         if (ui != null)
@@ -257,6 +277,9 @@ public class CodeBlasterFight : MonoBehaviour
     IEnumerator TimeRanOut()
     {
         acceptingAnswers = false;
+
+        answersGiven++;
+        wrongChoices.Add("(se acabó el tiempo)");
 
         if (ui != null)
             ui.ShowFeedback(GenericTimeout);
@@ -283,6 +306,28 @@ public class CodeBlasterFight : MonoBehaviour
                 yield return null;
 
         yield return new WaitForSeconds(holdAfterTyping);
+    }
+
+    /// <summary>
+    /// Guarda cómo le fue en esta pregunta. Se llama una sola vez, al acertar:
+    /// recién ahí se sabe cuántos intentos le llevó, que es el dato que después
+    /// separa al que sabía del que fue descartando.
+    /// </summary>
+    QuestionAttempt RecordResult()
+    {
+        QuestionAttempt record = new QuestionAttempt();
+        record.encounterId = encounter.encounterId;
+        record.concept = encounter.concept;
+        record.stageNumber = encounter.stageNumber;
+        record.question = encounter.question.question;
+        record.attempts = Mathf.Max(1, answersGiven);
+        record.seconds = Time.time - questionStartTime;
+        record.wrongChoices = new List<string>(wrongChoices);
+
+        if (ScoreTracker.Instance != null)
+            ScoreTracker.Instance.Record(record);
+
+        return record;
     }
 
     /// <summary>

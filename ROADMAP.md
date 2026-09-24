@@ -31,6 +31,22 @@ Un dron o enemigo aparece en pantalla y muestra 3-4 fragmentos de código flotan
 
 **Cómo quedó implementada (restricciones de escala que costaron encontrar):** el juego es muy chico — el jugador mide 0,38 unidades y la cámara muestra 3,6 de alto. A ese tamaño un dron con fragmentos alrededor no entra en pantalla. Por eso: (1) durante la pelea la cámara **se aleja** a `orthographicSize` 2,6 y **encuadra el punto medio** entre el jugador y el dron, si no el cartel de la pregunta tapa los fragmentos de arriba; (2) la órbita es **ovalada** (`fragmentOrbitVerticalScale`, 0,45 por defecto) porque la pantalla es apaisada; (3) el `fontSize` de TextMeshPro en el mundo **no son unidades** — cada letra ocupa ~0,1 × fontSize, así que los fragmentos usan tamaños cerca de 1,2 y no de 0,15. Valores que se sienten bien hoy: bala a 14 u/s, órbita a 14°/s, fragmento de 1,70 × 0,42. Con la órbita más rápida o los fragmentos más finitos, apuntar se vuelve el desafío en vez de saber la respuesta.
 
+## Evaluación y puntaje (sustento de la fundamentación)
+
+Decisión tomada el 24/09/2026, charlando sobre cómo defender el proyecto: **el juego no pretende enseñar Python desde cero** — nadie aprende qué es una variable eligiendo entre cuatro opciones. Se fundamenta como herramienta de **refuerzo con corrección inmediata** (Kira explica el error en el momento) y de **evaluación de reconocimiento de sintaxis**.
+
+El agujero que había que tapar: completar el juego no prueba nada, porque disparándole a todos los fragmentos tarde o temprano se acierta. Por eso el indicador **no es si completó, sino cuántos intentos le llevó cada pregunta**. Acertar de primera es conocimiento; acertar al tercero es descarte.
+
+Implementado en `Assets/Scripts/Progreso/`:
+
+- `QuestionAttempt` — el resultado de una pregunta: concepto, stage, intentos, segundos, qué opciones equivocadas eligió. El puntaje sale de los intentos: 1 → 100, 2 → 50, 3 → 25, 4 o más → 10. Nunca cero, porque equivocarse y corregirse también es aprender.
+- `ScoreTracker` — singleton que se crea solo (`RuntimeInitializeOnLoadMethod`) y sobrevive los cambios de escena, así que no hay que ponerlo en cada stage. El indicador principal es `FirstTryRate`, el porcentaje de preguntas acertadas de primera.
+- **Informe para el docente** — CSV (separador `;`, UTF-8 con BOM, para que el Excel en español respete las tildes) en `persistentDataPath/Informes/`. Trae el resumen general, el **desglose por concepto** (qué temas falló el grupo, que es lo que le sirve al docente para dar clase) y el detalle pregunta por pregunta. Se guarda solo al cerrar el juego.
+
+Para que el informe agrupe bien, **cada `CodeBlasterEncounter` tiene que tener cargado `concept` y `stageNumber`**, y el mismo tema debe escribirse igual en todos los encuentros.
+
+Pendiente: pantalla de resumen al terminar una stage (hoy el puntaje solo se ve como "+100" al lado de la explicación de Kira), y algún modo de identificar al alumno si se usa en una clase con varias máquinas.
+
 **Fallback si se complica:** separar en dos momentos dentro de la misma escena — primero una zona de combate simple (esquivar/disparar sin preguntas de por medio), después una zona segura donde Kira pregunta con el menú de opción múltiple que ya existe (`fallbackQuizzes` en `StageData`). Mismo contenido educativo, mucha menos ingeniería.
 
 ## Fase 0 — Fundaciones (antes de tocar contenido de cualquier stage)
