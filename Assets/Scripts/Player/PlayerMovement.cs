@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>Si el jugador esta suelto (falso mientras habla Kira).</summary>
     public bool CanMove { get { return canMove; } }
 
+    /// <summary>Si esta pisando piso. Lo usa PlayerHealth para saber donde es seguro reaparecer.</summary>
+    public bool IsGrounded { get { return isGrounded; } }
+
     private Rigidbody2D rb;
     private Animator animator;
     private Transform visual;

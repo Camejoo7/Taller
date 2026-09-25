@@ -18,6 +18,9 @@ public class Projectile : MonoBehaviour
     [Tooltip("Grosor de la bala para detectar impactos.")]
     public float radius = 0.04f;
 
+    [Tooltip("Daño que le hace a un enemigo.")]
+    public int damage = 1;
+
     [Tooltip("Opcional: efecto que aparece donde impacta.")]
     public GameObject impactEffect;
 
@@ -101,6 +104,10 @@ public class Projectile : MonoBehaviour
         CodeBlasterTarget target = other.GetComponentInParent<CodeBlasterTarget>();
         if (target != null)
             target.Hit();
+
+        EnemyHealth enemy = other.GetComponentInParent<EnemyHealth>();
+        if (enemy != null)
+            enemy.TakeDamage(damage);
 
         if (impactEffect != null)
             Instantiate(impactEffect, transform.position, Quaternion.identity);
