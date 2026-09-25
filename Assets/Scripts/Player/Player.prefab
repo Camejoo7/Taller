@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 880112741110128209}
   - component: {fileID: 5939794676137429985}
   - component: {fileID: 1556117446049734015}
+  - component: {fileID: 6434089131008878121}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -262,3 +263,20 @@ MonoBehaviour:
   fireCooldown: 0.28
   gunHeight: 0.02
   muzzleDistance: 0.22
+--- !u!114 &6434089131008878121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060534467011473725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2154c6bf58a9f4949871c9234aaa4fbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 3
+  invulnerableTime: 1.2
+  knockbackForce: 4.5
+  respawnPoint: {fileID: 0}
+  respawnDelay: 1.2
