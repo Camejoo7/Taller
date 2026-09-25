@@ -5,6 +5,11 @@ public class KiraFollower : MonoBehaviour
     public float followSpeed = 3f;
     public Vector2 offset = new Vector2(-2f, 1.5f);
 
+    [Tooltip("Que empiece a seguir apenas arranca la escena. En el Stage 1 va en " +
+             "falso, porque Kira recién aparece durante el diálogo de intro; de la " +
+             "Stage 2 en adelante ya viene con el jugador, así que va en verdadero.")]
+    public bool followFromStart = false;
+
     private Transform target;
     private bool following = false;
     private float floatTimer = 0f;
@@ -13,6 +18,13 @@ public class KiraFollower : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+
+        if (followFromStart && target == null)
+        {
+            PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
+            if (player != null)
+                StartFollowing(player.transform);
+        }
     }
 
     public void StartFollowing(Transform player)

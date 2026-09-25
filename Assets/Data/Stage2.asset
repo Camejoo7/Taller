@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4559675c1b88e85418c6b1c0cc50eea6, type: 3}
+  m_Name: Stage2
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  stageNumber: 2
+  stageTitle: 'Stage 2: Print, variables y tipos'
+  sceneName: Stage2
+  conceptSummary: Mostrar texto en pantalla con print, guardar datos en variables
+    y distinguir texto de numeros.
+  introDialogue:
+  - speaker: 0
+    text: "Bienvenido a la zona industrial de Central City. Huele a aceite quemado
+      y a c\xE1maras de vigilancia."
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: ...
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Muy conversador, como siempre. Ac\xE1 abajo NEXCORP tiene los servidores
+      viejos, los que nadie mira."
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Si quer\xE9s sacarles algo, primero vas a tener que aprender a hacer que
+      una m\xE1quina hable. Eso, en Python, se llama print."
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: ...
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Exacto, eso mismo iba a decir. And\xE1 al garage: dejaron un arma tirada
+      y la vas a necesitar."
+    autoAdvanceOverride: 0
+  introAnimatesKiraEntrance: 0
+  midDialogue:
+  - speaker: 0
+    text: "Un disruptor de c\xF3digo. NEXCORP los usa para depurar sus drones."
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: Nosotros lo vamos a usar para algo bastante menos autorizado.
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "Cuando aparezca un dron con fragmentos de c\xF3digo dando vueltas, disparale
+      al que est\xE9 bien escrito."
+    autoAdvanceOverride: 0
+  - speaker: 1
+    text: ...
+    autoAdvanceOverride: 0
+  - speaker: 0
+    text: "S\xED, en serio. Si acert\xE1s, el dron se apaga. Si err\xE1s, te va a
+      doler. Le\xE9 antes de disparar."
+    autoAdvanceOverride: 0
+  outroDialogue:
+  - speaker: 0
+    text: Nada mal para alguien que no dice una palabra. Seguimos.
+    autoAdvanceOverride: 0
+  encounters:
+  - {fileID: 11400000, guid: 77d79b8bd98683d4dbe64406f933fe54, type: 2}
+  fallbackQuizzes: []
+  nextStage: {fileID: 0}

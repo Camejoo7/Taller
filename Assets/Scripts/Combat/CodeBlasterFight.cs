@@ -27,6 +27,11 @@ public class CodeBlasterFight : MonoBehaviour
     public CodeBlasterUI ui;
     public CameraFollow cameraFollow;
 
+    [Tooltip("Opcional. Si está puesto, la pelea espera a que Kira termine de " +
+             "hablar antes de arrancar: si no, el cartel de la pregunta y el " +
+             "cuadro de diálogo se pisan en pantalla.")]
+    public DialogueManager dialogueManager;
+
     [Header("Cámara")]
     [Tooltip("Cuánto se aleja la cámara durante la pelea. 0 = no tocarla.")]
     public float combatZoom = 2.6f;
@@ -50,6 +55,8 @@ public class CodeBlasterFight : MonoBehaviour
     private PlayerShooting shooting;
 
     private bool triggered;
+    private bool pendingStart;
+    private PlayerMovement pendingPlayer;
     private bool fightActive;
     private bool acceptingAnswers;
     private float orbitAngle;
@@ -70,6 +77,15 @@ public class CodeBlasterFight : MonoBehaviour
         if (pm == null) return;
 
         triggered = true;
+
+        // Si Kira está explicando algo, la pelea espera su turno.
+        if (dialogueManager != null && dialogueManager.IsActive)
+        {
+            pendingStart = true;
+            pendingPlayer = pm;
+            return;
+        }
+
         StartFight(pm);
     }
 
@@ -166,6 +182,15 @@ public class CodeBlasterFight : MonoBehaviour
 
     void Update()
     {
+        if (pendingStart)
+        {
+            if (dialogueManager != null && dialogueManager.IsActive) return;
+
+            pendingStart = false;
+            StartFight(pendingPlayer);
+            return;
+        }
+
         if (!fightActive) return;
 
         FloatDrone();

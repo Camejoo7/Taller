@@ -72,7 +72,12 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 - [ ] Stage 2 — nivel rústico + `StageData` placeholder (print, variables, tipos)
   - [x] Mapa armado (por Kevin), cámara `CameraFollow` igual que Stage 1, arma que el jugador agarra en el garage (`WeaponPickup` + animaciones armadas vía `PJ_Armed.overrideController`).
   - [x] Primer encuentro Code Blaster funcionando: `Assets/Data/Encuentros/Stage2_Print_01.asset` ("¿Cuál de estas líneas imprime Hola?"), trigger en x=-27.6, dron en (-26, 0.6).
-  - [ ] Falta: `StageData` propio del Stage 2, diálogos de Kira (la escena todavía no tiene `DialogueManager` ni `DialogueCanvas`), más encuentros, y **agregar la escena a Build Settings** (hoy no está).
+  - [x] **Diálogos**: `Assets/Data/Stage2.asset` con intro (6 líneas), media (5, la explicación del arma) y cierre (1). El `DialogueCanvas`, Kira y el `EventSystem` se **copiaron del Stage 1** para no rehacer el restilado. Kira sigue al jugador desde el arranque (`KiraFollower.followFromStart`), porque en esta stage ya viene con él.
+  - [x] **Vida y enemigos**: tres corazones, `PlayerHealth` (que ahora sí contesta el `IPlayerDamageable` del Code Blaster), y tres `DroneEnemy` en los marcadores que dejó Kevin. Los drones se acercan, avisan, embisten y se alejan; se matan a tiros con `EnemyHealth`.
+  - [x] **Arma visible**: sprite 7 del pack `Assets/ASSETS/Armas`, flotando en la puerta del garage, con diálogo de Kira al levantarla.
+  - [ ] Falta: más encuentros Code Blaster (hoy hay uno solo), pantalla/flujo de fin de stage, y **agregar la escena a Build Settings** (hoy no está, así que no se llega jugando).
+
+> **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
 - [ ] Stage 3 — nivel rústico + `StageData` placeholder (condicionales)
 - [ ] Stage 4 — nivel rústico + `StageData` placeholder (bucles)
 - [ ] Stage 5 — nivel rústico + `StageData` placeholder (listas y cadenas)
