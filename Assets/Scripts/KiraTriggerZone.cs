@@ -10,7 +10,10 @@ public class KiraTriggerZone : MonoBehaviour
         if (!triggered && other.CompareTag("Player"))
         {
             triggered = true;
-            PlayerMovement player = other.GetComponent<PlayerMovement>();
+            // InParent y no GetComponent: el hijo "Visual" del jugador también
+            // tiene el tag Player, y si fuera él quien entra al trigger, el
+            // congelado del diálogo no se aplicaría.
+            PlayerMovement player = other.GetComponentInParent<PlayerMovement>();
             dialogueManager.StartDialogue(DialogueSegment.Intro, player);
         }
     }

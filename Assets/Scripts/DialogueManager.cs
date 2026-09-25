@@ -53,6 +53,10 @@ public class DialogueManager : MonoBehaviour
     private float autoAdvanceTimer;
     private PlayerMovement playerMovement;
 
+    /// <summary>Si Kira está hablando ahora mismo. Lo consulta el combate para
+    /// no arrancar una pelea encima de un diálogo.</summary>
+    public bool IsActive => dialogueActive;
+
     private bool FreezesPlayer => segment == DialogueSegment.Intro || segment == DialogueSegment.Outro;
     private bool AllowsManualAdvance => segment == DialogueSegment.Intro;
     private bool AnimatesKiraEntrance =>
