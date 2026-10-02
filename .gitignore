@@ -91,3 +91,11 @@ ehthumbs.db
 # Unity MCP
 # ---------------------------------------------------
 ~UnityDirMonSyncFile~*
+
+# ---------------------------------------------------
+# Basura de los packs descargados
+# ---------------------------------------------------
+# Los __MACOSX son resource forks de macOS: adentro solo hay archivos ._*
+# (ya ignorados arriba), pero Unity igual les genera un .meta a las carpetas.
+__MACOSX/
+__MACOSX.meta
