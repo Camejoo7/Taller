@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Lab_Print_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Lab_Print_01
+  concept: print
+  stageNumber: 2
+  prompt: "La consola est\xE1 muerta. Escrib\xED la funci\xF3n que imprime texto
+    en pantalla."
+  codeBefore: 
+  codeAfter: ("Hola")
+  blankWidth: 5
+  acceptedAnswers:
+  - print
+  caseSensitive: 1
+  expectedOutput: Hola
+  kiraOnSuccess: "Ah\xED est\xE1. Esa l\xEDnea la ejecutaste vos, no la elegiste
+    de una lista."
+  knownMistakes:
+  - answer: Print
+    pythonError: 'NameError: name ''Print'' is not defined'
+    kiraSays: "Python distingue may\xFAsculas de min\xFAsculas. 'Print' y 'print'
+      son dos nombres distintos, y el de la may\xFAscula no existe."
+  - answer: printf
+    pythonError: 'NameError: name ''printf'' is not defined'
+    kiraSays: "Eso es de C. En Python es m\xE1s corto: sin la f."
+  - answer: echo
+    pythonError: 'NameError: name ''echo'' is not defined'
+    kiraSays: Eso es de la terminal del sistema operativo, no de Python.
+  - answer: write
+    pythonError: 'NameError: name ''write'' is not defined'
+    kiraSays: Casi. 'write' existe, pero es para escribir en archivos. Para la pantalla
+      es otra.
+  - answer: PRINT
+    pythonError: 'NameError: name ''PRINT'' is not defined'
+    kiraSays: "Todo en min\xFAscula. Python es quisquilloso con eso y no te lo va
+      a perdonar nunca."
+  fallbackError: 'NameError: name ''{0}'' is not defined'
+  fallbackKiraSays: "Esa funci\xF3n no existe. La que escribe en pantalla tiene cinco
+    letras y arranca con p."
