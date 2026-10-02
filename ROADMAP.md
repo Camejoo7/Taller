@@ -2,11 +2,23 @@
 
 > Generado a partir de una sesión de planificación con Kevin. Actualizalo a medida que el proyecto avanza — es un mapa, no una ley. Si algo cambia, editá este archivo y contáselo a Claude Code al arrancar la sesión siguiente.
 
+## 🔄 CAMBIO DE PLAN — 02/10/2026: no hay 6 stages, hay UN mapa grande
+
+**Decisión de Kevin, al cierre de la sesión del 02/10:** se cancelan las stages 3 a 6. En vez de seis niveles chicos, uno por concepto, el **Stage 2 pasa a ser un mapa gigante con muchas terminales repartidas**, y entre todas cubren los conceptos que iban a estar desparramados en las seis stages.
+
+Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas terminales por el mapa, para aprender todos los conceptos que se iban a dar en todos los stage... así que vamos a estar reutilizando esas terminales"*.
+
+**Por qué cierra bien:** la terminal ya es una pieza reutilizable por diseño — cada `CodeTerminal` apunta a un `TerminalChallenge` (ScriptableObject) y dispara un `UnityEvent onSolved`. Agregar un ejercicio nuevo es crear un `.asset` y poner una consola, no programar nada. El sistema estaba listo para esto antes de que se decidiera.
+
+**Qué queda de pie:** Stage 1 sigue siendo la intro (historia, movimiento, dron kamikaze, salida). Stage 2 se convierte en el juego.
+
+**Qué se cae:** las stages 3-6, el selector de niveles con gating entre stages, y todo lo que decía "una stage por concepto". El gating ahora lo hacen **las puertas dentro del mismo mapa**: cada terminal abre la suya. Eso ya está probado y es mejor que un menú, porque el progreso se ve en el mundo.
+
+**La consecuencia técnica más importante, y lo primero a hacer la sesión que viene:** hoy la consola del Stage 2 es un objeto armado a mano en la escena (`ConsolaNexcorp` = terminal animado + `PromptE` + `CodeTerminal`), más la `PuertaBlindada` y el `SectorSinEnergia` por separado. Si van a ser muchas, **hay que convertir ese conjunto en prefab** para poder soltarlo y solo asignar el `TerminalChallenge` y el `onSolved`. Armar la segunda a mano ya sería trabajo tirado.
+
 ## 📍 Dónde estamos ahora
 
-**Fase actual: Fase 2 — Pasada horizontal** (Fase 0 cerrada; Stage 2 arrancado)
-
-> La Fase 1 (Stage 1 de punta a punta) quedó pendiente a propósito: Kevin armó primero el mapa del Stage 2 y ahí se probó el Code Blaster. El molde ya existe y funciona, así que volver al Stage 1 es ahora trabajo de contenido, no de sistemas.
+**Fase actual: Fase 2 — El mapa grande del Stage 2** (Fase 0 cerrada; Stage 1 jugable)
 
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
@@ -15,12 +27,13 @@ Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase act
 | Decisión | Resultado |
 |---|---|
 | Plazo | 2 meses reales, con meta interna de avanzar fuerte las primeras 3-4 semanas |
-| Densidad por stage | Media (10-20 min), flexible — algunos pueden ser más cortos si cumplen el objetivo educativo |
-| Prioridad de trabajo | Horizontal primero: avanzar un poco en las 6 stages, después pulir a fondo |
-| Relación enemigos-aprendizaje | Mezclada, vía la mecánica "Code Blaster" (ver abajo), con fallback simple si se complica |
+| ~~Cantidad de stages~~ | **Cambiado el 02/10/2026**: ya no son 6 stages. Stage 1 (intro) + Stage 2 (un mapa grande con todas las terminales). Ver arriba |
+| Densidad | Stage 2 tiene que dar para toda la currícula: print/variables/tipos, condicionales, bucles, listas/cadenas y funciones |
+| Prioridad de trabajo | Ancho de mapa primero: ir extendiendo el Stage 2 zona por zona, cada una con su terminal y su puerta |
+| ~~Relación enemigos-aprendizaje~~ | El Code Blaster quedó **congelado** (ver abajo). Hoy son dos cosas separadas: los drones son combate, las terminales son el aprendizaje |
 | Combate | Con disparo / proyectiles |
 | Audio | Ambiente + efectos, pero al final — baja prioridad |
-| Progresión | Selector de niveles lineal-gateado (no se puede saltar sin completar el anterior). Sin guardado de sesión |
+| Progresión | **Puertas dentro del mismo mapa**: cada terminal abre la suya. Sin selector de niveles y sin guardado de sesión |
 | Plataforma | Build standalone de Windows, PC/laptop únicamente. Nada de web |
 
 ## La mecánica central: Code Blaster — ⚠️ CONGELADA (02/10/2026)
@@ -82,37 +95,37 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 
 **Objetivo:** que el Stage 1 sea el molde que después se duplica para el resto. Stage 1 enseña información general de Python, no sintaxis todavía, así que las preguntas de Code Blaster acá pueden ser conceptuales ("¿qué es Python?", "¿para qué sirve programar?") — más simples de escribir que las técnicas de las stages siguientes. Buen lugar para probar el sistema antes de que el contenido se ponga más denso.
 
-## Fase 2 — Pasada horizontal: versión rústica de Stages 2 a 6
+## Fase 2 — El mapa grande del Stage 2
 
-- [ ] Stage 2 — nivel rústico + `StageData` placeholder (print, variables, tipos)
+- [ ] Stage 2 — el juego entero: un mapa que se va extendiendo, con una terminal por concepto
   - [x] Mapa armado (por Kevin), cámara `CameraFollow` igual que Stage 1, arma que el jugador agarra en el garage (`WeaponPickup` + animaciones armadas vía `PJ_Armed.overrideController`).
   - [x] ~~Primer encuentro Code Blaster~~ → **reemplazado por la terminal** (02/10/2026): consola en x −27,8 y puerta blindada en x −27,0, saliendo del garage. Ver "La mecánica educativa está en revisión" más abajo.
   - [x] **Diálogos**: `Assets/Data/Stage2.asset` con intro (6 líneas), media (5, la explicación del arma) y cierre (1). El `DialogueCanvas`, Kira y el `EventSystem` se **copiaron del Stage 1** para no rehacer el restilado. Kira sigue al jugador desde el arranque (`KiraFollower.followFromStart`), porque en esta stage ya viene con él.
   - [x] **Vida y enemigos**: tres corazones, `PlayerHealth` (que ahora sí contesta el `IPlayerDamageable` del Code Blaster), y tres `DroneEnemy` en los marcadores que dejó Kevin. Los drones se acercan, avisan, embisten y se alejan; se matan a tiros con `EnemyHealth`.
   - [x] **Arma visible**: sprite 7 del pack `Assets/ASSETS/Armas`, flotando en la puerta del garage, con diálogo de Kira al levantarla.
   - [x] **En Build Settings**: `Stage2` quedó en el índice 2 (02/10/2026), así que ya se llega jugando desde el Stage 1 por la puerta `Exit`.
-  - [ ] Falta: más encuentros Code Blaster (hoy hay uno solo) y pantalla/flujo de fin de stage.
+  - [ ] **Prefabear el conjunto terminal + puerta + cortina** ← *lo primero de la próxima sesión*. Hoy están armados a mano en la escena. Si van a ser muchos, soltar un prefab y asignar solo el `TerminalChallenge` y el `onSolved` es la diferencia entre agregar un ejercicio en dos minutos o en media hora.
+  - [ ] Extender el mapa con una zona nueva por concepto (ver la tabla de abajo), cada una con su terminal y su puerta.
+  - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira.
+  - [ ] Pantalla / flujo de final del mapa.
 
 > **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
-- [ ] Stage 3 — nivel rústico + `StageData` placeholder (condicionales)
-- [ ] Stage 4 — nivel rústico + `StageData` placeholder (bucles)
-- [ ] Stage 5 — nivel rústico + `StageData` placeholder (listas y cadenas)
-- [ ] Stage 6 — nivel rústico + `StageData` placeholder (funciones)
-- [ ] **Pipeline de tilemap para Stages 2-6** (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
+- [ ] **Pipeline de tilemap para el mapa grande** (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
 
-Con el molde de Stage 1 probado, se arma una versión mínima jugable de cada stage restante: nivel con mapa ASCII convertido a tilemap, un par de enemigos, un `StageData` con contenido placeholder (2-3 preguntas alcanza por ahora).
+El objetivo de esta fase es que el mapa **se pueda jugar de punta a punta**, aunque cada zona tenga poco contenido todavía. Se crece zona por zona: mapa → terminal → puerta → siguiente zona.
 
-El objetivo de esta fase NO es que quede pulido — es que el juego completo exista y se pueda jugar de principio a fin, aunque cada stage tenga poco contenido todavía.
+Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** de una línea de Python, y la ficción de cada zona tiene que justificar por qué esa línea abre esa puerta:
 
-Mapeo rápido de concepto → tipo de pregunta Code Blaster por stage:
+| Zona | Concepto | Qué escribe el jugador | Hecho |
+|---|---|---|---|
+| 1 | print | `print("ABRIR")` — la cerradura vieja obedece al comando que le mandes | ✅ `Stage2_Print_01.asset` |
+| 2 | variables y tipos | Guardar un valor y usarlo después (una clave, un código de acceso) | ⬜ |
+| 3 | condicionales | Un `if` que decide si la puerta se abre según una lectura del sensor | ⬜ |
+| 4 | bucles | Un `for`/`while` que repita algo N veces — reiniciar N nodos, recorrer una lista de puertas | ⬜ |
+| 5 | listas y cadenas | Sacar un elemento de una lista o un pedazo de una cadena (un código escondido en una trama) | ⬜ |
+| 6 | funciones | Definir una función y llamarla — "la cerradura necesita que le enseñes a abrirse" | ⬜ |
 
-| Stage | Concepto | Ejemplo de pregunta Code Blaster |
-|---|---|---|
-| 2 | print, variables, tipos | "¿Cuál imprime el texto correctamente?" — opciones con comillas mal puestas, `print` mal escrito |
-| 3 | condicionales | "¿Cuál es la sintaxis correcta de un if?" — falta `:`, indentación mal, `=` en vez de `==` |
-| 4 | bucles | "¿Cuál bucle imprime del 1 al 5?" — variantes de `range()` mal usadas |
-| 5 | listas y cadenas | "¿Cómo accedés al primer elemento?" — índices mal, sintaxis de slice mal |
-| 6 | funciones | "¿Cuál define la función correctamente?" — falta `def`, paréntesis mal, falta `:` |
+> **Lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Está escrito más abajo y vale para cada terminal nueva: no alcanza con un cartel de "¡Correcto!". La puerta que tiembla, las luces que se encienden, el sector que recupera la energía — eso es lo que no se puede hacer en una página web. Si una terminal nueva no tiene una consecuencia física, le falta la mitad.
 
 ## La mecánica educativa está en revisión (02/10/2026)
 
@@ -177,6 +190,30 @@ El objeto del mundo era un placeholder feo: un `Square.png` de Unity teñido de 
 
 > **El bug del jugador tapado era de orden de dibujo, no de posición.** `Player/Visual` estaba en la capa `Personaje` con orden **0**, igual que la base de la consola, y la pantalla en **1** — o sea, por delante del jugador. Se subió el jugador a **orden 10 en `Player.prefab`**, así que vale para las dos stages y cualquier objeto nuevo que se ponga en orden 0 queda detrás de él solo. Es la regla a seguir de acá en más: **props del mundo en orden 0 o menos, jugador en 10, carteles de interfaz en 20+.**
 
+### Kira deja de parecer un gif pegado (02/10/2026)
+
+Kevin: *"el movimiento de KIRA es muy estático, se mueve sí, pero siempre en la misma posición, parece un gif pegado en ese punto de la pantalla"*. Tenía razón y había tres causas, las tres en `KiraFollower`:
+
+- **El offset era fijo `(-1, 1)` y nunca cambiaba de lado.** Siempre a la izquierda: yendo a la derecha iba atrás, pero yendo a la izquierda iba **adelante**, guiando al jugador.
+- **`followSpeed` era 3 y el jugador corre a 3.** Idénticos, así que nunca se quedaba atrás: lo acompañaba clavada en el mismo punto de pantalla.
+- **Bug: nunca miraba para el otro lado.** El flip era `if (jugador.x > kira.x)`, pero como el offset la ponía siempre a la izquierda esa condición daba true *siempre*; el `else` no corría nunca y Kira miraba a la derecha toda la partida.
+
+Reescrito. Lo que la hace parecer viva no es moverse más, es **llegar tarde**:
+
+| | qué hace |
+|---|---|
+| `smoothTime` 0,38 | `SmoothDamp` en vez de `MoveTowards`: acelera, se queda atrás al correr, sobrepasa un poco y se asienta. En 0 vuelve a ser un sprite clavado |
+| `sideSwitchSpeed` 2,2 | Se pone siempre del lado contrario al que mira el jugador, y cruza con pachorra cuando se da vuelta |
+| `crossLift` 0,35 | Mientras cruza se levanta, así le pasa **por arriba** haciendo un arco en vez de atravesarlo |
+| `bankAngle` 16° | Se tumba hacia donde va. Un dron que nunca se inclina se lee como calcomanía |
+| `driftAmount` 0,1 | Dos senos de frecuencias que no son múltiplos entre sí (0,83 y 1,17), así el ciclo tarda muchísimo en repetirse y no se lee como loop |
+
+`followSpeed` cambió de significado: ahora es el **techo** de velocidad del `SmoothDamp`, y tiene que ser mayor que la del jugador o no lo alcanza nunca. Se subió de 3 a **8** en las dos escenas.
+
+> **Ojo con la inclinación y el espejado:** Kira se da vuelta con `localScale.x = ±1`. Al espejar con escala negativa, una rotación se ve al revés, así que el ángulo se niega cuando mira a la izquierda. Si no, se tumba para el lado contrario al que viaja y queda rarísimo.
+
+Verificado en Play mode: yendo a la derecha queda a la izquierda mirando a la derecha; mandándolo a la izquierda **cruza** a la derecha y da vuelta la mirada. Agarrada a mitad del cruce estaba en `rel x = −0,15` (casi encima del jugador), a `1,19` de alto en vez de 1,0 (el arco) e inclinada −8,3°.
+
 ### El sector de atrás de la puerta está sin energía (02/10/2026)
 
 Kevin notó que desde la consola se ve entero el pasillo que sigue, y que eso le baja el impacto a abrir la puerta. En vez de solo taparlo, se hizo que **el sector esté sin energía**: resolver la terminal ya no abre una puerta, **prende el sector**. La luz entra barriendo de izquierda a derecha y la puerta se mete.
@@ -197,13 +234,15 @@ Kevin: *"están salados, un poquito más lento el ataque quizás"*. Tocado en `A
 | | antes | ahora | por qué |
 |---|---|---|---|
 | `pauseBeforeLunge` | 0,35 | **0,6** | El aviso. Una persona tarda ~0,25 s en reaccionar, así que 0,35 dejaba 0,1 s útiles; ahora quedan 0,35 s, que a velocidad 5 son 1,75 unidades para correrse |
-| `lungeSpeed` | 5 | **3,8** | Embestía **tan rápido como corre el jugador** (5), así que no se podía zafar corriendo |
-| `lungeDuration` | 0,45 | **0,4** | Avanza 1,52 contra un `lungeRange` de 1,6: te alcanza si te quedaste, pero ya no te barre media pantalla si te corriste |
+| `lungeSpeed` | 5 | **2,5** | Embestía **más rápido de lo que corre el jugador**, así que no se podía zafar corriendo |
+| `lungeDuration` | 0,45 | **0,55** | Avanza 1,375. Para tocar a un jugador quieto necesita 1,285 (`lungeRange` 1,6 menos los radios de los dos colliders, 0,19 + 0,125): **llega justo**. Un jugador que corre hace 1,65 en ese tiempo, o sea que **escapa** |
 | `retreatDuration` | 0,8 | **1,3** | El respiro para disparar. Estaba **por debajo** del 1,1 que traía el script, que es justo lo que su propio comentario advertía que no se bajara |
 | `approachSpeed` | 1,6 | **1,3** | Menos presión entre ataques |
 | `activationRange` | 6 | **5** | Se despiertan menos drones a la vez |
 
 Sin tocar: `contactDamage` 1, vida del dron 3, `invulnerableTime` 1,2 del jugador.
+
+> **⚠️ El jugador corre a 3 y salta con `jumpForce` 6,7 — NO a 5 y 10.** Esos son los valores por defecto que están escritos en `PlayerMovement.cs`, pero el `Player.prefab` tiene otros serializados, y el serializado es el que manda. En la primera pasada de esta tanda se tunearon los drones contra el 5 y quedaron mal (la embestida a 3,8 seguía siendo más rápida que el jugador). Antes de balancear cualquier cosa contra la velocidad del jugador, **leer el valor del prefab, no el del script**. Con gravedad ×3, `jumpForce` 6,7 da un salto de ~0,76 de alto.
 
 **Además, el ataque ahora se ve venir.** El único aviso era que el dron se frenaba, y a este tamaño eso no se nota: el ataque parecía salir de la nada. Ahora parpadea en rojo (`telegraphColor`) durante la pausa. Solo le toca el color mientras avisa y un frame al salir, para no pisarle a `EnemyHealth` el parpadeo blanco del balazo. Si Kevin lo quiere más evidente, es ese campo del Inspector.
 
@@ -211,7 +250,7 @@ Sin tocar: `contactDamage` 1, vida del dron 3, `invulnerableTime` 1,2 del jugado
 
 Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una pared no salta, o salta un poquito pero queda pegado; para saltar la primera pared tengo que quedarme quieto, saltar y moverme en el aire"*. Eran **dos problemas distintos** encimados, los dos arreglados en `Player.prefab`, así que valen para las dos stages.
 
-1. **La fricción, que era la causa principal.** El `CapsuleCollider2D` del jugador no tenía `PhysicsMaterial2D`, así que usaba la fricción por defecto de **0,4**. Como `Update()` reescribe `linearVelocity.x` todos los frames, tener la tecla apretada contra una pared genera una fuerza normal constante, y la fricción se come la velocidad vertical del salto. Medido en Stage 2 contra una pared de 0,64 de alto, con salto teórico de 1,70: **con fricción 0,4 el salto subía 0,187 unidades; con 0 sube 0,711** (lo que tarda en pasar la pared y caer encima). Nuevo asset `Assets/Physics/Jugador.physicsMaterial2D` con fricción 0 y rebote 0, asignado al collider del prefab. Poner la fricción en cero es seguro justamente porque el movimiento setea la velocidad a mano: el jugador no patina, porque con `moveX` en 0 la velocidad se pone en 0 explícitamente.
+1. **La fricción, que era la causa principal.** El `CapsuleCollider2D` del jugador no tenía `PhysicsMaterial2D`, así que usaba la fricción por defecto de **0,4**. Como `Update()` reescribe `linearVelocity.x` todos los frames, tener la tecla apretada contra una pared genera una fuerza normal constante, y la fricción se come la velocidad vertical del salto. Medido en Stage 2 contra una pared de 0,64 de alto, con salto libre de ~0,76: **con fricción 0,4 el salto subía 0,187 unidades; con 0 sube 0,711** (lo que tarda en pasar la pared y caer encima). Nuevo asset `Assets/Physics/Jugador.physicsMaterial2D` con fricción 0 y rebote 0, asignado al collider del prefab. Poner la fricción en cero es seguro justamente porque el movimiento setea la velocidad a mano: el jugador no patina, porque con `moveX` en 0 la velocidad se pone en 0 explícitamente.
 
 2. **La detección de piso borraba su propio resultado.** `OnCollisionStay2D` se llama **una vez por cada collider** que te toca, y el código terminaba en `isGrounded = false` si *ese* collider no era piso. Estando parado en el piso y tocando un collider aparte — la **puerta blindada** o un **dron** — el callback del segundo borraba el piso que había informado el primero, y el salto no salía. (Contra las paredes del nivel no pasaba, porque piso y paredes son el mismo `CompositeCollider2D`.) Ahora los callbacks solo **suman** a `groundedThisStep`, y `FixedUpdate` publica el resultado y arranca de cero — así ningún collider puede pisar lo que informó otro. Se borró el `OnCollisionExit2D`, que ponía `isGrounded = false` sin fijarse en nada.
 
@@ -225,17 +264,19 @@ Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una par
 
 > **Choque conocido:** la terminal usa ESC para salir y el `PauseMenu` también usa ESC para pausar. En el `Laboratorio` no hay `PauseMenu` así que no se nota, pero si la terminal se lleva a una stage real hay que resolverlo.
 
-## Fase 3 — Selector de niveles y flujo completo
+## Fase 3 — Flujo completo
 
-- [ ] Menú de selección de stage con gating (`nextStage` de `StageData` + variable `maxUnlockedStage` en un singleton `DontDestroyOnLoad`, sin persistencia en disco)
-- [ ] Playtest completo de punta a punta, Stage 1 a 6, anotando qué se siente mal
+- [ ] Playtest de punta a punta: Menú → Stage 1 → Stage 2 entero → final, anotando qué se siente mal
+- [ ] Pantalla de resumen al terminar, leyendo del `ScoreTracker` (el `FirstTryRate` es el indicador que sostiene la fundamentación)
+
+> El **selector de niveles con gating quedó cancelado** junto con las stages 3-6. El gating lo hacen las puertas del mapa: no se puede avanzar sin resolver la terminal de la zona. Es mejor que un menú porque el progreso se ve en el mundo en vez de en una lista.
 
 ## Fase 4 — Pulido profundo, por tandas
 
-- [ ] Stages 2-3: diálogos reales, más preguntas Code Blaster, ajuste de dificultad, level design cuidado
-- [ ] Stages 4-6: lo mismo
+- [ ] Zonas 1-3 del mapa: diálogos reales de Kira, errores previstos bien escritos en cada `TerminalChallenge`, ajuste de dificultad, level design cuidado
+- [ ] Zonas 4-6: lo mismo
 
-Orden sugerido: 2-3 primero (conceptos más simples, valida el patrón de pulido más rápido), después 4-6.
+Orden sugerido: las primeras zonas antes (conceptos más simples, valida el patrón de pulido más rápido).
 
 ## Fase 5 — Audio y remate final
 
@@ -247,11 +288,14 @@ Orden sugerido: 2-3 primero (conceptos más simples, valida el patrón de pulido
 ## Qué cortar primero si el tiempo aprieta (en este orden)
 
 1. Audio — ya está marcado como baja prioridad.
-2. Variedad de enemigos por stage — quedarse con un tipo reskineado.
-3. Cantidad de preguntas Code Blaster por stage — bajar a lo mínimo que cubra el concepto.
-4. La mecánica mezclada Code Blaster completa → fallback al modo separado (combate simple + `fallbackQuizzes` en zona segura).
-5. Selector de niveles con gating → linealizar directamente, sin menú de selección.
+2. Variedad de enemigos — quedarse con un tipo reskineado.
+3. **Zonas del mapa**: con menos conceptos cubiertos el juego sigue siendo jugable y defendible. Cortar por el final (funciones, listas) y quedarse con print, variables y condicionales, que es lo que un noveno año usa más.
+4. Decoración y level design de las zonas tardías — que sean corredores simples.
+
+> Ojo que esta lista mejoró con el cambio de plan: antes, cortar una stage significaba cortar una escena entera con todo su armado. Ahora cortar es **no agregar una zona más al mapa**, y el juego sigue cerrando solo. Es mucho menos riesgoso llegar justo de tiempo.
 
 ## Nota sobre el cronograma de 2 meses
 
-Si se empuja fuerte, las Fases 0 a 3 (fundaciones + Stage 1 + pasada rústica de todo + selector) entran cómodo en las primeras 3-4 semanas — eso es el objetivo original de "un mes". Eso deja las 4-5 semanas restantes como colchón real para las Fases 4 y 5, que es donde el juego pasa de "funciona" a "es bueno de jugar". Ese colchón es lo que evita llegar corriendo al final.
+Reescrita el 02/10/2026 con el cambio de plan. Antes esto decía "pasada rústica de las 6 stages + selector". Ahora el camino es más corto y más seguro: **el juego ya existe de punta a punta** (menú → Stage 1 → Stage 2 → terminal → puerta). Lo que falta es ancho, no sistemas.
+
+Eso quiere decir que a partir de acá casi todo el trabajo es **contenido** — zonas de mapa y `TerminalChallenge` — que es trabajo predecible y que se puede cortar en cualquier momento sin romper nada. El riesgo de llegar con algo a medio terminar bajó muchísimo.

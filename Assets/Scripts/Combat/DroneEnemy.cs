@@ -23,18 +23,22 @@ public class DroneEnemy : MonoBehaviour
     [Header("Velocidades")]
     public float approachSpeed = 1.3f;
 
-    [Tooltip("Tiene que quedar POR DEBAJO de PlayerMovement.speed (5). Si " +
-             "embiste tan rápido como corre el jugador, no hay forma de " +
-             "zafar corriendo y la única salida es saltar de memoria.")]
-    public float lungeSpeed = 3.8f;
+    [Tooltip("Tiene que quedar POR DEBAJO de PlayerMovement.speed, que en este " +
+             "proyecto es 3 — OJO que el valor por defecto del script dice 5, " +
+             "pero el serializado del prefab es 3. Si embiste más rápido que " +
+             "eso no hay forma de zafar corriendo y la única salida es saltar " +
+             "de memoria.")]
+    public float lungeSpeed = 2.5f;
 
     public float retreatSpeed = 3f;
 
     [Header("Tiempos")]
-    [Tooltip("Por lo que dura la embestida avanza lungeSpeed × esto. Conviene " +
-             "que dé un poco MENOS que lungeRange: así te alcanza si te " +
-             "quedaste, pero no te barre media pantalla si te corriste.")]
-    public float lungeDuration = 0.4f;
+    [Tooltip("Avanza lungeSpeed × esto. Tiene que alcanzar para TOCAR a un " +
+             "jugador quieto: con lungeRange 1,6 y los radios de los dos " +
+             "colliders (0,19 + 0,125) hay que recorrer 1,285. A 2,5 × 0,55 " +
+             "da 1,375, que llega justo. Si se baja de ahí el dron no pega " +
+             "nunca y deja de ser una amenaza.")]
+    public float lungeDuration = 0.55f;
 
     [Tooltip("Cuánto se aleja después de embestir. Es el respiro del jugador " +
              "para disparar o correrse: si se baja mucho, el dron se pega encima " +

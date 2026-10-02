@@ -45291,9 +45291,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 377bc62e3ba348d4a88fb63330e66a6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KiraFollower
-  followSpeed: 3
   offset: {x: -1, y: 1}
+  followSpeed: 8
   followFromStart: 1
+  smoothTime: 0.38
+  sideSwitchSpeed: 2.2
+  crossLift: 0.35
+  bankAngle: 16
+  bankAtSpeed: 4
+  driftAmount: 0.1
 --- !u!95 &309991024
 Animator:
   serializedVersion: 7
