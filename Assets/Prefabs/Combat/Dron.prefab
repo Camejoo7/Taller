@@ -197,9 +197,9 @@ MonoBehaviour:
   activationRange: 5
   lungeRange: 1.6
   approachSpeed: 1.3
-  lungeSpeed: 3.8
+  lungeSpeed: 2.5
   retreatSpeed: 3
-  lungeDuration: 0.4
+  lungeDuration: 0.55
   retreatDuration: 1.3
   pauseBeforeLunge: 0.6
   telegraphColor: {r: 1, g: 0.35, b: 0.3, a: 1}
