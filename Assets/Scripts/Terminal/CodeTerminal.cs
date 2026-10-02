@@ -235,6 +235,7 @@ public class CodeTerminal : MonoBehaviour
             yield return StartCoroutine(ui.TypeLine(challenge.expectedOutput, ui.OutputColor, outputCharDelay));
 
         ui.SayKira(challenge.kiraOnSuccess);
+        ui.ShowStamp(true);
 
         record.attempts = attempts;
         record.seconds = Time.time - startedAt;
@@ -265,6 +266,7 @@ public class CodeTerminal : MonoBehaviour
 
         yield return StartCoroutine(ui.TypeLine(error, ui.ErrorColor, outputCharDelay));
         ui.SayKira(kira);
+        ui.ShowStamp(false);
 
         yield return new WaitForSeconds(0.3f);
 

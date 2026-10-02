@@ -21,20 +21,35 @@ public class DroneEnemy : MonoBehaviour
     public float lungeRange = 1.6f;
 
     [Header("Velocidades")]
-    public float approachSpeed = 1.4f;
-    public float lungeSpeed = 5f;
+    public float approachSpeed = 1.3f;
+
+    [Tooltip("Tiene que quedar POR DEBAJO de PlayerMovement.speed (5). Si " +
+             "embiste tan rápido como corre el jugador, no hay forma de " +
+             "zafar corriendo y la única salida es saltar de memoria.")]
+    public float lungeSpeed = 3.8f;
+
     public float retreatSpeed = 3f;
 
     [Header("Tiempos")]
-    public float lungeDuration = 0.45f;
+    [Tooltip("Por lo que dura la embestida avanza lungeSpeed × esto. Conviene " +
+             "que dé un poco MENOS que lungeRange: así te alcanza si te " +
+             "quedaste, pero no te barre media pantalla si te corriste.")]
+    public float lungeDuration = 0.4f;
 
     [Tooltip("Cuánto se aleja después de embestir. Es el respiro del jugador " +
              "para disparar o correrse: si se baja mucho, el dron se pega encima " +
              "y no hay forma de reaccionar.")]
-    public float retreatDuration = 1.1f;
+    public float retreatDuration = 1.3f;
 
-    [Tooltip("Instante quieto antes de tirarse, que es el aviso para esquivar.")]
-    public float pauseBeforeLunge = 0.35f;
+    [Tooltip("Instante quieto antes de tirarse, que es el aviso para esquivar. " +
+             "Una persona tarda ~0,25 s en reaccionar, así que de acá hay que " +
+             "descontar eso para saber cuánto tiempo útil queda de verdad.")]
+    public float pauseBeforeLunge = 0.6f;
+
+    [Tooltip("De qué color se pone mientras avisa. Que el dron solo se frene " +
+             "no alcanza como aviso: a este tamaño no se nota, y el ataque " +
+             "parece salir de la nada.")]
+    public Color telegraphColor = new Color(1f, 0.35f, 0.3f, 1f);
 
     [Header("Daño")]
     public int contactDamage = 1;
@@ -48,6 +63,9 @@ public class DroneEnemy : MonoBehaviour
     private Animator animator;
     private Transform player;
     private PlayerHealth playerHealth;
+    private SpriteRenderer sprite;
+    private Color baseColor = Color.white;
+    private bool wasTelegraphing;
 
     private State state = State.Idle;
     private float stateUntil;
@@ -58,6 +76,8 @@ public class DroneEnemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        if (sprite != null) baseColor = sprite.color;
 
         // El hijo "Visual" del jugador también tiene el tag Player, así que
         // buscamos el componente y subimos a su GameObject en vez de confiar
@@ -90,6 +110,28 @@ public class DroneEnemy : MonoBehaviour
 
         if (animator != null)
             animator.SetBool("isMoving", state == State.Approach || state == State.Lunge || state == State.Retreat);
+
+        Telegraph();
+    }
+
+    /// <summary>
+    /// Lo pinta mientras está por tirarse. Solo le toca el color durante el
+    /// aviso y un frame al salir: el resto del tiempo lo deja en paz para no
+    /// pisarle a <see cref="EnemyHealth"/> el parpadeo blanco del balazo.
+    /// </summary>
+    void Telegraph()
+    {
+        if (sprite == null) return;
+
+        bool avisando = state == State.Lunge && Time.time < stateUntil - lungeDuration;
+
+        if (avisando)
+            sprite.color = Color.Lerp(baseColor, telegraphColor,
+                                      Mathf.PingPong(Time.time * 9f, 1f));
+        else if (wasTelegraphing)
+            sprite.color = baseColor;
+
+        wasTelegraphing = avisando;
     }
 
     void TickIdle(float distance)
