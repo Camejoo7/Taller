@@ -194,14 +194,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a28924e13261a74bbb80b9079cee140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DroneEnemy
-  activationRange: 6
+  activationRange: 5
   lungeRange: 1.6
-  approachSpeed: 1.6
-  lungeSpeed: 5
+  approachSpeed: 1.3
+  lungeSpeed: 3.8
   retreatSpeed: 3
-  lungeDuration: 0.45
-  retreatDuration: 0.8
-  pauseBeforeLunge: 0.35
+  lungeDuration: 0.4
+  retreatDuration: 1.3
+  pauseBeforeLunge: 0.6
+  telegraphColor: {r: 1, g: 0.35, b: 0.3, a: 1}
   contactDamage: 1
   bobAmount: 0.1
   bobSpeed: 3

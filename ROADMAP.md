@@ -151,6 +151,76 @@ Kevin aprobó la terminal y pidió llevarla al Stage 2 sacando los fragmentos. H
 - **La puerta abre animando los postigos** (`PoweredDoor.openFrames`, frames 0→1→2 de `Entry.png`) en vez de deslizarse: ahí no hay techo donde meterla. Las luces se apagan al terminar de abrir, porque la puerta se retrae del todo y si no quedaban dos cuadraditos verdes flotando en el aire.
 - El collider de la puerta quedó en 0,55 × 1,03, **exactamente lo que marcó Kevin**. El dibujo es cuadrado (64×64) así que para no deformar las rayas de peligro se escaló parejo: se ve más ancho que el marcador aunque bloquee lo mismo.
 
+### La pantalla de la terminal, vestida con el pack "Consola" (02/10/2026)
+
+El `CodeTerminalUI` dibujaba el monitor por código: un rectángulo verde con cuatro barras de marco. Ahora el texto vive **adentro de un monitor dibujado** (`ASSETS/Consola/1 Monitor/2.png`), que es justo lo que separa "un juego" de "una página web" según la regla de diseño de más arriba.
+
+- **El sprite y el recorte del vidrio son campos del Inspector.** `monitorSprite` + `glassRect` (xMin, yMin, xMax, yMax en fracciones 0-1). Cambiar de monitor es cambiar un sprite y cuatro números — los del 1.png, 2.png y 3.png están medidos y anotados en el tooltip. El layout de adentro está tuneado contra un espacio de diseño fijo de 1154×650 que después se escala entero, así que mover `monitorHeight` no desacomoda el texto.
+- **`monitorHeight` = 1010 es 2.png a 5x exacto.** El pixel art se ve nítido en escala entera y borroneado en cualquier otra; los PNG se importaron con filtro Point y sin compresión.
+- **Encendido de CRT**: el vidrio se abre desde una raya horizontal (0,18 s) y recién ahí entra el texto. Más: viñeta en las esquinas (el tubo es curvo y pierde luz), una banda ancha y tenue que baja, y el parpadeo que ya estaba.
+- **`ACCESS GRANTED` / `ACCESS DENIED`** (`3 Other/`) se estampan en el vidrio al acertar o errar, llamados desde `CodeTerminal.Succeed()` / `Fail()`. Caen en el hueco entre el traceback y la línea de Kira **a propósito**: el veredicto no puede tapar el error, que es lo que el alumno tiene que leer.
+
+> **Trampa que costó dos vueltas:** el proyecto renderiza en **espacio lineal**, así que los alfas chicos rinden mucho más de lo que uno espera. El flash rojo del error a 0,22 dejaba la pantalla entera roja e ilegible; quedó en **0,09**, y además se movió **debajo** del texto en la jerarquía. Si se agrega cualquier otro tinte a pantalla completa, probarlo antes de confiar en el número.
+
+> **Ojo al verificar en Play mode por MCP:** el Editor arranca *pausado* (`EditorApplication.isPaused`), así que `Time.deltaTime` es 0 y cualquier animación por corrutina queda congelada en el primer frame — parece un bug del código y no lo es. Hay que despausar y poner `Application.runInBackground = true` antes de sacar screenshots.
+
+**La fuente del pack quedó afuera.** `ASSETS/Consola/Font.txt` no trae un `.ttf`: es un link a *Future Millennium* en dafont. La terminal sigue en `PressStart2P`, que ya es la del juego y tiene acentos y `¿¡`. Si Kevin baja el `.ttf`, armar el TMP Font Asset y asignarlo al campo `font` es un minuto.
+
+**Basura del pack:** `ASSETS/Consola/__MACOSX/` son resource forks de macOS (`._archivo.png`), no sirven para nada y conviene borrar la carpeta antes de commitear.
+
+### La consola en el mapa (02/10/2026)
+
+El objeto del mundo era un placeholder feo: un `Square.png` de Unity teñido de gris como base, el `Screen1` plano encima y una "E" de TextMeshPro suelta. Rehecho:
+
+- **El mueble**: `INDUSTRIA/4 Animated objects/Screen2` — un terminal con pedestal **propio**, 4 frames ya cortados, 32×42 px a 100 PPU. Se eligió por la densidad de pixel: mide 0,56 de alto a escala 1,6 contra los 0,38 del jugador, y sus pixeles son del mismo tamaño que los del nivel. Animado con el nuevo `SpriteFlipbook` (cicla frames en un SpriteRenderer; montar un Animator + Controller para una pantalla que parpadea es más archivos de los que el objeto se merece). Se borró el cubo gris: el dibujo ya trae su base.
+- **El cartel de E**: nuevo `InteractPrompt`. Dibuja una **tecla** — cuerpo oscuro, borde que late, brillo arriba, sombra abajo — que entra con un rebote (se pasa de 1 y vuelve), flota y respira. Se arma sola en runtime y se prende/apaga con `SetActive`, así que `CodeTerminal` no cambió ni una línea. La textura es de 16×16 para que sus pixeles midan lo mismo que los del nivel.
+
+> **El bug del jugador tapado era de orden de dibujo, no de posición.** `Player/Visual` estaba en la capa `Personaje` con orden **0**, igual que la base de la consola, y la pantalla en **1** — o sea, por delante del jugador. Se subió el jugador a **orden 10 en `Player.prefab`**, así que vale para las dos stages y cualquier objeto nuevo que se ponga en orden 0 queda detrás de él solo. Es la regla a seguir de acá en más: **props del mundo en orden 0 o menos, jugador en 10, carteles de interfaz en 20+.**
+
+### El sector de atrás de la puerta está sin energía (02/10/2026)
+
+Kevin notó que desde la consola se ve entero el pasillo que sigue, y que eso le baja el impacto a abrir la puerta. En vez de solo taparlo, se hizo que **el sector esté sin energía**: resolver la terminal ya no abre una puerta, **prende el sector**. La luz entra barriendo de izquierda a derecha y la puerta se mete.
+
+- `PowerCurtain` — un sprite oscuro con degradé que tapa de x −26,75 (el borde derecho de la puerta) hasta x 3,5, de y −8 a 3. `Reveal()` corre el borde izquierdo hacia la derecha con `SmoothStep` en 1,2 s y después se apaga solo. Está enganchado al mismo `onSolved` que ya abría la puerta: hoy ese evento tiene dos oyentes, `PuertaBlindada.Open` y `SectorSinEnergia.Reveal`.
+- **Capa `Personaje` orden 8**: por encima de los tilemaps (que están en `Default`) y de los drones (`Personaje` orden 1), pero por debajo del jugador (orden 10).
+- **No usa luces 2D a propósito**, por lo de más abajo. Es un sprite, así que no toca la iluminación de nadie.
+- El material se fuerza a **`Sprite-Unlit-Default`**: es una tapa, no algo del mundo, y si algún día la stage recibe luces no tiene que iluminarse.
+
+> **⚠️ Trampa cara: el alfa del color de un SpriteRenderer NO sirve para esto.** Los shaders de sprite de URP trabajan con alfa premultiplicado, así que un color oscuro con alfa apenas por debajo de 1 (probado con 0,965) **no tapa absolutamente nada** — se ve igual que si el objeto no existiera, aunque `isVisible` diga true y los bounds estén perfectos. Lo que despista es que un **rojo saturado con el mismo alfa sí se ve**, así que parece un problema de color o de orden de dibujo y no lo es. La regla: `color.a` siempre en 1, y la transparencia del borde se hace con el **canal alfa de la textura**, que funciona bien.
+
+> **Ojo al verificar por MCP:** el editor se vuelve a pausar solo entre llamadas, no solo al entrar a Play. Con `deltaTime` en 0 las corrutinas quedan congeladas y parece que el código no anda. Antes de medir cualquier animación, chequear `EditorApplication.isPaused` **en la misma llamada**, no al principio de la sesión.
+
+### Drones del Stage 2: bajada de dificultad (02/10/2026)
+
+Kevin: *"están salados, un poquito más lento el ataque quizás"*. Tocado en `Assets/Prefabs/Combat/Dron.prefab` y en los tres de la escena, más los valores por defecto del script:
+
+| | antes | ahora | por qué |
+|---|---|---|---|
+| `pauseBeforeLunge` | 0,35 | **0,6** | El aviso. Una persona tarda ~0,25 s en reaccionar, así que 0,35 dejaba 0,1 s útiles; ahora quedan 0,35 s, que a velocidad 5 son 1,75 unidades para correrse |
+| `lungeSpeed` | 5 | **3,8** | Embestía **tan rápido como corre el jugador** (5), así que no se podía zafar corriendo |
+| `lungeDuration` | 0,45 | **0,4** | Avanza 1,52 contra un `lungeRange` de 1,6: te alcanza si te quedaste, pero ya no te barre media pantalla si te corriste |
+| `retreatDuration` | 0,8 | **1,3** | El respiro para disparar. Estaba **por debajo** del 1,1 que traía el script, que es justo lo que su propio comentario advertía que no se bajara |
+| `approachSpeed` | 1,6 | **1,3** | Menos presión entre ataques |
+| `activationRange` | 6 | **5** | Se despiertan menos drones a la vez |
+
+Sin tocar: `contactDamage` 1, vida del dron 3, `invulnerableTime` 1,2 del jugador.
+
+**Además, el ataque ahora se ve venir.** El único aviso era que el dron se frenaba, y a este tamaño eso no se nota: el ataque parecía salir de la nada. Ahora parpadea en rojo (`telegraphColor`) durante la pausa. Solo le toca el color mientras avisa y un frame al salir, para no pisarle a `EnemyHealth` el parpadeo blanco del balazo. Si Kevin lo quiere más evidente, es ese campo del Inspector.
+
+### El jugador se pegaba a las paredes (02/10/2026)
+
+Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una pared no salta, o salta un poquito pero queda pegado; para saltar la primera pared tengo que quedarme quieto, saltar y moverme en el aire"*. Eran **dos problemas distintos** encimados, los dos arreglados en `Player.prefab`, así que valen para las dos stages.
+
+1. **La fricción, que era la causa principal.** El `CapsuleCollider2D` del jugador no tenía `PhysicsMaterial2D`, así que usaba la fricción por defecto de **0,4**. Como `Update()` reescribe `linearVelocity.x` todos los frames, tener la tecla apretada contra una pared genera una fuerza normal constante, y la fricción se come la velocidad vertical del salto. Medido en Stage 2 contra una pared de 0,64 de alto, con salto teórico de 1,70: **con fricción 0,4 el salto subía 0,187 unidades; con 0 sube 0,711** (lo que tarda en pasar la pared y caer encima). Nuevo asset `Assets/Physics/Jugador.physicsMaterial2D` con fricción 0 y rebote 0, asignado al collider del prefab. Poner la fricción en cero es seguro justamente porque el movimiento setea la velocidad a mano: el jugador no patina, porque con `moveX` en 0 la velocidad se pone en 0 explícitamente.
+
+2. **La detección de piso borraba su propio resultado.** `OnCollisionStay2D` se llama **una vez por cada collider** que te toca, y el código terminaba en `isGrounded = false` si *ese* collider no era piso. Estando parado en el piso y tocando un collider aparte — la **puerta blindada** o un **dron** — el callback del segundo borraba el piso que había informado el primero, y el salto no salía. (Contra las paredes del nivel no pasaba, porque piso y paredes son el mismo `CompositeCollider2D`.) Ahora los callbacks solo **suman** a `groundedThisStep`, y `FixedUpdate` publica el resultado y arranca de cero — así ningún collider puede pisar lo que informó otro. Se borró el `OnCollisionExit2D`, que ponía `isGrounded = false` sin fijarse en nada.
+
+> **Trampa que ese cambio destapó:** un `Rigidbody2D` quieto **se duerme**, y dormido **deja de tirar `OnCollisionStay2D`**. Con el código viejo no se notaba porque `isGrounded` quedaba latcheado en true; con el recálculo por frame, el jugador parado quieto se quedaba sin piso y no podía saltar. Lo agarró la verificación (`IsGrounded=False` con un contacto de piso presente en la lista). Se arregla con `rb.sleepMode = RigidbodySleepMode2D.NeverSleep` en `Start()` — en código y no en el Inspector, para que no se pierda si alguien toca el prefab.
+
+> **Queda sin tocar:** el `Rigidbody2D` está en `Discrete`. Con un collider de 0,25 × 0,32 y gravedad 3, una caída larga podría atravesar piso fino. No es lo que reportó Kevin y no se vio pasar, pero si algún día alguien se cae por el piso, empezar por ahí.
+
+> **⚠️ Stage2 no tiene ninguna luz 2D, y no hay que agregarle una suelta.** Se probó ponerle un `Light2D` de punto a la pantalla para que brillara y **se fue toda la escena a negro** menos el círculo iluminado: mientras no hay ninguna luz, URP dibuja todo a brillo pleno; apenas aparece una, el renderer empieza a iluminar de verdad y lo que queda fuera del radio no recibe nada. Se sacó. Si alguna vez se quiere brillo en los objetos, primero hay que agregar un `Light2D` **Global** a la stage y recién después las puntuales — y hacerlo en las dos stages a la vez, porque el Stage 1 tampoco tiene.
+
 **Todavía en el proyecto pero sin usar:** `CodeBlasterFight`, `CodeBlasterUI`, `CodeBlasterTarget`, `CodeBlasterEncounter` y `Assets/Data/Encuentros/Stage2_Print_01.asset`. No se borraron por si hay que volver atrás; ninguna escena los referencia.
 
 > **Choque conocido:** la terminal usa ESC para salir y el `PauseMenu` también usa ESC para pausar. En el `Laboratorio` no hay `PauseMenu` así que no se nota, pero si la terminal se lleva a una stage real hay que resolverlo.
