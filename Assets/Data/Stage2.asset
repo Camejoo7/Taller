@@ -49,15 +49,15 @@ MonoBehaviour:
     text: Nosotros lo vamos a usar para algo bastante menos autorizado.
     autoAdvanceOverride: 0
   - speaker: 0
-    text: "Cuando aparezca un dron con fragmentos de c\xF3digo dando vueltas, disparale
-      al que est\xE9 bien escrito."
+    text: "Con eso te sac\xE1s de encima a los drones de patrulla. Apunt\xE1 con
+      el mouse y disparales con el click."
     autoAdvanceOverride: 0
   - speaker: 1
     text: ...
     autoAdvanceOverride: 0
   - speaker: 0
-    text: "S\xED, en serio. Si acert\xE1s, el dron se apaga. Si err\xE1s, te va a
-      doler. Le\xE9 antes de disparar."
+    text: "Lo que no se abre a tiros es la puerta blindada de ah\xED adelante. Esa
+      necesita que alguien le escriba lo que tiene que hacer."
     autoAdvanceOverride: 0
   outroDialogue:
   - speaker: 0

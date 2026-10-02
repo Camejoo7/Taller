@@ -23,7 +23,9 @@ Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase act
 | Progresión | Selector de niveles lineal-gateado (no se puede saltar sin completar el anterior). Sin guardado de sesión |
 | Plataforma | Build standalone de Windows, PC/laptop únicamente. Nada de web |
 
-## La mecánica central: Code Blaster
+## La mecánica central: Code Blaster — ⚠️ CONGELADA (02/10/2026)
+
+> Kevin la rechazó. Lo de abajo queda como registro de lo que se construyó y aprendió, **no como el plan vigente**. Ver "La mecánica educativa está en revisión" más abajo.
 
 Un dron o enemigo aparece en pantalla y muestra 3-4 fragmentos de código flotando a su alrededor, como si fueran las balas que vienen hacia el jugador. Kira hace una pregunta sobre el concepto de la stage, y el jugador le dispara al fragmento que la responde correctamente. Acertar destruye al enemigo. Errar le hace daño al jugador o el fragmento rebota.
 
@@ -64,6 +66,19 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 ## Fase 1 — Stage 1 como plantilla completa
 
 - [ ] Stage 1 jugable de punta a punta con todos los sistemas nuevos probados: movimiento, Code Blaster, diálogo unificado (vía `StageData`), transición de escena.
+  - [x] **Vida y corazones**: el `HudCanvas` del Stage 2 (3 corazones + `HealthUI`) se convirtió en el prefab compartido `Assets/Prefabs/UI/HudCanvas.prefab` y se instanció en `SampleScene`. Las dos stages lo heredan: tocar el prefab las cambia a las dos. El campo `player` del prefab va vacío a propósito — `HealthUI.Start()` busca el `PlayerHealth` de la escena solo. El jugador del Stage 1 ya tenía `PlayerHealth` (viene del `Player.prefab`), solo le faltaba la UI.
+  - [x] **Dron kamikaze**: `KamikazeDrone` + `Assets/Prefabs/Combat/DronKamikaze.prefab` reemplazan al viejo `Enemigo.prefab` / `EnemyAI` en el `EnemySpawner` del Stage 1. El dron espera flotando en el `DroneSpawnPoint`, y cuando el jugador entra en su `activationRange` (6) se acomoda a la altura del cuerpo del jugador durante `aimDuration` (0.35 s) y sale derecho a velocidad constante (`speed` 3.5). Choca contra el jugador → explota y le saca un corazón; choca contra una pared → explota igual. En los dos casos desaparece. La explosión es un flash por código (blanco + se agranda + se desvanece, 0.22 s), no hay arte de explosión en el proyecto.
+  - [x] **Costo de morir**: caerse al vacío cuesta un corazón (`FallRespawn.fallDamage`) y te devuelve al `respawnPoint` de esa zona. El daño de caída **saltea los segundos de gracia** a propósito: si no, caerse justo después de un golpe salía gratis. Quedarse sin corazones **reinicia la stage** (`PlayerHealth.Die()` recarga la escena activa después de `restartDelay`). Antes reaparecía en el último piso firme con la vida llena, o sea que perder no costaba nada; por eso se sacaron `respawnPoint`, `respawnInvulnerableTime` y el seguimiento de `lastSafeGround` de `PlayerHealth`, que ya no tenían a quién servir.
+  - [x] **Salida al Stage 2**: el objeto `Exit` que puso Kevin (x −32,29, al fondo del corredor de abajo) lleva un `BoxCollider2D` en trigger y el script `StageExit`. Al tocarlo carga `Stage2`; si Kira está hablando en ese momento, **congela al jugador en la puerta** y espera a que el diálogo termine antes de irse — cruzar en mitad de una línea se comía la explicación, que es el contenido educativo. `Stage2` se agregó a **Build Settings** (índice 2), que faltaba y hacía que la carga fallara. `StageExit.transition` quedó vacío: carga directa, sin fundido (ver abajo).
+  - [ ] Falta: encuentro Code Blaster del Stage 1 (preguntas conceptuales sobre Python). **Aplazado a propósito** el 02/10/2026 — Kevin dio el Stage 1 por cerrado por ahora con movimiento, vida, dron, diálogos y salida andando. Es lo único que falta para que el molde esté completo de verdad.
+
+> **El fundido de escena del Stage 1 está apagado.** El root `Canvas` de `SampleScene`, que tiene el `SceneTransition`, está desactivado en la escena, así que `Start()` nunca corre y el fade no existe. Por eso `StageExit` carga la escena derecho. Si se quiere el fundido: activar ese Canvas y asignarlo en el campo `transition` del `Exit`.
+
+> **Ojo con el reinicio de stage:** `PlayerHealth` es el mismo componente en las dos stages, así que morir en el Stage 2 también recarga el Stage 2. Y el `ScoreTracker` es `DontDestroyOnLoad`: los intentos de antes de morir **siguen contando** después del reintento. Si para la fundamentación conviene que un reintento arranque el puntaje de cero, hay que limpiarlo a mano al recargar.
+
+> **Por qué el dron espera en vez de salir disparado:** el trigger que lo crea está en el piso de arriba (x −12,84) y el `DroneSpawnPoint` en el corredor de abajo, 11,6 unidades a la izquierda. Si arrancara al aparecer, se estrellaba contra la pared antes de que el jugador llegara a verlo.
+>
+> **Por qué se acomoda a la altura del jugador:** el pivote del jugador está en los pies y mide 0,32 de alto. A la altura cruda del marcador el dron le pasaba 0,07 por encima de la cabeza y no lo tocaba nunca. `matchPlayerHeight` evita tener que calibrar el marcador a mano cada vez que se mueve.
 
 **Objetivo:** que el Stage 1 sea el molde que después se duplica para el resto. Stage 1 enseña información general de Python, no sintaxis todavía, así que las preguntas de Code Blaster acá pueden ser conceptuales ("¿qué es Python?", "¿para qué sirve programar?") — más simples de escribir que las técnicas de las stages siguientes. Buen lugar para probar el sistema antes de que el contenido se ponga más denso.
 
@@ -71,11 +86,12 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
 
 - [ ] Stage 2 — nivel rústico + `StageData` placeholder (print, variables, tipos)
   - [x] Mapa armado (por Kevin), cámara `CameraFollow` igual que Stage 1, arma que el jugador agarra en el garage (`WeaponPickup` + animaciones armadas vía `PJ_Armed.overrideController`).
-  - [x] Primer encuentro Code Blaster funcionando: `Assets/Data/Encuentros/Stage2_Print_01.asset` ("¿Cuál de estas líneas imprime Hola?"), trigger en x=-27.6, dron en (-26, 0.6).
+  - [x] ~~Primer encuentro Code Blaster~~ → **reemplazado por la terminal** (02/10/2026): consola en x −27,8 y puerta blindada en x −27,0, saliendo del garage. Ver "La mecánica educativa está en revisión" más abajo.
   - [x] **Diálogos**: `Assets/Data/Stage2.asset` con intro (6 líneas), media (5, la explicación del arma) y cierre (1). El `DialogueCanvas`, Kira y el `EventSystem` se **copiaron del Stage 1** para no rehacer el restilado. Kira sigue al jugador desde el arranque (`KiraFollower.followFromStart`), porque en esta stage ya viene con él.
   - [x] **Vida y enemigos**: tres corazones, `PlayerHealth` (que ahora sí contesta el `IPlayerDamageable` del Code Blaster), y tres `DroneEnemy` en los marcadores que dejó Kevin. Los drones se acercan, avisan, embisten y se alejan; se matan a tiros con `EnemyHealth`.
   - [x] **Arma visible**: sprite 7 del pack `Assets/ASSETS/Armas`, flotando en la puerta del garage, con diálogo de Kira al levantarla.
-  - [ ] Falta: más encuentros Code Blaster (hoy hay uno solo), pantalla/flujo de fin de stage, y **agregar la escena a Build Settings** (hoy no está, así que no se llega jugando).
+  - [x] **En Build Settings**: `Stage2` quedó en el índice 2 (02/10/2026), así que ya se llega jugando desde el Stage 1 por la puerta `Exit`.
+  - [ ] Falta: más encuentros Code Blaster (hoy hay uno solo) y pantalla/flujo de fin de stage.
 
 > **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
 - [ ] Stage 3 — nivel rústico + `StageData` placeholder (condicionales)
@@ -97,6 +113,47 @@ Mapeo rápido de concepto → tipo de pregunta Code Blaster por stage:
 | 4 | bucles | "¿Cuál bucle imprime del 1 al 5?" — variantes de `range()` mal usadas |
 | 5 | listas y cadenas | "¿Cómo accedés al primer elemento?" — índices mal, sintaxis de slice mal |
 | 6 | funciones | "¿Cuál define la función correctamente?" — falta `def`, paréntesis mal, falta `:` |
+
+## La mecánica educativa está en revisión (02/10/2026)
+
+**Kevin rechazó el Code Blaster.** Su objeción, textual: *"se ve muy IA, un múltiple opción, algo que podría hacer en cualquier HTML, quiero algo que pueda ver en un juego realmente y no en una página web"*.
+
+Ojo con el diagnóstico: la queja **no es pedagógica, es de forma**. Elegir entre cuatro fragmentos flotantes no se siente un videojuego, se siente un formulario con sprites encima. Y coincide con lo que ya estaba anotado más arriba: con la órbita rápida o los fragmentos finitos, apuntar se vuelve el desafío en vez de saber.
+
+De esto se desprende una regla de diseño para lo que venga: **lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Un cartel de "¡Correcto!" se puede hacer en cualquier página; una puerta blindada que tiembla y se mete en el techo mientras el jugador la mira, no.
+
+### Escena de pruebas
+
+`Assets/Scenes/Laboratorio.unity` — banco de pruebas, **a propósito fuera de Build Settings**. Cámara igual a la del juego (ortográfica, size 1.8, `CameraFollow`), luz global 2D, el `Player.prefab`, piso de 40 unidades con paredes, corazones y `EventSystem`. Sirve para probar mecánicas sin tocar ninguna stage.
+
+### Prototipo 1: Terminal (hecho)
+
+El jugador se acerca a una consola de NEXCORP, aprieta **E**, y **escribe con el teclado de verdad** la parte que falta de una línea de Python. Al acertar, la línea se ejecuta, imprime su salida, y **se abre una puerta blindada**.
+
+- `TerminalChallenge` (ScriptableObject) — la consigna, la línea partida en `codeBefore` / hueco / `codeAfter`, las respuestas aceptadas, y **los errores previstos con el traceback real de Python y la explicación de Kira**. Esa lista es la mitad del valor educativo: escribir `Print` devuelve `NameError: name 'Print' is not defined` y Kira explica que Python distingue mayúsculas.
+- `CodeTerminalUI` — se arma sola en runtime (no hay que montar Canvas a mano). Monitor CRT con líneas de barrido, parpadeo del tubo, cursor que titila y salida tecleada letra por letra.
+- `CodeTerminal` — proximidad, tecleo, validación, puntaje, y un `UnityEvent onSolved` que es donde se engancha la consecuencia física.
+- `PoweredDoor` — la puerta. Tiembla, forcejea y se mete en el techo con `SmoothStep` (arranca pesada, frena al final); recién ahí desactiva el collider.
+- Contenido de prueba: `Assets/Data/Terminal/Lab_Print_01.asset` (print, con 5 errores previstos).
+
+**Cambia qué se evalúa:** ya no es reconocer la respuesta entre cuatro, es acordarse de ella. Y el `ScoreTracker` guarda **lo que el alumno escribió de verdad**, no cuál de cuatro botones tocó — dato más rico que el del Code Blaster para la fundamentación.
+
+**El riesgo a vigilar:** que el error de tipeo se sienta error de concepto. Por eso el hueco es de una palabra sola, se conserva lo escrito tras fallar (se corrige, no se rehace) y los errores comunes tienen respuesta propia.
+
+### Decidido: la terminal reemplaza al Code Blaster (02/10/2026)
+
+Kevin aprobó la terminal y pidió llevarla al Stage 2 sacando los fragmentos. Hecho:
+
+- **Sacado de `Stage2.unity`**: `CodeBlasterFight_01` y `CodeBlasterCanvas`. Los **drones de patrulla quedan** — son combate, no cuestionario.
+- **Puesto**: `ConsolaNexcorp` (x −27,8, justo saliendo del garage) + `PuertaBlindada` en el lugar exacto que marcó Kevin con el objeto `Puerta`, que se borró. `TerminalUI` en la escena.
+- **Contenido**: `Assets/Data/Terminal/Stage2_Print_01.asset`. La ficción cierra el concepto con la mecánica: la cerradura vieja obedece al comando que le mandes, así que hay que escribir `print("ABRIR")`. Seis errores previstos, incluido escribir `abrir` (confundir *qué* querés con *cómo* decirlo).
+- **Diálogos arreglados** en `Assets/Data/Stage2.asset`: las líneas mid [2] y [4] hablaban de dispararle a fragmentos. Ahora [2] explica que el arma es para los drones de patrulla y [4] presenta la puerta blindada ("Esa necesita que alguien le escriba lo que tiene que hacer").
+- **La puerta abre animando los postigos** (`PoweredDoor.openFrames`, frames 0→1→2 de `Entry.png`) en vez de deslizarse: ahí no hay techo donde meterla. Las luces se apagan al terminar de abrir, porque la puerta se retrae del todo y si no quedaban dos cuadraditos verdes flotando en el aire.
+- El collider de la puerta quedó en 0,55 × 1,03, **exactamente lo que marcó Kevin**. El dibujo es cuadrado (64×64) así que para no deformar las rayas de peligro se escaló parejo: se ve más ancho que el marcador aunque bloquee lo mismo.
+
+**Todavía en el proyecto pero sin usar:** `CodeBlasterFight`, `CodeBlasterUI`, `CodeBlasterTarget`, `CodeBlasterEncounter` y `Assets/Data/Encuentros/Stage2_Print_01.asset`. No se borraron por si hay que volver atrás; ninguna escena los referencia.
+
+> **Choque conocido:** la terminal usa ESC para salir y el `PauseMenu` también usa ESC para pausar. En el `Laboratorio` no hay `PauseMenu` así que no se nota, pero si la terminal se lleva a una stage real hay que resolverlo.
 
 ## Fase 3 — Selector de niveles y flujo completo
 
