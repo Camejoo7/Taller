@@ -40,7 +40,11 @@ This is a Unity project — all building, running, and testing must be done thro
 
 Este proyecto se desarrolla con Claude Code conectado al Editor vía MCP (`com.coplaydev.unity-mcp`, pineado a **v10.0.0** — no seguir `#main`). Grupos de herramientas activos: `core`, `animation`, `scripting_ext`, `testing`, `docs`. `probuilder`, `vfx`, `ui` (UI Toolkit) y `asset_gen` están desactivados a propósito: este proyecto usa Canvas/uGUI clásico, no UI Toolkit, y los sprites vienen de asset packs de itch.io, no de generación por IA.
 
-**El plan completo de desarrollo, fase por fase, está en `ROADMAP.md` en la raíz del proyecto.** Antes de arrancar una tarea grande, consultarlo para saber en qué fase se está trabajando.
+**El plan completo de desarrollo, fase por fase, está en `ROADMAP.md` en la raíz del proyecto, con checkboxes por ítem.** Reglas para no perder la orientación entre sesiones:
+
+- Al arrancar cualquier sesión nueva, leer `ROADMAP.md` y decirle a Kevin en qué fase está parado y qué ítems faltan de esa fase, antes de proponer una tarea.
+- Al terminar un ítem, marcarlo `[x]` en `ROADMAP.md` en el mismo momento — no dejarlo para después.
+- Si Kevin pide algo de una fase posterior mientras quedan ítems sin marcar en la fase actual, avisarle explícitamente ("esto es de la Fase X, todavía faltan N ítems de la Fase actual") antes de proceder. No bloquearlo si igual quiere seguir, pero que sea una decisión consciente, no un salto por desorientación.
 
 ### Flujo obligatorio para cualquier cambio de código o escena
 
