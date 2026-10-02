@@ -278,5 +278,4 @@ MonoBehaviour:
   maxHealth: 3
   invulnerableTime: 1.2
   knockbackForce: 4.5
-  respawnPoint: {fileID: 0}
-  respawnDelay: 1.2
+  restartDelay: 1.2
