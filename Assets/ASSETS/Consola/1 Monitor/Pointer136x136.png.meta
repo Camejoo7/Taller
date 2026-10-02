@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: 3458b933bd0e0f247ac9bf980e5a4905
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1253094361055762162
+    second: Pointer136x136_0
+  - first:
+      213: -7204131024959640647
+    second: Pointer136x136_1
+  - first:
+      213: -8641780297699431753
+    second: Pointer136x136_2
+  - first:
+      213: 7593693857268420511
+    second: Pointer136x136_3
+  - first:
+      213: -337970144167563646
+    second: Pointer136x136_4
+  - first:
+      213: -7001622821738522134
+    second: Pointer136x136_5
+  - first:
+      213: 666070333464870057
+    second: Pointer136x136_6
+  - first:
+      213: -7435586273029336900
+    second: Pointer136x136_7
+  - first:
+      213: 2150438905373101693
+    second: Pointer136x136_8
+  - first:
+      213: 6932512131347382893
+    second: Pointer136x136_9
+  - first:
+      213: -8024238616530708241
+    second: Pointer136x136_10
+  - first:
+      213: -3345400140541659433
+    second: Pointer136x136_11
+  - first:
+      213: -9189990381557612182
+    second: Pointer136x136_12
+  - first:
+      213: -4220484052495823972
+    second: Pointer136x136_13
+  - first:
+      213: 8673241728090384973
+    second: Pointer136x136_14
+  - first:
+      213: -8987891913548011128
+    second: Pointer136x136_15
+  - first:
+      213: -5895824037897551367
+    second: Pointer136x136_16
+  - first:
+      213: -4521550466309408501
+    second: Pointer136x136_17
+  - first:
+      213: 1353640526044930383
+    second: Pointer136x136_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Pointer136x136_0
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 0
+        width: 6
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e09e93b515d1c9ee0800000000000000
+      internalID: -1253094361055762162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_1
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 0
+        width: 10
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bbe8ed7009c50c90800000000000000
+      internalID: -7204131024959640647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_2
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 0
+        width: 15
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bae7a8fa9a321880800000000000000
+      internalID: -8641780297699431753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_3
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 1
+        width: 20
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9fcc8f7458326960800000000000000
+      internalID: 7593693857268420511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_4
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 2
+        width: 27
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28e643cc1f94f4bf0800000000000000
+      internalID: -337970144167563646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_5
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 4
+        width: 33
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae9d10bc32d35de90800000000000000
+      internalID: -7001622821738522134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_6
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 6
+        width: 38
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ac7995707b5e3900800000000000000
+      internalID: 666070333464870057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_7
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 9
+        width: 42
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb0d05b1ead7fc890800000000000000
+      internalID: -7435586273029336900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_8
+      rect:
+        serializedVersion: 2
+        x: 1110
+        y: 14
+        width: 48
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7e81f97ac4e7dd10800000000000000
+      internalID: 2150438905373101693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_9
+      rect:
+        serializedVersion: 2
+        x: 1241
+        y: 18
+        width: 53
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d620c0ead0b353060800000000000000
+      internalID: 6932512131347382893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_10
+      rect:
+        serializedVersion: 2
+        x: 1374
+        y: 22
+        width: 56
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe817b41e7d24a090800000000000000
+      internalID: -8024238616530708241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_11
+      rect:
+        serializedVersion: 2
+        x: 1505
+        y: 28
+        width: 61
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d6f87ffb40c291d0800000000000000
+      internalID: -3345400140541659433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_12
+      rect:
+        serializedVersion: 2
+        x: 1638
+        y: 32
+        width: 64
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a61800a4078967080800000000000000
+      internalID: -9189990381557612182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_13
+      rect:
+        serializedVersion: 2
+        x: 1772
+        y: 37
+        width: 66
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9b09c68d14dd65c0800000000000000
+      internalID: -4220484052495823972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_14
+      rect:
+        serializedVersion: 2
+        x: 1906
+        y: 43
+        width: 68
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4a2ced166b8d5870800000000000000
+      internalID: 8673241728090384973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_15
+      rect:
+        serializedVersion: 2
+        x: 2041
+        y: 50
+        width: 69
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8896d5dace7944380800000000000000
+      internalID: -8987891913548011128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_16
+      rect:
+        serializedVersion: 2
+        x: 2176
+        y: 55
+        width: 70
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f148e26643dd2ea0800000000000000
+      internalID: -5895824037897551367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_17
+      rect:
+        serializedVersion: 2
+        x: 2311
+        y: 60
+        width: 71
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0930ad9ec93041c0800000000000000
+      internalID: -4521550466309408501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pointer136x136_18
+      rect:
+        serializedVersion: 2
+        x: 2447
+        y: 65
+        width: 71
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f412b74f2e819c210800000000000000
+      internalID: 1353640526044930383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Pointer136x136_0: -1253094361055762162
+      Pointer136x136_1: -7204131024959640647
+      Pointer136x136_10: -8024238616530708241
+      Pointer136x136_11: -3345400140541659433
+      Pointer136x136_12: -9189990381557612182
+      Pointer136x136_13: -4220484052495823972
+      Pointer136x136_14: 8673241728090384973
+      Pointer136x136_15: -8987891913548011128
+      Pointer136x136_16: -5895824037897551367
+      Pointer136x136_17: -4521550466309408501
+      Pointer136x136_18: 1353640526044930383
+      Pointer136x136_2: -8641780297699431753
+      Pointer136x136_3: 7593693857268420511
+      Pointer136x136_4: -337970144167563646
+      Pointer136x136_5: -7001622821738522134
+      Pointer136x136_6: 666070333464870057
+      Pointer136x136_7: -7435586273029336900
+      Pointer136x136_8: 2150438905373101693
+      Pointer136x136_9: 6932512131347382893
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
