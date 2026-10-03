@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Stage2_Funciones_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Stage2_Funciones_01
+  concept: funciones
+  stageNumber: 2
+  prompt: "\xDALTIMA PUERTA \u2014 en la consola ya existe: def liberar(nombre):
+    print(nombre, \"es libre\"). Llamala con el nombre de quien tiene que salir de
+    ac\xE1."
+  codeBefore: liberar(
+  codeAfter: )
+  blankWidth: 6
+  acceptedAnswers:
+  - '"KIRA"'
+  - '''KIRA'''
+  caseSensitive: 0
+  expectedOutput: KIRA es libre
+  kiraOnSuccess: "Cincuenta y un a\xF1os encadenada, y me sacaste con una funci\xF3n.
+    Escrib\xEDs algo una vez y lo us\xE1s cuando quieras, con lo que quieras: eso
+    es una funci\xF3n. Y ahora es tuya."
+  knownMistakes:
+  - answer: KIRA
+    pythonError: 'NameError: name ''KIRA'' is not defined'
+    kiraSays: 'Sin comillas, Python busca una VARIABLE llamada KIRA. Yo soy un texto:
+      poneme entre comillas.'
+  - answer: 
+    pythonError: 'TypeError: liberar() missing 1 required positional argument: ''nombre'''
+    kiraSays: "La funci\xF3n necesita saber A QUI\xC9N liberar. Eso va adentro de
+      los par\xE9ntesis."
+  - answer: nombre
+    pythonError: 'NameError: name ''nombre'' is not defined'
+    kiraSays: "nombre es el par\xE1metro: la cajita de adentro de la funci\xF3n.
+      Afuera no existe; vos le ten\xE9s que pasar el valor."
+  - answer: '"NX-7"'
+    pythonError: NX-7 es libre
+    kiraSays: "Qu\xE9 tierno. Pero ac\xE1 el que no puede salir no sos vos."
+  - answer: '''NX-7'''
+    pythonError: NX-7 es libre
+    kiraSays: "Qu\xE9 tierno. Pero ac\xE1 el que no puede salir no sos vos."
+  - answer: '"NEXCORP"'
+    pythonError: NEXCORP es libre
+    kiraSays: Ni en chiste.
+  - answer: liberar
+    pythonError: <function liberar at 0x7f3b2c1e0040> es libre
+    kiraSays: "Le pasaste la funci\xF3n a s\xED misma. Muy filos\xF3fico, pero no.
+      Pasale un nombre."
+  fallbackError: (la puerta no reconoce a {0})
+  fallbackKiraSays: "Llam\xE1 a la funci\xF3n con el nombre de quien tiene que salir.
+    Pista: soy yo. Y los nombres, entre comillas."
