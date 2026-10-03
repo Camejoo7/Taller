@@ -33171,7 +33171,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 45.73
+      value: 37.75
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33211,7 +33211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4314836228333647973, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_Name
-      value: Dron Patio
+      value: Dron Muralla
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -66871,7 +66871,7 @@ SpriteRenderer:
   m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6470460504253458178, guid: b95754604ff6c68409e4b3182c28461e, type: 3}
-  m_Color: {r: 0.62, g: 0.32, b: 0.95, a: 1}
+  m_Color: {r: 0.62, g: 0.32, b: 0.95, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -66979,7 +66979,7 @@ SpriteRenderer:
   m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4130640169021434097, guid: 346b64fff2db5ac4589de3841a524b39, type: 3}
-  m_Color: {r: 0.7, g: 0.4, b: 0.95, a: 1}
+  m_Color: {r: 0.7, g: 0.4, b: 0.95, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -68155,7 +68155,7 @@ SpriteRenderer:
   m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4178046375966092550, guid: 0f187fa823bef7446b3a707e8e403327, type: 3}
-  m_Color: {r: 0.7, g: 0.4, b: 0.95, a: 1}
+  m_Color: {r: 0.7, g: 0.4, b: 0.95, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -74588,11 +74588,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 101.71
+      value: 90.53
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.67999995
+      value: -2.6
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -74628,7 +74628,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4314836228333647973, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_Name
-      value: Dron Estanque
+      value: Dron Entrada
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -110540,11 +110540,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 68.47
+      value: 64.63
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.5
+      value: -2.6
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -110846,11 +110846,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29.273998
+      value: 18.6
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.52
+      value: -3.44
       objectReference: {fileID: 0}
     - target: {fileID: 1576404737606364928, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -110886,7 +110886,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4314836228333647973, guid: e8049f7d5b9693347ae6db6385da82d1, type: 3}
       propertyPath: m_Name
-      value: Dron Pasarela
+      value: Dron Calle 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -116546,7 +116546,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 6937817954938267909, guid: 1f1c5f1e64b2ab640bf0ff5c3b7faa15, type: 3}
-  m_Color: {r: 0.62, g: 0.3, b: 1, a: 0.85}
+  m_Color: {r: 0.62, g: 0.3, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2

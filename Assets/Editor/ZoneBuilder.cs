@@ -758,7 +758,9 @@ public static class ZoneBuilder
         GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
         GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
         d.name = "Dron Patio";
-        d.transform.position = new Vector3(CX(71) + 0.3f, CTop(-5) + 1.0f, 0f);
+        // sobre la muralla (suelo firme), a más de 5 de la consola 3: los drones
+        // no van arriba de los saltos, que ahí un embiste es una caída
+        d.transform.position = new Vector3(CX(59), CTop(-5) + 1.0f, 0f);
     }
 
     // --------------------------------------------------------------- zona 5: el puerto
@@ -999,7 +1001,8 @@ public static class ZoneBuilder
         GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
         GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
         d.name = "Dron Muelle";
-        d.transform.position = new Vector3(CX(107), CTop(DockTop) + 1.3f, 0f);
+        // sobre el muelle A (suelo firme), no sobre el agua
+        d.transform.position = new Vector3(CX(101), CTop(DockTop) + 1.2f, 0f);
     }
 
     // --------------------------------------------------------------- zona 6: la zona verde
@@ -1181,8 +1184,9 @@ public static class ZoneBuilder
 
         GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
         GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
-        d.name = "Dron Estanque";
-        d.transform.position = new Vector3(CX(158) + 0.6f, CTop(-4) + 1.2f, 0f);
+        d.name = "Dron Entrada";
+        // en la entrada del parque (suelo firme), lejos de las islas del estanque
+        d.transform.position = new Vector3(CX(141) + 0.3f, CTop(-7) + 1.2f, 0f);
     }
 
     // --------------------------------------------------------------- vista previa

@@ -86,7 +86,7 @@ Key details:
 - Scale when moving **right**: `(-2, 2, 1)`. Scale when moving **left**: `(2, 2, 1)`. The base scale is ±2, not ±1.
 - `LateUpdate()` pins `visual.localPosition = Vector3.zero` every frame to prevent physics drift.
 - Movement uses `rb.linearVelocity` (Unity 6 API — `rb.velocity` is deprecated and will not compile).
-- `canMove` is the public interface for freezing the player. `SetCanMove(false)` also zeroes velocity immediately. Dialogue calls this.
+- `CanMove` (propiedad de solo lectura; el campo `canMove` es privado) y `SetCanMove(bool)` son la interfaz para congelar al jugador. `DroneEnemy` no ataca a un jugador congelado. `SetCanMove(false)` also zeroes velocity immediately. Dialogue calls this.
 - Ground detection uses `OnCollisionEnter2D` / `OnCollisionStay2D` / `OnCollisionExit2D` by inspecting contact normals (`normal.y > 0.5f`).
 - Animator bools: `"isWalking"` (horizontal movement) and `"isJumping"` (airborne state).
 

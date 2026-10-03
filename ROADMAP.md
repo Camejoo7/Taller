@@ -176,7 +176,7 @@ Generado por Claude a continuación del tramo pintado a mano, **sin tocar ese tr
 
 **Pendientes y cosas que conviene mirar jugando:**
 - **Morir reinicia toda la escena.** Los checkpoints solo cubren las caídas. Con un mapa de seis zonas, perder el último corazón en la zona 6 te manda al garage. Hay que decidir: ¿reaparecer en el último checkpoint con los corazones llenos?
-- **Los drones no se probaron con el piloto automático** (se apagaban para probar el recorrido). Hay uno por zona nueva; puede que alguno moleste justo en un salto.
+- **Drones (03/10/2026, sin terminar de probar):** una partida completa con drones mostró que un dron atacaba al jugador congelado escribiendo en la terminal 2 (tu `Dron 3` quedó a 0,6 de esa consola). Se cambió `DroneEnemy`: **no ataca a un jugador que no se puede mover** (terminal o diálogo), se aleja y espera. Además, los drones de las zonas 3 a 6 se movieron a suelo firme, a más de 5 de cualquier consola (antes había uno sobre cada tramo de saltos). La prueba de verificación quedó cortada: **falta jugarlo con drones**.
 - **Los ejercicios 2 a 6 son borradores** (ver Fase 2).
 - La niebla, los tintes y la posición de los horizontes se ajustaron mirando capturas: conviene mirarlos jugando y retocar el color desde el Inspector si algo desentona.
 - **Para probar en Play mode con Unity sin foco**, hay que poner `Application.runInBackground = true` (el piloto automático lo hace): si no, el juego se congela en el cuadro 2 cuando la ventana no está activa. No se cambió el Player Setting.
