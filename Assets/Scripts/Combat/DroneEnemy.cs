@@ -67,6 +67,7 @@ public class DroneEnemy : MonoBehaviour
     private Animator animator;
     private Transform player;
     private PlayerHealth playerHealth;
+    private PlayerMovement playerMovement;
     private SpriteRenderer sprite;
     private Color baseColor = Color.white;
     private bool wasTelegraphing;
@@ -91,6 +92,7 @@ public class DroneEnemy : MonoBehaviour
         {
             player = pm.transform;
             playerHealth = pm.GetComponent<PlayerHealth>();
+            playerMovement = pm;
         }
 
         rb.gravityScale = 0f;
@@ -103,6 +105,22 @@ public class DroneEnemy : MonoBehaviour
 
         float distance = Vector2.Distance(rb.position, player.position);
         FacePlayer();
+
+        // El jugador congelado está escribiendo en una terminal (o en medio de
+        // un diálogo) y no se puede defender: no se le ataca. El dron se
+        // aleja una vez y espera flotando hasta que vuelva a moverse. Sin
+        // esto, un alumno que tarda en escribir moría en la consola, con el
+        // teclado ocupado en Python (lo agarró la prueba de punta a punta).
+        if (playerMovement != null && !playerMovement.CanMove)
+        {
+            if (state == State.Approach || state == State.Lunge) StartRetreat();
+            if (state == State.Retreat && Time.time < stateUntil) TickRetreat();
+            else { state = State.Idle; Bob(); }
+
+            if (animator != null) animator.SetBool("isMoving", state == State.Retreat);
+            Telegraph();
+            return;
+        }
 
         switch (state)
         {
@@ -234,6 +252,7 @@ public class DroneEnemy : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         if (playerHealth == null || playerHealth.IsInvulnerable || playerHealth.IsDead) return;
+        if (playerMovement != null && !playerMovement.CanMove) return;   // escribiendo en una terminal
 
         playerHealth.TakeDamageFrom(contactDamage, rb.position);
         StartRetreat();
