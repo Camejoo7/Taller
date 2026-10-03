@@ -125,7 +125,7 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 | 2 | variables y tipos | `puerta = "abierta"` — la cerradura lee una variable (el tramo pintado a mano después de la primera puerta; la terminal está en el portal del final) | 🟡 `Stage2_Variables_01.asset` (borrador) |
 | 3 | condicionales | `if energia > 50: print("ABRIR")` — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
 | 4 | bucles | `for nodo in range(4): print(...)` — "Central eléctrica" (pack Power Station): se cruzan 4 torres-nodo apagadas y **la respuesta es cuántas viste**. Al acertar la cámara viaja al patio y los 4 nodos se prenden de a uno | 🟡 `Stage2_Bucles_01.asset` (borrador) |
-| 5 | listas y cadenas | Sacar un elemento de una lista o un pedazo de una cadena (un código escondido en una trama) | ⬜ |
+| 5 | listas y cadenas | `print(contenedores[3])` — "El puerto" (pack Seaport): los contenedores verde, rojo y gris están en fila en el muelle y el naranja cuelga de la grúa. **La grúa baja el que imprimas**: el naranja queda como puente sobre el agua (`CraneLoad`). Enseña el índice desde cero | 🟡 `Stage2_Listas_01.asset` (borrador) |
 | 6 | funciones | Definir una función y llamarla — "la cerradura necesita que le enseñes a abrirse" | ⬜ |
 
 > **Lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Está escrito más abajo y vale para cada terminal nueva: no alcanza con un cartel de "¡Correcto!". La puerta que tiembla, las luces que se encienden, el sector que recupera la energía — eso es lo que no se puede hacer en una página web. Si una terminal nueva no tiene una consecuencia física, le falta la mitad.

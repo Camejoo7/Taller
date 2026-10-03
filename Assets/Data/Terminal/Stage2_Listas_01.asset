@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Stage2_Listas_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Stage2_Listas_01
+  concept: listas
+  stageNumber: 2
+  prompt: "GR\xDAA DEL MUELLE 7 \u2014 contenedores = [\"verde\", \"rojo\", \"gris\",
+    \"naranja\"]. La gr\xFAa baja el que imprimas: necesit\xE1s el NARANJA para cruzar."
+  codeBefore: print(contenedores[
+  codeAfter: '])'
+  blankWidth: 2
+  acceptedAnswers:
+  - 3
+  - -1
+  caseSensitive: 1
+  expectedOutput: naranja
+  kiraOnSuccess: "El naranja estaba cuarto en la fila, pero su \xEDndice es 3: en
+    Python las listas se cuentan desde cero. La gr\xFAa ya lo est\xE1 bajando."
+  knownMistakes:
+  - answer: 4
+    pythonError: 'IndexError: list index out of range'
+    kiraSays: 'La lista tiene 4 elementos, pero se cuentan desde 0: van del 0 al
+      3. El 4 no existe.'
+  - answer: 2
+    pythonError: gris
+    kiraSays: "Imprimiste gris: la gr\xFAa agarrar\xEDa el que no es. Cont\xE1 desde
+      cero: verde es el 0."
+  - answer: 1
+    pythonError: rojo
+    kiraSays: 'Ese es el rojo. Acordate: verde 0, rojo 1, gris 2...'
+  - answer: 0
+    pythonError: verde
+    kiraSays: "El 0 es el PRIMERO de la lista, el verde. El naranja est\xE1 al final."
+  - answer: naranja
+    pythonError: 'NameError: name ''naranja'' is not defined'
+    kiraSays: "Entre los corchetes va la POSICI\xD3N, no el nombre. Y sin comillas,
+      naranja ni siquiera es un texto."
+  - answer: '"naranja"'
+    pythonError: 'TypeError: list indices must be integers or slices, not str'
+    kiraSays: "A una lista se le pide por n\xFAmero de posici\xF3n, no por el contenido.
+      \xBFEn qu\xE9 lugar est\xE1 el naranja?"
+  - answer: '''naranja'''
+    pythonError: 'TypeError: list indices must be integers or slices, not str'
+    kiraSays: "A una lista se le pide por n\xFAmero de posici\xF3n, no por el contenido.
+      \xBFEn qu\xE9 lugar est\xE1 el naranja?"
+  - answer: 3.0
+    pythonError: 'TypeError: list indices must be integers or slices, not float'
+    kiraSays: "Los \xEDndices son enteros. 3.0 tiene coma decimal y a la lista no
+      le gusta."
+  fallbackError: 'SyntaxError: invalid syntax'
+  fallbackKiraSays: "Adentro de los corchetes va un n\xFAmero: la posici\xF3n del
+    naranja en la lista, contando desde cero."

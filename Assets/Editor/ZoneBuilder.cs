@@ -54,6 +54,30 @@ public static class ZoneBuilder
         r.mode = TilemapRenderer.Mode.Chunk;
     }
 
+    /// <summary>
+    /// Rearma de cero los colliders de los tilemaps sólidos. Hace falta
+    /// después de pintar en tanda: el collider compuesto a veces se queda con
+    /// la forma vieja (pasó con los muelles del puerto: se veían pero se
+    /// caía a través). Apagar y prender el TilemapCollider2D lo obliga a
+    /// recalcular todo.
+    /// </summary>
+    public static void RefreshColliders()
+    {
+        foreach (string n in new[] { Piso, CPiso })
+        {
+            Tilemap tm = MapTools.Map(n);
+            if (tm == null) continue;
+            TilemapCollider2D tc = tm.GetComponent<TilemapCollider2D>();
+            CompositeCollider2D cc = tm.GetComponent<CompositeCollider2D>();
+            if (tc == null) continue;
+            tc.enabled = false;
+            tc.enabled = true;
+            tc.ProcessTilemapChanges();
+            if (cc != null) cc.GenerateGeometry();
+        }
+        Physics2D.SyncTransforms();
+    }
+
     // --------------------------------------------------------------- básicos
 
     public static void T(string layer, int x, int y, string key)
@@ -356,6 +380,7 @@ public static class ZoneBuilder
         //    entrar y uno de 3 en el medio.
         Walkway(85, 93, -9, Bottom, 88);
         Walkway(97, Z3End, -9, Bottom, 100);
+        RefreshColliders();
     }
 
     // --------------------------------------------------------------- fachadas
@@ -611,6 +636,7 @@ public static class ZoneBuilder
         PSBlock(CPiso, 78, -7, Z4End, -12);
         PSBlock(CPiso, 82, -1, Z4End, -2);           // techo (deja 4 filas libres)
         PSPanels(82, Z4End, -6, -3);                 // pared del fondo
+        RefreshColliders();
     }
 
     public static void BuildZone4Dressing()
@@ -732,6 +758,247 @@ public static class ZoneBuilder
         GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
         d.name = "Dron Patio";
         d.transform.position = new Vector3(CX(71) + 0.3f, CTop(-5) + 1.0f, 0f);
+    }
+
+    // --------------------------------------------------------------- zona 5: el puerto
+
+    // Muelles del pack Seaport en la misma grilla de 32 px que la central.
+    // El agua va en su propia capa, Personaje/7: delante de los muelles (tapa
+    // los pilotes y el contenedor-puente bajo la línea de flotación), DEBAJO
+    // de la cortina de los sectores sin energía (8, si no el agua brillaría
+    // sobre un muelle a oscuras) y debajo del jugador (10).
+    public const string CAgua = "Central_Agua";
+    public const int Z5Start = 96, Z5End = 135;
+    public const int DockTop = -7;      // tope de los muelles: y = -3,80, igual que la sala de control
+    public const int WaterTop = -8;     // fila de la superficie del agua: su borde de arriba está en y = -4,44
+
+    // (las texturas del pack vienen en modo Multiple: el sprite se llama "Tile_01_0")
+    public static string SP(int n) { return "Seaport:Tile_" + n.ToString("00") + "/Tile_" + n.ToString("00") + "_0"; }
+    public static string SW(int n) { return "Seaport:WaterTile_" + n.ToString("00") + "/WaterTile_" + n.ToString("00") + "_0"; }
+
+    public static void EnsureWaterLayer()
+    {
+        if (MapTools.Map(CAgua) != null) return;
+        EnsureCentralGrid();
+        Tilemap like = MapTools.Map(CPiso);
+        Tilemap w = MakeMap(like.transform.parent, CAgua, MapTools.Map(Piso), "Personaje", 7);
+        // De noche: el azul del pack, oscurecido y corrido hacia el violeta.
+        w.color = new Color(0.34f, 0.32f, 0.66f, 1f);
+    }
+
+    /// <summary>Muelle de hormigón con franja de peligro (nine-slice del pack).</summary>
+    public static void Dock(int x0, int x1, int top, int bottom)
+    {
+        for (int x = x0; x <= x1; x++)
+            for (int y = bottom; y <= top; y++)
+            {
+                bool l = x == x0, r = x == x1, t = y == top, b = y == bottom;
+                int n;
+                if (x0 == x1) n = t ? 14 : b ? 19 : 15;
+                else if (t) n = l ? 1 : r ? 3 : 2;
+                else if (b) n = l ? 11 : r ? 13 : 12;
+                else n = l ? 6 : r ? 8 : ((x * 5 + y * 3) % 7 == 0 ? 4 : 7);
+                T(CPiso, x, y, SP(n));
+            }
+    }
+
+    /// <summary>Agua: la fila de arriba con espuma, abajo cada vez más oscura.</summary>
+    public static void Water(int x0, int x1, int top, int bottom)
+    {
+        for (int x = x0; x <= x1; x++)
+            for (int y = bottom; y <= top; y++)
+            {
+                int depth = Mathf.Min(9, top - y);
+                T(CAgua, x, y, SW(depth * 4 + 1 + ((x % 4) + 4) % 4));
+            }
+    }
+
+    /// <summary>
+    /// Un sprite del pack con collider de caja del tamaño del dibujo: los
+    /// contenedores y cajas sobre los que se puede parar.
+    /// </summary>
+    public static GameObject SolidProp(Transform parent, string path, float left, float baseY, int order, Color tint)
+    {
+        Sprite s = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        GameObject go = SpriteProp(parent, path, 0f, baseY, "Default", order, false, tint);
+        float w = s.bounds.size.x * go.transform.localScale.x;
+        Vector3 p = go.transform.position;
+        go.transform.position = new Vector3(left + w / 2f, p.y, 0f);
+        BoxCollider2D bc = go.AddComponent<BoxCollider2D>();
+        Collider2D pisoCol = MapTools.Map(Piso).GetComponent<CompositeCollider2D>();
+        if (pisoCol != null) bc.sharedMaterial = pisoCol.sharedMaterial;
+        return go;
+    }
+
+    public static void BuildZone5Terrain()
+    {
+        EnsureWaterLayer();
+        Clear(CPiso, Z5Start, -20, Z5End + 2, 8);
+        Clear(CFondo, Z5Start, -20, Z5End + 2, 8);
+        Clear(CAgua, Z5Start, -20, Z5End + 2, 8);
+
+        Dock(96, 103, DockTop, -14);     // A — salida de la sala de control
+        Dock(105, 110, DockTop, -14);    // B — con caja y contenedor para tomar altura
+        Dock(113, 122, DockTop, -14);    // C — la fila de contenedores (la lista)
+        Dock(126, Z5End, DockTop, -14);  // D — después del puente
+        Water(96, Z5End, WaterTop, -16);
+        RefreshColliders();
+    }
+
+    public static void BuildZone5Dressing()
+    {
+        GameObject old = GameObject.Find("Zona5_Puerto");
+        if (old != null) Object.DestroyImmediate(old);
+        Transform root = new GameObject("Zona5_Puerto").transform;
+        Undo.RegisterCreatedObjectUndo(root.gameObject, "Zona5");
+
+        string cargo = "Assets/ASSETS/Seaport/3 Objects/1 Cargos/";
+        string box = "Assets/ASSETS/Seaport/3 Objects/3 Box/";
+        string fence = "Assets/ASSETS/Seaport/3 Objects/2 Fencing/";
+        string craneDir = "Assets/ASSETS/Seaport/3 Objects/4 Overhead crane/";
+        float dock = CTop(DockTop);                      // -3,80
+        Color night = new Color(0.82f, 0.78f, 0.95f, 1f); // los colores del pack son de día: un poco de noche
+        Color back = new Color(0.45f, 0.4f, 0.6f, 1f);    // contenedores del fondo, apagados
+
+        // --- muelle A: vallas al borde del agua y contenedores de fondo
+        SpriteProp(root, cargo + "22.png", CX(97) + 0.9f, dock, "Default", -2, false, back);
+        SpriteProp(root, cargo + "11.png", CX(100) + 1.0f, dock, "Default", -2, true, back);
+        SpriteProp(root, cargo + "13.png", CX(100) + 0.5f, dock + 0.96f, "Default", -2, false, back);
+        SpriteProp(root, fence + "1.png", CX(103) + 0.1f, dock, "Default", 3, false, night);
+
+        // --- muelle B: caja (escalón) y contenedor chico (para tomar altura)
+        SolidProp(root, box + "2.png", CX(109) - 0.6f, dock, 3, night);
+        SolidProp(root, cargo + "1.png", CX(109) + 0.15f, dock, 2, night);
+        SpriteProp(root, fence + "5.png", CX(106) + 0.3f, dock, "Default", 3, false, night);
+
+        // --- muelle C: la lista. contenedores = ["verde", "rojo", "gris", "naranja"]
+        //     (el naranja es el que cuelga de la grúa)
+        SolidProp(root, box + "3.png", CX(113) + 0.3f, dock, 3, night);
+        GameObject verde = SolidProp(root, cargo + "2.png", CX(113) + 0.94f, dock, 2, night);
+        GameObject rojo = SolidProp(root, cargo + "5.png", verde.GetComponent<SpriteRenderer>().bounds.max.x + 0.08f, dock, 2, night);
+        GameObject gris = SolidProp(root, cargo + "14.png", rojo.GetComponent<SpriteRenderer>().bounds.max.x + 0.08f, dock, 2, night);
+        verde.name = "Contenedor 0 verde"; rojo.name = "Contenedor 1 rojo"; gris.name = "Contenedor 2 gris";
+
+        // --- la grúa sobre el hueco del puente (123..125)
+        float gapCenter = (CX(123) + CX(126)) / 2f;
+        GameObject gantry = SpriteProp(root, craneDir + "Overhead-crane.png", gapCenter, dock, "Default", -1, false, night);
+        gantry.name = "Grua";
+        float beamBottom = dock + 129f / 50f;            // el travesaño empieza en la fila 129 del dibujo
+        Sprite cartBody = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASSETS/Stage2/Generado/Grua_Carro.png");
+        GameObject cart = new GameObject("Carro");
+        cart.transform.SetParent(root, false);
+        SpriteRenderer csr = cart.AddComponent<SpriteRenderer>();
+        csr.sprite = cartBody; csr.sortingLayerName = "Default"; csr.sortingOrder = 0; csr.color = night;
+        cart.transform.localScale = new Vector3(2f, 2f, 1f);
+        cart.transform.position = new Vector3(gapCenter, beamBottom - 0.35f, 0f);
+
+        // cable: un píxel estirado
+        GameObject cableGo = new GameObject("Cable");
+        cableGo.transform.SetParent(root, false);
+        SpriteRenderer cab = cableGo.AddComponent<SpriteRenderer>();
+        cab.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASSETS/Stage2/Generado/Pixel.png");
+        cab.color = new Color(0.12f, 0.12f, 0.18f, 1f);
+        cab.sortingLayerName = "Default"; cab.sortingOrder = -1;
+        cableGo.transform.localScale = new Vector3(0.05f, 1f, 1f);
+
+        // el contenedor naranja, colgado: cuando baja queda con el techo a la altura del muelle
+        float hangTop = beamBottom - 0.35f - 0.35f - 0.4f;
+        GameObject naranja = SolidProp(root, cargo + "7.png", 0f, hangTop - 0.96f, 4, night);
+        float w = naranja.GetComponent<SpriteRenderer>().bounds.size.x;
+        naranja.transform.position = new Vector3(gapCenter, naranja.transform.position.y, 0f);
+        naranja.name = "Contenedor 3 naranja (grua)";
+        CraneLoad load = naranja.AddComponent<CraneLoad>();
+        load.cart = cart.transform;
+        load.cable = cab;
+        load.hookOffset = -0.35f;
+        load.lowerOffset = new Vector2(0f, dock - hangTop);
+        naranja.GetComponent<BoxCollider2D>().enabled = false;   // colgado no es sólido; CraneLoad lo prende al apoyarlo
+        load.UpdateCable();
+
+        // --- muelle D: más carga de fondo y una valla
+        SpriteProp(root, cargo + "16.png", CX(131) + 0.6f, dock, "Default", -2, false, back);
+        SpriteProp(root, cargo + "24.png", CX(134) + 0.2f, dock, "Default", -2, false, back);
+        SpriteProp(root, cargo + "4.png", CX(131) + 0.5f, dock + 0.96f, "Default", -2, true, back);
+        SpriteProp(root, fence + "2.png", CX(126) + 0.4f, dock, "Default", 3, false, night);
+
+        // faroles de la ciudad en los muelles (capa Deco, celdas de Piso)
+        Lamp(2 * 98, -13);
+        Lamp(2 * 130, -13);
+    }
+
+    /// <summary>
+    /// Lo jugable del puerto: la terminal de listas arriba del contenedor gris
+    /// (sin puerta: lo que abre el paso es la grúa bajando el naranja como
+    /// puente), checkpoints y un dron. Correr DESPUÉS de BuildZone5Dressing.
+    /// </summary>
+    public static void BuildZone5Gameplay(TerminalChallenge challenge, float doorOffset)
+    {
+        Transform port = GameObject.Find("Zona5_Puerto").transform;
+        SpriteRenderer gris = port.Find("Contenedor 2 gris").GetComponent<SpriteRenderer>();
+        CraneLoad load = port.Find("Contenedor 3 naranja (grua)").GetComponent<CraneLoad>();
+
+        GameObject old = GameObject.Find("TerminalPuerta_Listas");
+        if (old != null) Object.DestroyImmediate(old);
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Terminal/TerminalPuerta.prefab");
+        GameObject t5 = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        t5.name = "TerminalPuerta_Listas";
+        Undo.RegisterCreatedObjectUndo(t5, "t5");
+
+        // La consola arriba del contenedor gris, mirando a la grúa. El prefab
+        // pone la consola 0,8 a la izquierda de la puerta: calculamos la raíz
+        // como si hubiera una puerta parada sobre el contenedor.
+        float consoleX = gris.bounds.max.x - 0.3f;
+        Vector3 root = new Vector3(consoleX + 0.8f, gris.bounds.max.y + doorOffset, 0f);
+        t5.transform.position = root;
+
+        // Sin puerta: el paso lo abre la grúa.
+        GameObject door = t5.transform.Find("PuertaBlindada").gameObject;
+        CodeTerminal ct = t5.GetComponentInChildren<CodeTerminal>();
+        ct.challenge = challenge;
+        UnityEngine.Events.UnityEvent ev = ct.onSolved;
+        for (int i = ev.GetPersistentEventCount() - 1; i >= 0; i--)
+            if (ev.GetPersistentTarget(i) is PoweredDoor) UnityEditor.Events.UnityEventTools.RemovePersistentListener(ev, i);
+        door.SetActive(false);
+        UnityEditor.Events.UnityEventTools.AddVoidPersistentListener(ev, load.Lower);
+        EditorUtility.SetDirty(ct);
+
+        // La cortina de esta terminal tapa la zona 6 (desde el hueco del puente).
+        PowerCurtain pc = t5.GetComponentInChildren<PowerCurtain>();
+        pc.leftEdge = CX(123) - root.x;
+        pc.rightEdge = CX(Z5End + 1) + 30f - root.x;
+        pc.bottom = -9f - root.y;
+        pc.top = 4f - root.y;
+        EditorUtility.SetDirty(pc);
+
+        // Y la de la terminal 4 termina donde empieza esta.
+        GameObject t4 = GameObject.Find("TerminalPuerta_Bucles");
+        if (t4 != null)
+        {
+            PowerCurtain pc4 = t4.GetComponentInChildren<PowerCurtain>();
+            pc4.rightEdge = CX(123) - t4.transform.position.x;
+            EditorUtility.SetDirty(pc4);
+        }
+
+        GameObject z = GameObject.Find("Zona5");
+        if (z != null) Object.DestroyImmediate(z);
+        z = new GameObject("Zona5");
+        Undo.RegisterCreatedObjectUndo(z, "Zona5");
+        int[] cps = { 97, 114, 127 };
+        string[] names = { "Checkpoint Muelle", "Checkpoint Contenedores", "Checkpoint Puente" };
+        for (int i = 0; i < cps.Length; i++)
+        {
+            GameObject g = new GameObject(names[i]);
+            g.transform.SetParent(z.transform, false);
+            g.transform.position = new Vector3(CX(cps[i]) + 0.32f, CTop(DockTop) + 0.3f, 0f);
+            BoxCollider2D bc = g.AddComponent<BoxCollider2D>();
+            bc.isTrigger = true;
+            bc.size = new Vector2(0.3f, 8f);
+            g.AddComponent<Checkpoint>();
+        }
+        GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
+        GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
+        d.name = "Dron Muelle";
+        d.transform.position = new Vector3(CX(107), CTop(DockTop) + 1.3f, 0f);
     }
 
     // --------------------------------------------------------------- vista previa
