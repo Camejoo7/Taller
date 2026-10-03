@@ -16,15 +16,18 @@ using UnityEngine;
 /// </summary>
 public class PowerCurtain : MonoBehaviour
 {
-    [Header("Qué zona tapa, en coordenadas de mundo")]
+    // Relativos a la posición de este objeto, no de mundo: así el prefab
+    // Terminal+Puerta se puede soltar en cualquier lado y la oscuridad viaja
+    // con la puerta. (Se ignoran la escala y la rotación del objeto.)
+    [Header("Qué zona tapa, relativo a este objeto")]
     [Tooltip("Donde arranca la oscuridad. Va un poco a la derecha de la puerta.")]
-    public float leftEdge = -26.7f;
+    public float leftEdge = 0.3f;
 
     [Tooltip("Hasta dónde llega. Conviene pasarse del borde del nivel.")]
-    public float rightEdge = 3.5f;
+    public float rightEdge = 30f;
 
-    public float bottom = -8f;
-    public float top = 3f;
+    public float bottom = -7f;
+    public float top = 4f;
 
     [Header("Aspecto")]
     [Tooltip("Ancho del degradé del borde izquierdo. Sin esto la oscuridad " +
@@ -102,7 +105,7 @@ public class PowerCurtain : MonoBehaviour
         float width = Mathf.Max(0f, rightEdge - x);
         float height = top - bottom;
 
-        quad.position = new Vector3(x, (top + bottom) * 0.5f, 0f);
+        quad.position = transform.position + new Vector3(x, (top + bottom) * 0.5f, 0f);
         quad.localScale = new Vector3(width / spriteSize.x, height / spriteSize.y, 1f);
     }
 
