@@ -588,6 +588,7 @@ public static class ZoneBuilder
         {
             foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(path)) { s = o as Sprite; if (s != null) break; }
         }
+        if (s == null) throw new System.Exception("SpriteProp: no hay sprite en " + path);
         GameObject go = new GameObject(System.IO.Path.GetFileNameWithoutExtension(path));
         go.transform.SetParent(parent, false);
         SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
@@ -999,6 +1000,189 @@ public static class ZoneBuilder
         GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
         d.name = "Dron Muelle";
         d.transform.position = new Vector3(CX(107), CTop(DockTop) + 1.3f, 0f);
+    }
+
+    // --------------------------------------------------------------- zona 6: la zona verde
+
+    // El final: un parque fuera del control de NEXCORP (pack Green Zone, en
+    // la grilla de 32 px). La terminal de funciones libera a Kira; al
+    // acertar se abre la última puerta y se prende la fuente de la plaza.
+    public const int Z6Start = 136, Z6End = 188;
+
+    public static string GZ(int n) { return "Green Zone:Tile_" + n.ToString("00") + "/Tile_" + n.ToString("00") + "_0"; }
+
+    /// <summary>Tierra con pasto: pasto arriba, piedra debajo, relleno y borde de abajo.</summary>
+    public static void GZBlock(int x0, int top, int x1, int bottom)
+    {
+        for (int x = x0; x <= x1; x++)
+            for (int y = bottom; y <= top; y++)
+            {
+                bool l = x == x0, r = x == x1, single = x0 == x1;
+                int n;
+                if (top == bottom) n = single ? 18 : l ? 6 : r ? 8 : 7;
+                else if (y == top) n = single ? 5 : l ? 1 : r ? 3 : 2;
+                else if (y == bottom) n = single ? 29 : l ? 25 : r ? 28 : 26;
+                else if (y == top - 1) n = single ? 17 : l ? 13 : r ? 16 : ((x & 1) == 0 ? 14 : 15);
+                else n = single ? 60 : l ? 61 : r ? 62 : 4;
+                T(CPiso, x, y, GZ(n));
+            }
+    }
+
+    /// <summary>Plataforma de pasto flotante (49/50/51, o 52 si es de una).</summary>
+    public static void GZFloat(int x0, int x1, int row)
+    {
+        for (int x = x0; x <= x1; x++)
+            T(CPiso, x, row, GZ(x0 == x1 ? 52 : x == x0 ? 49 : x == x1 ? 51 : 50));
+    }
+
+    public static void BuildZone6Terrain()
+    {
+        EnsureWaterLayer();
+        Clear(CPiso, Z6Start, -20, Z6End + 4, 8);
+        Clear(CFondo, Z6Start, -20, Z6End + 4, 8);
+        Clear(CAgua, Z6Start, -20, Z6End + 4, 8);
+
+        GZBlock(136, -7, 145, -14);     // entrada al parque (misma altura que el muelle)
+        GZBlock(146, -6, 149, -14);     // colina +1
+        GZBlock(150, -5, 153, -14);     // cima +1
+        // estanque: plataformas flotantes, huecos de 1
+        GZFloat(155, 156, -5);          // misma altura que la cima
+        GZFloat(158, 159, -4);          // +1
+        GZFloat(161, 162, -5);          // -1
+        GZBlock(164, -6, Z6End, -14);   // la plaza (-1 desde la última plataforma)
+        Water(154, 163, WaterTop, -16);
+        // el borde del mundo: una pared al final, detrás de la salida
+        GZBlock(Z6End + 1, 2, Z6End + 3, -14);
+        RefreshColliders();
+    }
+
+    public static void BuildZone6Dressing()
+    {
+        GameObject old = GameObject.Find("Zona6_Parque");
+        if (old != null) Object.DestroyImmediate(old);
+        Transform root = new GameObject("Zona6_Parque").transform;
+        Undo.RegisterCreatedObjectUndo(root.gameObject, "Zona6");
+
+        string ob = "Assets/ASSETS/Green Zone/3 Objects/";
+        Color night = new Color(0.78f, 0.78f, 0.92f, 1f);
+        Color far = new Color(0.5f, 0.48f, 0.7f, 1f);
+
+        // árboles grandes al fondo (detrás de todo lo jugable)
+        SpriteProp(root, ob + "Other/Tree3.png", CX(139) + 0.4f, CTop(-7), "Default", -3, false, far);
+        SpriteProp(root, ob + "Other/Tree4.png", CX(151) + 0.3f, CTop(-5), "Default", -3, false, far);
+        SpriteProp(root, ob + "Other/Tree2.png", CX(170), CTop(-6), "Default", -3, true, far);
+        SpriteProp(root, ob + "Other/Tree1.png", CX(182), CTop(-6), "Default", -3, false, far);
+
+        // entrada: cerca de alambre con el portón abierto, arbustos, tacho
+        SpriteProp(root, ob + "Fence/2.png", CX(137) + 0.3f, CTop(-7), "Default", -1, false, night);
+        SpriteProp(root, ob + "Fence/1.png", CX(138) + 0.4f, CTop(-7), "Default", -1, false, night);
+        SpriteProp(root, ob + "Bushes/17.png", CX(141) + 0.2f, CTop(-7), "Default", 2, false, night);
+        SpriteProp(root, ob + "Other/Garbage_Can1.png", CX(143) + 0.3f, CTop(-7), "Default", 2, false, night);
+        SpriteProp(root, ob + "Benches/1.png", CX(144) + 0.2f, CTop(-7), "Default", 1, false, night);
+
+        // colina y estanque
+        SpriteProp(root, ob + "Bushes/19.png", CX(147) + 0.3f, CTop(-6), "Default", 2, false, night);
+        SpriteProp(root, ob + "Stones/5.png", CX(152) + 0.3f, CTop(-5), "Default", 2, false, night);
+        SpriteProp(root, ob + "Bushes/20.png", CX(165) + 0.2f, CTop(-6), "Default", 2, false, night);
+
+        // plaza: la fuente (seca hasta que se libera a Kira), bancos, faroles
+        GameObject fuente = SpriteProp(root, "Assets/ASSETS/Stage2/Generado/Fuente_Seca.png", CX(169) + 0.64f, CTop(-6), "Default", 1, false, Color.white);
+        fuente.name = "Fuente";
+        SpriteFlipbook fb = fuente.AddComponent<SpriteFlipbook>();
+        fb.frames = new Sprite[4];
+        for (int i = 0; i < 4; i++) fb.frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/ASSETS/Stage2/Generado/Fuente_" + i + ".png");
+        fb.frameTime = 0.12f;
+        PowerNode pn = fuente.AddComponent<PowerNode>();
+        pn.offColor = Color.white;     // seca: el dibujo ya lo dice, no hace falta oscurecerla
+        pn.delay = 0.6f;
+        SpriteProp(root, ob + "Benches/2.png", CX(166) + 0.3f, CTop(-6), "Default", 1, false, night);
+        SpriteProp(root, ob + "Benches/1.png", CX(172) + 0.2f, CTop(-6), "Default", 1, true, night);
+        SpriteProp(root, ob + "Bushes/13.png", CX(178) + 0.2f, CTop(-6), "Default", 2, false, night);
+        SpriteProp(root, ob + "Stones/4.png", CX(185) + 0.3f, CTop(-6), "Default", 2, false, night);
+        Lamp(2 * 141, -13);
+        Lamp(2 * 167, -11);
+        Lamp(2 * 181, -11);
+    }
+
+    /// <summary>
+    /// Lo jugable del final: la terminal de funciones con la última puerta
+    /// (además prende la fuente), el diálogo de cierre de Kira, la salida al
+    /// menú, checkpoints y un dron. Correr DESPUÉS de BuildZone6Dressing.
+    /// </summary>
+    public static void BuildZone6Gameplay(TerminalChallenge challenge, float doorOffset)
+    {
+        GameObject old = GameObject.Find("TerminalPuerta_Funciones");
+        if (old != null) Object.DestroyImmediate(old);
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Terminal/TerminalPuerta.prefab");
+        GameObject t6 = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        t6.name = "TerminalPuerta_Funciones";
+        Undo.RegisterCreatedObjectUndo(t6, "t6");
+        Vector3 p = new Vector3(CX(176) + 0.32f, CTop(-6) + doorOffset, 0f);
+        t6.transform.position = p;
+        CodeTerminal ct = t6.GetComponentInChildren<CodeTerminal>();
+        ct.challenge = challenge;
+        PowerNode fuente = GameObject.Find("Zona6_Parque/Fuente").GetComponent<PowerNode>();
+        UnityEditor.Events.UnityEventTools.AddVoidPersistentListener(ct.onSolved, fuente.PowerOn);
+        EditorUtility.SetDirty(ct);
+        PowerCurtain pc = t6.GetComponentInChildren<PowerCurtain>();
+        pc.leftEdge = 0.3f;
+        pc.rightEdge = CX(Z6End + 1) - p.x;
+        pc.bottom = -9f - p.y;
+        pc.top = 4f - p.y;
+        EditorUtility.SetDirty(pc);
+
+        // La cortina de la terminal 5 termina en esta puerta.
+        GameObject t5 = GameObject.Find("TerminalPuerta_Listas");
+        if (t5 != null)
+        {
+            PowerCurtain pc5 = t5.GetComponentInChildren<PowerCurtain>();
+            pc5.rightEdge = p.x + 0.1f - t5.transform.position.x;
+            EditorUtility.SetDirty(pc5);
+        }
+
+        GameObject z = GameObject.Find("Zona6");
+        if (z != null) Object.DestroyImmediate(z);
+        z = new GameObject("Zona6");
+        Undo.RegisterCreatedObjectUndo(z, "Zona6");
+
+        int[][] cps = { new[] { 137, -7 }, new[] { 152, -5 }, new[] { 165, -6 } };
+        string[] names = { "Checkpoint Parque", "Checkpoint Estanque", "Checkpoint Plaza" };
+        for (int i = 0; i < cps.Length; i++)
+        {
+            GameObject g = new GameObject(names[i]);
+            g.transform.SetParent(z.transform, false);
+            g.transform.position = new Vector3(CX(cps[i][0]) + 0.32f, CTop(cps[i][1]) + 0.3f, 0f);
+            BoxCollider2D bc = g.AddComponent<BoxCollider2D>();
+            bc.isTrigger = true;
+            bc.size = new Vector2(0.3f, 8f);
+            g.AddComponent<Checkpoint>();
+        }
+
+        // Kira se despide pasando la última puerta (el segmento de cierre del
+        // StageData), y después la salida lleva al menú.
+        GameObject outro = new GameObject("Kira Cierre");
+        outro.transform.SetParent(z.transform, false);
+        outro.transform.position = new Vector3(CX(179) + 0.32f, CTop(-6) + 0.6f, 0f);
+        BoxCollider2D ob = outro.AddComponent<BoxCollider2D>();
+        ob.isTrigger = true;
+        ob.size = new Vector2(0.3f, 3f);
+        KiraTriggerZone kz = outro.AddComponent<KiraTriggerZone>();
+        kz.dialogueManager = Object.FindFirstObjectByType<DialogueManager>();
+        kz.segment = DialogueSegment.Outro;
+
+        GameObject exit = new GameObject("Salida Final");
+        exit.transform.SetParent(z.transform, false);
+        exit.transform.position = new Vector3(CX(185) + 0.32f, CTop(-6) + 0.6f, 0f);
+        BoxCollider2D eb = exit.AddComponent<BoxCollider2D>();
+        eb.isTrigger = true;
+        eb.size = new Vector2(0.3f, 3f);
+        StageExit se = exit.AddComponent<StageExit>();
+        se.nextScene = "MainMenu";
+
+        GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
+        GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
+        d.name = "Dron Estanque";
+        d.transform.position = new Vector3(CX(158) + 0.6f, CTop(-4) + 1.2f, 0f);
     }
 
     // --------------------------------------------------------------- vista previa
