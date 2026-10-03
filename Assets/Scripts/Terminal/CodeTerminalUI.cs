@@ -466,20 +466,28 @@ public class CodeTerminalUI : MonoBehaviour
     public Color ErrorColor { get { return errorColor; } }
     public Color CodeColor { get { return codeColor; } }
 
-    /// <summary>Escribe una línea de salida letra por letra, como una consola de verdad.</summary>
+    /// <summary>
+    /// Escribe una salida letra por letra, como una consola de verdad. Si
+    /// trae varias líneas (un for que imprime varias veces), va renglón por
+    /// renglón: cada uno ocupa su lugar en la pantalla y empuja los viejos.
+    /// </summary>
     public IEnumerator TypeLine(string text, Color color, float perChar)
     {
-        outputLines.Add("");
-        while (outputLines.Count > 6) outputLines.RemoveAt(0);
-
-        int index = outputLines.Count - 1;
         string hex = ColorUtility.ToHtmlStringRGB(color);
 
-        for (int i = 1; i <= text.Length; i++)
+        foreach (string line in text.Split('\n'))
         {
-            outputLines[index] = "<color=#" + hex + ">" + text.Substring(0, i) + "</color>";
-            outputText.text = string.Join("\n", outputLines.ToArray());
-            yield return new WaitForSeconds(perChar);
+            outputLines.Add("");
+            while (outputLines.Count > 6) outputLines.RemoveAt(0);
+
+            int index = outputLines.Count - 1;
+
+            for (int i = 1; i <= line.Length; i++)
+            {
+                outputLines[index] = "<color=#" + hex + ">" + line.Substring(0, i) + "</color>";
+                outputText.text = string.Join("\n", outputLines.ToArray());
+                yield return new WaitForSeconds(perChar);
+            }
         }
     }
 

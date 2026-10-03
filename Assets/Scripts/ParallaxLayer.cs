@@ -79,5 +79,6 @@ public class ParallaxLayer : MonoBehaviour
     {
         foreach (ParallaxLayer l in all)
             if (l != null) l.Apply(camPos, orthoSize, aspect);
+        ZoneBackdrop.ApplyAll(camPos.x);
     }
 }

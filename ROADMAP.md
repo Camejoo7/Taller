@@ -124,7 +124,7 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 | 1 | print | `print("ABRIR")` — la cerradura vieja obedece al comando que le mandes | ✅ `Stage2_Print_01.asset` |
 | 2 | variables y tipos | `puerta = "abierta"` — la cerradura lee una variable (el tramo pintado a mano después de la primera puerta; la terminal está en el portal del final) | 🟡 `Stage2_Variables_01.asset` (borrador) |
 | 3 | condicionales | `if energia > 50: print("ABRIR")` — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
-| 4 | bucles | Un `for`/`while` que repita algo N veces — reiniciar N nodos, recorrer una lista de puertas | ⬜ |
+| 4 | bucles | `for nodo in range(4): print(...)` — "Central eléctrica" (pack Power Station): se cruzan 4 torres-nodo apagadas y **la respuesta es cuántas viste**. Al acertar la cámara viaja al patio y los 4 nodos se prenden de a uno | 🟡 `Stage2_Bucles_01.asset` (borrador) |
 | 5 | listas y cadenas | Sacar un elemento de una lista o un pedazo de una cadena (un código escondido en una trama) | ⬜ |
 | 6 | funciones | Definir una función y llamarla — "la cerradura necesita que le enseñes a abrirse" | ⬜ |
 
