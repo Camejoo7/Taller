@@ -472,6 +472,268 @@ public static class ZoneBuilder
         Prop(Deco, 90, -10, 3, 2, 4, 2);
     }
 
+    // --------------------------------------------------------------- zona 4: central eléctrica
+
+    // Los tiles del pack Power Station son de 32 px: viven en su propia
+    // grilla ("GridCentral", celda 0,32 con los tilemaps a escala 2), así
+    // cada tile mide 0,64 = 2 celdas de Piso y los píxeles quedan del mismo
+    // tamaño que el resto. La grilla arranca en el mismo origen que Piso, así
+    // que la celda i de la central ocupa las celdas 2i y 2i+1 de Piso.
+    public const string CPiso = "Central_Piso", CFondo = "Central_Fondo";
+
+    public static void EnsureCentralGrid()
+    {
+        if (MapTools.Map(CPiso) != null) return;
+        Tilemap piso = MapTools.Map(Piso);
+        GameObject g = new GameObject("GridCentral", typeof(Grid));
+        Undo.RegisterCreatedObjectUndo(g, "GridCentral");
+        g.GetComponent<Grid>().cellSize = new Vector3(0.32f, 0.32f, 0f);
+        g.transform.position = piso.transform.position;
+
+        Tilemap solid = MakeMap(g.transform, CPiso, piso, "Default", 5);
+        solid.gameObject.AddComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        TilemapCollider2D tc = solid.gameObject.AddComponent<TilemapCollider2D>();
+        tc.compositeOperation = Collider2D.CompositeOperation.Merge;
+        CompositeCollider2D cc = solid.gameObject.AddComponent<CompositeCollider2D>();
+        cc.geometryType = CompositeCollider2D.GeometryType.Outlines;
+        // el mismo material sin fricción que el piso original, si tiene
+        Collider2D pc = piso.GetComponent<CompositeCollider2D>();
+        if (pc != null && pc.sharedMaterial != null) cc.sharedMaterial = pc.sharedMaterial;
+
+        MakeMap(g.transform, CFondo, piso, "Default", -1);
+    }
+
+    static Tilemap MakeMap(Transform parent, string name, Tilemap like, string layer, int order)
+    {
+        GameObject go = new GameObject(name, typeof(Tilemap), typeof(TilemapRenderer));
+        go.transform.SetParent(parent, false);
+        go.transform.localScale = new Vector3(2f, 2f, 1f);
+        TilemapRenderer r = go.GetComponent<TilemapRenderer>();
+        r.sharedMaterial = like.GetComponent<TilemapRenderer>().sharedMaterial;
+        r.sortingLayerName = layer;
+        r.sortingOrder = order;
+        return go.GetComponent<Tilemap>();
+    }
+
+    public static string PS(int n) { return "POWER STATION:Tile_" + n.ToString("00") + "/Tile_" + n.ToString("00"); }
+
+    /// <summary>Bloque de ladrillo con ribete (nine-slice del pack) en celdas de la central.</summary>
+    public static void PSBlock(string layer, int x0, int top, int x1, int bottom)
+    {
+        for (int x = x0; x <= x1; x++)
+            for (int y = bottom; y <= top; y++)
+            {
+                bool l = x == x0, r = x == x1, t = y == top, b = y == bottom;
+                int n;
+                if (x0 == x1) n = t ? 4 : b ? 20 : 12;
+                else if (t) n = l ? 1 : r ? 3 : ((x - x0) % 4 == 2 ? 7 : 2);
+                else if (b) n = l ? 17 : r ? 19 : 18;
+                else n = l ? 9 : r ? 11 : (((x * 7 + y * 3) % 5) == 0 ? 37 : 10);
+                T(layer, x, y, PS(n));
+            }
+    }
+
+    /// <summary>Plataforma flotante de una fila (25/26/27, o 28 si es de una).</summary>
+    public static void PSPlatform(string layer, int x0, int x1, int row)
+    {
+        for (int x = x0; x <= x1; x++)
+            T(layer, x, row, PS(x0 == x1 ? 28 : x == x0 ? 25 : x == x1 ? 27 : 26));
+    }
+
+    /// <summary>Pared de paneles técnicos (fondo de la sala de control).</summary>
+    public static void PSPanels(int x0, int x1, int y0, int y1)
+    {
+        int[] wall = { 50, 51, 52, 54, 61, 62, 55, 53, 63, 64, 57, 58 };
+        for (int x = x0; x <= x1; x++)
+            for (int y = y0; y <= y1; y++)
+            {
+                int h = Mathf.Abs(x * 13 + y * 7) % wall.Length;
+                T(CFondo, x, y, PS(wall[h]));
+            }
+    }
+
+    /// <summary>
+    /// Sprite suelto (objetos de craftpix) con la base apoyada en (x, y) de
+    /// mundo, a 50 px por unidad como el resto del arte.
+    /// </summary>
+    public static GameObject SpriteProp(Transform parent, string path, float x, float baseY, string layer, int order, bool flip, Color tint)
+    {
+        Sprite s = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        if (s == null)
+        {
+            foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(path)) { s = o as Sprite; if (s != null) break; }
+        }
+        GameObject go = new GameObject(System.IO.Path.GetFileNameWithoutExtension(path));
+        go.transform.SetParent(parent, false);
+        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = s;
+        sr.sortingLayerName = layer;
+        sr.sortingOrder = order;
+        sr.color = tint;
+        float k = s.pixelsPerUnit / 50f;
+        go.transform.localScale = new Vector3(flip ? -k : k, k, 1f);
+        float pivotFromBottom = s.pivot.y / s.pixelsPerUnit * k;
+        go.transform.position = new Vector3(x, baseY + pivotFromBottom, 0f);
+        return go;
+    }
+
+    // Coordenadas de la central (celdas de 0,64). La zona arranca en la
+    // celda 53 (justo después de la pasarela de la puerta 3).
+    public const int Z4Start = 53, Z4End = 95;
+
+    /// <summary>Las 4 torres-nodo: {x izquierda, fila del tope}. Cada una de 2 de ancho.</summary>
+    public static readonly int[][] Nodes = { new[] { 66, -7 }, new[] { 69, -6 }, new[] { 72, -5 }, new[] { 75, -6 } };
+
+    public static float CX(int i) { return -0.01f + 0.64f * i; }      // borde izquierdo de la celda i
+    public static float CTop(int row) { return 0.04f + 0.64f * (row + 1); } // borde de arriba de la fila
+
+    public static void BuildZone4Terrain()
+    {
+        EnsureLayers();
+        EnsureCentralGrid();
+        Clear(CPiso, Z4Start - 2, -20, Z4End + 4, 8);
+        Clear(CFondo, Z4Start - 2, -20, Z4End + 4, 8);
+
+        // La pasarela de la puerta 3 sigue dos celdas más, hasta el borde de la central.
+        Rect(Piso, 104, -9, 105, -9, "Tiles/Tiles_27");
+
+        // A — muralla: sigue a la altura de la pasarela (tope fila -5 = -2,52).
+        PSBlock(CPiso, 53, -5, 60, -12);
+        // B — escalones hacia el patio.
+        PSBlock(CPiso, 61, -6, 62, -12);
+        PSBlock(CPiso, 63, -7, 64, -12);
+        // C — patio de nodos: 4 torres sobre el vacío, en arco (-7 -6 -5 -6)
+        //     y siempre con hueco de 1 tile (0,64). Un hueco de 2 (1,28) a la
+        //     misma altura se pasa solo saltando desde el borde mismo: probado
+        //     con la física del jugador, sobran 7 cm. Demasiado para el aula.
+        foreach (int[] n in Nodes) PSBlock(CPiso, n[0], n[1], n[0] + 1, -16);
+        // D — sala de control: piso (hueco 1 desde N4, -1), techo y pared.
+        PSBlock(CPiso, 78, -7, Z4End, -12);
+        PSBlock(CPiso, 82, -1, Z4End, -2);           // techo (deja 4 filas libres)
+        PSPanels(82, Z4End, -6, -3);                 // pared del fondo
+    }
+
+    public static void BuildZone4Dressing()
+    {
+        GameObject old = GameObject.Find("Zona4_Decoracion");
+        if (old != null) Object.DestroyImmediate(old);
+        Transform root = new GameObject("Zona4_Decoracion").transform;
+        Undo.RegisterCreatedObjectUndo(root.gameObject, "Zona4");
+
+        string obj = "Assets/ASSETS/POWER STATION/3 Objects/";
+        Color dim = new Color(0.55f, 0.5f, 0.75f, 1f);   // fondo: más oscuro y violáceo
+
+        // Torres de alta tensión en el patio, detrás de los nodos: la base
+        // se pierde abajo y la punta asoma por encima de las torres.
+        SpriteProp(root, obj + "3 Power lines/3.png", CX(68) + 0.32f, CTop(-11), "Default", -3, false, dim);
+        SpriteProp(root, obj + "3 Power lines/4.png", CX(74) + 0.32f, CTop(-12), "Default", -3, true, dim);
+
+        // Los 4 nodos: una bobina apagada arriba de cada torre. Se prenden
+        // (PowerNode.PowerOn) cuando se resuelve la terminal de bucles.
+        System.Type nodeType = null, flipType = null;
+        foreach (System.Reflection.Assembly a in System.AppDomain.CurrentDomain.GetAssemblies())
+            if (a.GetName().Name == "Assembly-CSharp") { nodeType = a.GetType("PowerNode"); flipType = a.GetType("SpriteFlipbook"); }
+        string trap = "Assets/ASSETS/POWER STATION/4 Animated objects/Trap.png";
+        List<Sprite> frames = new List<Sprite>();
+        foreach (Object o in AssetDatabase.LoadAllAssetsAtPath(trap)) { Sprite sp = o as Sprite; if (sp != null) frames.Add(sp); }
+        frames.Sort((a, b) => a.name.CompareTo(b.name));
+        int[][] towers = Nodes;
+        for (int i = 0; i < towers.Length; i++)
+        {
+            GameObject node = SpriteProp(root, trap, CX(towers[i][0]) + 0.64f, CTop(towers[i][1]), "Default", 3, false, Color.white);
+            node.name = "Nodo " + (i + 1);
+            node.GetComponent<SpriteRenderer>().sprite = frames[0];
+            Component fb = node.AddComponent(flipType);
+            SerializedObject fso = new SerializedObject(fb);
+            SerializedProperty fr = fso.FindProperty("frames");
+            fr.arraySize = frames.Count;
+            for (int f = 0; f < frames.Count; f++) fr.GetArrayElementAtIndex(f).objectReferenceValue = frames[f];
+            fso.FindProperty("frameTime").floatValue = 0.08f;
+            fso.ApplyModifiedPropertiesWithoutUndo();
+            Component pn = node.AddComponent(nodeType);
+            SerializedObject pso = new SerializedObject(pn);
+            // De a uno, como el for. El primero espera a que la cámara llegue
+            // al patio (CameraShowcase).
+            pso.FindProperty("delay").floatValue = 1.0f + i * 0.45f;
+            pso.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        // Muralla: tanques y transformador.
+        SpriteProp(root, obj + "2 Decoration/24.png", CX(55) + 0.68f, CTop(-5), "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "2 Decoration/26.png", CX(58) + 0.7f, CTop(-5), "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "2 Decoration/19.png", CX(54) + 0.2f, CTop(-5), "Default", 2, false, Color.white);   // cartel amarillo
+
+        // Carteles de peligro antes del patio.
+        SpriteProp(root, obj + "2 Decoration/20.png", CX(64) + 0.3f, CTop(-7), "Default", 2, false, Color.white);
+
+        // Sala de control: monitores, planos en la pared, tanque.
+        SpriteProp(root, obj + "2 Decoration/13.png", CX(84) + 0.6f, CTop(-5) - 0.1f, "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "2 Decoration/15.png", CX(87) + 0.6f, CTop(-5) - 0.1f, "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "2 Decoration/25.png", CX(90) + 0.68f, CTop(-7), "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "2 Decoration/12.png", CX(86) + 0.3f, CTop(-7), "Default", 2, false, Color.white);
+        SpriteProp(root, obj + "1 Tube/3.png", CX(82) + 0.2f, CTop(-7), "Default", 1, false, Color.white);
+        SpriteProp(root, obj + "1 Tube/4.png", CX(88), CTop(-3) - 0.75f, "Default", 1, false, Color.white);
+    }
+
+    /// <summary>
+    /// Lo jugable de la zona 4: la terminal de bucles en la sala de control
+    /// (con su onSolved: puerta, cortina, la cámara mirando el patio y los 4
+    /// nodos prendiéndose), checkpoints y un dron. Correr DESPUÉS de
+    /// BuildZone4Dressing, que es la que crea los nodos.
+    /// </summary>
+    public static void BuildZone4Gameplay()
+    {
+        GameObject t4 = GameObject.Find("TerminalPuerta_Bucles");
+        CodeTerminal ct = t4.GetComponentInChildren<CodeTerminal>();
+        UnityEngine.Events.UnityEvent ev = ct.onSolved;
+        // deja la puerta y la cortina (las dos primeras, vienen del prefab) y rehace el resto
+        for (int i = ev.GetPersistentEventCount() - 1; i >= 2; i--)
+            UnityEditor.Events.UnityEventTools.RemovePersistentListener(ev, i);
+
+        GameObject z = GameObject.Find("Zona4");
+        if (z != null) Object.DestroyImmediate(z);
+        z = new GameObject("Zona4");
+        Undo.RegisterCreatedObjectUndo(z, "Zona4");
+
+        // La cámara se va a mirar el patio: desde la sala de control los
+        // nodos quedan fuera de cuadro, y si se prenden sin que se vea, para
+        // el jugador no pasó nada.
+        GameObject show = new GameObject("Vista Patio de Nodos");
+        show.transform.SetParent(z.transform, false);
+        show.transform.position = new Vector3((CX(Nodes[0][0]) + CX(Nodes[3][0] + 2)) / 2f, CTop(-6) + 0.2f, 0f);
+        CameraShowcase cs = show.AddComponent<CameraShowcase>();
+        cs.zoom = 2.7f; cs.weight = 1f; cs.duration = 3.8f;
+        UnityEditor.Events.UnityEventTools.AddVoidPersistentListener(ev, cs.Show);
+
+        Transform deco = GameObject.Find("Zona4_Decoracion").transform;
+        for (int i = 1; i <= Nodes.Length; i++)
+        {
+            PowerNode pn = deco.Find("Nodo " + i).GetComponent<PowerNode>();
+            UnityEditor.Events.UnityEventTools.AddVoidPersistentListener(ev, pn.PowerOn);
+        }
+        EditorUtility.SetDirty(ct);
+
+        // Checkpoints: al entrar, antes del patio y en la sala de control.
+        int[][] cps = { new[] { 54, -5 }, new[] { 63, -7 }, new[] { 79, -7 } };
+        string[] names = { "Checkpoint Muralla", "Checkpoint Patio", "Checkpoint Control" };
+        for (int i = 0; i < cps.Length; i++)
+        {
+            GameObject g = new GameObject(names[i]);
+            g.transform.SetParent(z.transform, false);
+            g.transform.position = new Vector3(CX(cps[i][0]) + 0.32f, CTop(cps[i][1]) + 0.3f, 0f);
+            BoxCollider2D bc = g.AddComponent<BoxCollider2D>();
+            bc.isTrigger = true;
+            bc.size = new Vector2(0.3f, 8f);
+            g.AddComponent<Checkpoint>();
+        }
+
+        // Un dron sobre el patio.
+        GameObject dron = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Dron.prefab");
+        GameObject d = (GameObject)PrefabUtility.InstantiatePrefab(dron, z.transform);
+        d.name = "Dron Patio";
+        d.transform.position = new Vector3(CX(71) + 0.3f, CTop(-5) + 1.0f, 0f);
+    }
+
     // --------------------------------------------------------------- vista previa
 
     /// <summary>Pinta todas las piezas en un rincón vacío para mirarlas.</summary>

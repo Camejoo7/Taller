@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Stage2_Bucles_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Stage2_Bucles_01
+  concept: bucles
+  stageNumber: 2
+  prompt: "RED DE NODOS \u2014 los nodos del patio est\xE1n ca\xEDdos. Complet\xE1
+    el for para reiniciarlos a todos: una vuelta por cada nodo que cruzaste."
+  codeBefore: for nodo in range(
+  codeAfter: '): print("REINICIANDO NODO", nodo)'
+  blankWidth: 2
+  acceptedAnswers:
+  - 4
+  - 0,4
+  - 0, 4
+  caseSensitive: 1
+  expectedOutput: 'REINICIANDO NODO 0
+
+    REINICIANDO NODO 1
+
+    REINICIANDO NODO
+    2
+
+    REINICIANDO NODO 3'
+  kiraOnSuccess: 'Cuatro vueltas, cuatro nodos. Fijate que range(4) cuenta 0, 1,
+    2, 3: arranca en cero, como casi todo en Python.'
+  knownMistakes:
+  - answer: 3
+    pythonError: "REINICIANDO NODO 0, 1, 2 \u2192 el cuarto nodo sigue ca\xEDdo"
+    kiraSays: "Cont\xE1 de nuevo las torres que saltaste. range(3) da solo tres vueltas:
+      0, 1 y 2."
+  - answer: 5
+    pythonError: "REINICIANDO NODO 4 \u2192 ERROR DE RED: el nodo 4 no existe"
+    kiraSays: "Te pasaste por uno. range(5) da cinco vueltas, de 0 a 4, y ac\xE1
+      hay cuatro nodos."
+  - answer: cuatro
+    pythonError: 'NameError: name ''cuatro'' is not defined'
+    kiraSays: "Python no lee n\xFAmeros escritos con letras: para \xE9l, cuatro es
+      el nombre de una variable que no existe."
+  - answer: '"4"'
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero. range necesita un
+      n\xFAmero de verdad."
+  - answer: '''4'''
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero. range necesita un
+      n\xFAmero de verdad."
+  - answer: 4.0
+    pythonError: 'TypeError: ''float'' object cannot be interpreted as an integer'
+    kiraSays: range solo acepta enteros. 4.0 vale lo mismo, pero tiene coma decimal
+      y range no lo quiere.
+  - answer: 0
+    pythonError: '(sin salida: range(0) no da ninguna vuelta)'
+    kiraSays: range(0) es un bucle que no se repite nunca. Los nodos siguen igual
+      de muertos.
+  - answer: 1,4
+    pythonError: "REINICIANDO NODO 1, 2, 3 \u2192 el nodo 0 sigue ca\xEDdo"
+    kiraSays: "range(1, 4) arranca en 1 y se saltea el nodo 0. Con un solo n\xFAmero,
+      range arranca solo en cero."
+  - answer: 1, 4
+    pythonError: "REINICIANDO NODO 1, 2, 3 \u2192 el nodo 0 sigue ca\xEDdo"
+    kiraSays: "range(1, 4) arranca en 1 y se saltea el nodo 0. Con un solo n\xFAmero,
+      range arranca solo en cero."
+  fallbackError: 'SyntaxError: invalid syntax'
+  fallbackKiraSays: "Adentro de range va CU\xC1NTAS veces se repite. Cont\xE1 los
+    nodos que cruzaste."

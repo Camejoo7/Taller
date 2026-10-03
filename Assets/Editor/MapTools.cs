@@ -156,10 +156,17 @@ public static class MapTools
 
     // ------------------------------------------------------------ tilemaps
 
+    /// <summary>
+    /// Un tilemap por nombre: primero bajo "Grid" (el del Stage 2), si no,
+    /// cualquiera de la escena con ese nombre (ej. los de "GridCentral").
+    /// </summary>
     public static Tilemap Map(string name)
     {
         GameObject go = GameObject.Find("Grid/" + name);
-        return go != null ? go.GetComponent<Tilemap>() : null;
+        if (go != null) return go.GetComponent<Tilemap>();
+        foreach (Tilemap t in Object.FindObjectsByType<Tilemap>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (t.name == name) return t;
+        return null;
     }
 
     static Dictionary<string, TileBase> tileCache;
