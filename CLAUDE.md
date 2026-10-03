@@ -56,6 +56,10 @@ Este proyecto se desarrolla con Claude Code conectado al Editor vía MCP (`com.c
 - Al terminar un ítem, marcarlo `[x]` en `ROADMAP.md` en el mismo momento — no dejarlo para después.
 - Si Kevin pide algo de una fase posterior mientras quedan ítems sin marcar en la fase actual, avisarle explícitamente ("esto es de la Fase X, todavía faltan N ítems de la Fase actual") antes de proceder. No bloquearlo si igual quiere seguir, pero que sea una decisión consciente, no un salto por desorientación.
 
+### Modelo y esfuerzo
+
+Kevin elige el modelo y el nivel de esfuerzo de cada sesión (por defecto: Opus 5.5, esfuerzo medio). **Si una tarea parece muy compleja para la configuración actual** (refactor de sistemas, bugs difíciles de diagnosticar, diseño de una mecánica nueva, cambios grandes de escena), avisarle **antes de arrancar** qué modelo y qué esfuerzo conviene, y por qué. Lo cambia él con `/model`. Para tareas chicas o mecánicas no hace falta decir nada.
+
 ### Flujo obligatorio para cualquier cambio de código o escena
 
 Ninguna tarea se considera terminada hasta completar este ciclo:
@@ -148,6 +152,7 @@ Todo en `Assets/Scripts/Terminal/`:
 - `Assets/Scripts/ScriptMenu/MainMenu.cs` — `Jugar()` loads `"SampleScene"` via `SceneManager.LoadScene`; `Salir()` calls `Application.Quit()` with an Editor fallback.
 - `Assets/Scripts/ScriptMenu/AutoScrollUI.cs` — Animates a `RawImage` UV rect by incrementing `uvRect.x` each frame (`velocidad = 0.1f`). Attach to the background `RawImage` in the Main Menu canvas.
 - `Assets/Scripts/ScriptMenu/SceneTransition.cs` — Fade in on `Start`, fade out then load on `CargarEscena(sceneName)`. Uses a full-screen black `Image panelFade`. Duration is `duracion = 1f` seconds.
+- Pulido del menú (03/10/2026), todo con tiempo sin escalar: `MenuButtonFX` (hover = selección, escala, texto verde, cursor `>`), `MenuSelection` (Jugar marcado al abrir, nunca sin selección), `NeonFlicker` (título), `TerminalTypeIn` (subtítulo tipeado con `_`), `MenuKira` (Kira paseando como imagen de UI; `FlyAway()` va en el `onClick` de Jugar). El Canvas del menú usa `Scale With Screen Size` 1920×1080, match 1: **no volver a `Constant Pixel Size`**, corta los botones en pantallas chicas.
 
 ## Key Conventions
 

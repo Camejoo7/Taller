@@ -71,6 +71,11 @@ public class CodeTerminal : MonoBehaviour
 
         if (ui == null) ui = FindFirstObjectByType<CodeTerminalUI>();
         if (promptIndicator != null) promptIndicator.SetActive(false);
+
+        // Sin ejercicio la consola no reacciona a nada. Con el prefab es el
+        // olvido más fácil de cometer, así que mejor que se note.
+        if (challenge == null)
+            Debug.LogWarning("CodeTerminal: '" + name + "' no tiene TerminalChallenge asignado.", this);
     }
 
     void Update()

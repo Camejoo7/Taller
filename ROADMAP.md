@@ -104,7 +104,10 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
   - [x] **Vida y enemigos**: tres corazones, `PlayerHealth` (que ahora sí contesta el `IPlayerDamageable` del Code Blaster), y tres `DroneEnemy` en los marcadores que dejó Kevin. Los drones se acercan, avisan, embisten y se alejan; se matan a tiros con `EnemyHealth`.
   - [x] **Arma visible**: sprite 7 del pack `Assets/ASSETS/Armas`, flotando en la puerta del garage, con diálogo de Kira al levantarla.
   - [x] **En Build Settings**: `Stage2` quedó en el índice 2 (02/10/2026), así que ya se llega jugando desde el Stage 1 por la puerta `Exit`.
-  - [ ] **Prefabear el conjunto terminal + puerta + cortina** ← *lo primero de la próxima sesión*. Hoy están armados a mano en la escena. Si van a ser muchos, soltar un prefab y asignar solo el `TerminalChallenge` y el `onSolved` es la diferencia entre agregar un ejercicio en dos minutos o en media hora.
+  - [x] **Prefabear el conjunto terminal + puerta + cortina** (03/10/2026): `Assets/Prefabs/Terminal/TerminalPuerta.prefab`. El origen es la puerta; adentro van `ConsolaNexcorp`, `PuertaBlindada` y `SectorSinEnergia`, con el `onSolved` (puerta `Open` + cortina `Reveal`) ya enganchado dentro del prefab. **Para agregar un ejercicio: soltar el prefab, asignar el `challenge` y ajustar el `rightEdge` de la cortina hasta donde llega esa zona.** Lo demás viene armado.
+    - El `challenge` del prefab va **vacío a propósito**, para que una copia nueva no repita el ejercicio de print sin que nadie se dé cuenta. Si queda vacío, `CodeTerminal` lo avisa con un warning en consola.
+    - El `ui` también va vacío: `CodeTerminal.Start()` busca el `CodeTerminalUI` de la escena solo (un prefab no puede guardar referencias a objetos de la escena).
+    - ⚠️ **Los bordes de `PowerCurtain` ahora son relativos al objeto, ya no de mundo** (se ignoran su escala y rotación). Sin ese cambio la oscuridad se quedaba en su lugar aunque movieras el prefab. La instancia del Stage 2 se convirtió con los bordes ya recalculados, así que en el mundo quedó igual que antes.
   - [ ] Extender el mapa con una zona nueva por concepto (ver la tabla de abajo), cada una con su terminal y su puerta.
   - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira.
   - [ ] Pantalla / flujo de final del mapa.
@@ -126,6 +129,25 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 | 6 | funciones | Definir una función y llamarla — "la cerradura necesita que le enseñes a abrirse" | ⬜ |
 
 > **Lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Está escrito más abajo y vale para cada terminal nueva: no alcanza con un cartel de "¡Correcto!". La puerta que tiembla, las luces que se encienden, el sector que recupera la energía — eso es lo que no se puede hacer en una página web. Si una terminal nueva no tiene una consecuencia física, le falta la mitad.
+
+### Variantes de terminal aprobadas (03/10/2026)
+
+La terminal de completar el hueco es la base y va a aparecer muy seguido. Para que no se vuelva repetitiva, Kevin aprobó estas variantes. **Al armar la zona o la terminal de cualquier concepto, Claude tiene que sugerir la que mejor encaje**, y se prueban primero en el `Laboratorio`.
+
+| # | Variante | Qué pasa | Encaja con | Inspiración |
+|---|---|---|---|---|
+| 1 | **Hackear variables del mundo** | La terminal muestra una variable real (`largo_puente = 2`) y el estudiante **modifica el valor**: el puente se estira. Hay más de un valor válido (con 3 no llega, con 20 atraviesa la pared), y `"8"` en vez de `8` da el `TypeError` real. Recicla el prefab `TerminalPuerta`: en vez de escribir código, se modifica | variables y tipos | *Hack 'n' Slash* |
+| 2 | **Código roto (debugging)** | La línea viene escrita con un bug (falta `:`, mala indentación, sin comillas). La puerta intenta abrirse, tira el traceback y se traba; el estudiante la arregla. Es la misma familia que la 1: modificar código existente | cualquiera | *Gidget* (con Kira como "robot falible con personalidad", que en los estudios hizo completar más niveles) |
+| 3 | **Predecí la salida** | La cerradura pide lo que imprime un código cerrado: `for i in range(3): print(i * 2)` → clave `024` | repaso, sobre todo bucles | investigación sobre code tracing |
+| 4 | **Kira programable** ⭐ (la que más le gustó) | Kira pasa por donde el jugador no puede: `kira.mover(4)`, `kira.activar()` | funciones y argumentos | *Duskers* |
+| 6 | **Torreta con `if`** | `if objetivo == "___": disparar()`. Con `"dron"` limpia el pasillo; si te equivocás, te apunta a vos. **El error también hace algo en el mundo** | condicionales | — |
+| 7 | **Hackear un dron aturdido** | Le disparás, queda chispeando, aparece la "E", y `dron.bando = "aliado"` lo da vuelta contra los suyos. Une combate y código | variables / atributos | — |
+
+Descartadas en la misma charla (no proponerlas primero): escalera que se arma vuelta por vuelta del `for`, interruptores tediosos antes del bucle / función que queda como habilidad, grafiti al revés con slicing, y bloques de código físicos estilo Parsons (ese roza el multiple choice del Code Blaster).
+
+**Lo que falta en el código para habilitarlas:**
+- **1 y 6:** que `CodeTerminal` le pase **el valor escrito** al mundo, no solo `onSolved`.
+- **1 y 2:** que la terminal arranque con texto prellenado que se pueda borrar y editar.
 
 ## La mecánica educativa está en revisión (02/10/2026)
 
@@ -282,6 +304,15 @@ Orden sugerido: las primeras zonas antes (conceptos más simples, valida el patr
 
 - [ ] Música ambiente + efectos (disparo/impacto/acierto/error)
 - [ ] Pulido de UI
+  - [x] **Menú principal** (03/10/2026, adelantado a pedido de Kevin):
+    - **Bug arreglado:** el canvas estaba en `Constant Pixel Size`, así que **a 1280×720 el botón Salir quedaba cortado**. Pasó a `Scale With Screen Size`, referencia 1920×1080, match 1 (por alto). A 1080p se ve idéntico; a 1366×768 (notebooks de liceo) ahora entra todo.
+    - Botones (`MenuButtonFX`): se agrandan, el texto se pone verde terminal y aparece un `>` titilando. **El hover del mouse y la selección con teclado son lo mismo**, así nunca hay dos botones marcados. Para eso los botones se pasaron a escala 1 con su tamaño real y pivote al medio (estaban deformados con escala 2,47 × 0,85 y pivote arriba, y crecían para abajo), y los textos ahora son **hijos** de su botón.
+    - `MenuSelection` en el Canvas: arranca con Jugar marcado y nunca se queda sin selección, así que flechas/WASD + Enter andan siempre.
+    - `NeonFlicker` en el título: cada 2,5–6,5 s, una ráfaga de parpadeos y a veces un corrimiento de costado (interferencia).
+    - `TerminalTypeIn` en el subtítulo: "APRENDE PYTHON" se escribe letra por letra después del fundido y queda un `_` titilando.
+    - **Kira** (`MenuKira`, imagen de UI con los cuadros de `Scan` y `Walk_scan`): entra volando, pasea eligiendo puntos (prefiere los costados), se queda escaneando, **se acerca al botón que marcás**, y **sale disparada por la derecha al apretar Jugar** (`FlyAway` en el `onClick`). Va detrás del cartel en el orden de dibujo, así que cuando cruza por el medio pasa por atrás.
+    - Todo usa tiempo sin escalar: si se vuelve al menú desde la pausa con `timeScale` 0, igual se mueve.
+    - Quedaría para más adelante: música del menú y un sonido al seleccionar o apretar.
 - [ ] Build final de Windows
 - [ ] Bug bash general
 
