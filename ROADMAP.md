@@ -14,11 +14,13 @@ Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas termin
 
 **Qué se cae:** las stages 3-6, el selector de niveles con gating entre stages, y todo lo que decía "una stage por concepto". El gating ahora lo hacen **las puertas dentro del mismo mapa**: cada terminal abre la suya. Eso ya está probado y es mejor que un menú, porque el progreso se ve en el mundo.
 
-**La consecuencia técnica más importante, y lo primero a hacer la sesión que viene:** hoy la consola del Stage 2 es un objeto armado a mano en la escena (`ConsolaNexcorp` = terminal animado + `PromptE` + `CodeTerminal`), más la `PuertaBlindada` y el `SectorSinEnergia` por separado. Si van a ser muchas, **hay que convertir ese conjunto en prefab** para poder soltarlo y solo asignar el `TerminalChallenge` y el `onSolved`. Armar la segunda a mano ya sería trabajo tirado.
+**La consecuencia técnica más importante:** ~~convertir la consola en prefab~~ → hecho el 03/10/2026 (`TerminalPuerta.prefab`).
 
 ## 📍 Dónde estamos ahora
 
 **Fase actual: Fase 2 — El mapa grande del Stage 2** (Fase 0 cerrada; Stage 1 jugable)
+
+**Al 03/10/2026:** el Stage 2 tiene **las 6 zonas**, una por concepto, y se juega de punta a punta hasta volver al menú (ver "El mapa del Stage 2, zona por zona"). Lo que falta de la fase: **revisar los ejercicios borrador 2 a 6** y cerrar el **flujo del final**. Después, playtest real (Fase 3).
 
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
@@ -108,12 +110,12 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
     - El `challenge` del prefab va **vacío a propósito**, para que una copia nueva no repita el ejercicio de print sin que nadie se dé cuenta. Si queda vacío, `CodeTerminal` lo avisa con un warning en consola.
     - El `ui` también va vacío: `CodeTerminal.Start()` busca el `CodeTerminalUI` de la escena solo (un prefab no puede guardar referencias a objetos de la escena).
     - ⚠️ **Los bordes de `PowerCurtain` ahora son relativos al objeto, ya no de mundo** (se ignoran su escala y rotación). Sin ese cambio la oscuridad se quedaba en su lugar aunque movieras el prefab. La instancia del Stage 2 se convirtió con los bordes ya recalculados, así que en el mundo quedó igual que antes.
-  - [ ] Extender el mapa con una zona nueva por concepto (ver la tabla de abajo), cada una con su terminal y su puerta.
-  - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira.
-  - [ ] Pantalla / flujo de final del mapa.
+  - [x] **Extender el mapa con una zona nueva por concepto** (03/10/2026, Claude solo mientras Kevin no estaba): zonas 3 a 6 generadas a continuación del tramo a mano, cada una con su terminal, su consecuencia física, checkpoints y un dron. **Las 6 zonas se recorrieron de punta a punta en Play mode con un piloto automático** (saltos, terminales resueltas de verdad escribiendo la respuesta, consecuencias, salida al menú). Detalle completo en "El mapa del Stage 2, zona por zona" más abajo.
+  - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira. — **Hay borradores de las zonas 2 a 6** (escritos por Claude para que el mapa se pueda recorrer, con tracebacks reales de Python 3.10+). Falta que Kevin los revise: el tono de Kira, la dificultad y si los errores previstos son los que comete de verdad un alumno de noveno.
+  - [ ] Pantalla / flujo de final del mapa. — **A medias**: pasando la última puerta Kira dice el cierre (segmento `Outro` de `Stage2.asset`, una sola línea, la de siempre) y una `StageExit` lleva al Menú Principal. Falta la pantalla de resumen (es de la Fase 3) y, si Kevin quiere, un cierre de Kira más largo para el final del juego.
 
 > **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
-- [ ] **Pipeline de tilemap para el mapa grande** (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
+- [x] **Pipeline de tilemap para el mapa grande** (03/10/2026: las paletas de Central City ya existían y las zonas nuevas se pintan con `MapTools` / `ZoneBuilder`; para Seaport y Green Zone se crearon las `Tile` en `<pack>/1 Tiles/Palette/`, sin prefab de paleta todavía) (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
 
 El objetivo de esta fase es que el mapa **se pueda jugar de punta a punta**, aunque cada zona tenga poco contenido todavía. Se crece zona por zona: mapa → terminal → puerta → siguiente zona.
 
@@ -148,6 +150,36 @@ Descartadas en la misma charla (no proponerlas primero): escalera que se arma vu
 **Lo que falta en el código para habilitarlas:**
 - **1 y 6:** que `CodeTerminal` le pase **el valor escrito** al mundo, no solo `onSolved`.
 - **1 y 2:** que la terminal arranque con texto prellenado que se pueda borrar y editar.
+
+### El mapa del Stage 2, zona por zona (03/10/2026)
+
+Generado por Claude a continuación del tramo pintado a mano, **sin tocar ese tramo** salvo dos cosas: el caño del final (estaba en `Piso` y hacía de pared; ahora es el mismo dibujo en `Deco`, sin colisión) y el relleno negro que sobraba a la derecha del portal (de la celda 6 en adelante).
+
+| Zona | x de mundo | Ambiente y pack | Lo jugable | Terminal y consecuencia |
+|---|---|---|---|---|
+| 1 | −34 → −27 | Garage (a mano) | arma, intro de Kira | print → puerta 1 |
+| 2 | −27 → 1,5 | Interior NEXCORP (a mano) | pasarelas, rampas | **variables** en el portal verde azulado del final → puerta 2 (`TerminalPuerta_Variables`) |
+| 3 | 2 → 33,6 | **Distrito Neón**, Central City + cielo nuevo | rampa a la calle, edificio con local, zanja (pozo), plataformas grises y pasarelas sobre el vacío | **condicionales** al final de la pasarela alta → puerta 3 |
+| 4 | 33,9 → 61,4 | **Central eléctrica**, Power Station | muralla, escalones, 4 torres-nodo en arco sobre el vacío, sala de control | **bucles** en la sala de control → puerta 4 + la cámara viaja al patio y **los 4 nodos se prenden** |
+| 5 | 61,4 → 87 | **El puerto**, Seaport | muelles con agua, caja + contenedor para tomar altura, fila de contenedores para trepar | **listas** arriba del contenedor gris → **la grúa baja el contenedor naranja como puente** (sin puerta) |
+| 6 | 87 → 121 | **La zona verde**, Green Zone | colina, estanque con islas flotantes, plaza | **funciones** → última puerta + **se prende la fuente**; Kira se despide y la salida va al Menú Principal |
+
+**Cómo está armado:**
+- **Capas nuevas alineadas con `Piso`** (la capa `Visual` original está corrida 2 px): `Fachadas` (Default/−1, edificios del fondo), `Deco` (Default/2, props sin colisión) y `Frente` (Personaje/15, sin usar todavía).
+- **`GridCentral`**: una segunda grilla para los packs de craftpix (tiles de 32 px). Celda 0,32 con los tilemaps a escala 2, así cada tile mide 0,64 = 2 celdas de `Piso` y **los píxeles quedan del mismo tamaño que en el resto del juego**. Arranca en el mismo origen que `Piso` (la celda `i` ocupa las celdas `2i` y `2i+1` de `Piso`). Capas: `Central_Piso` (sólida), `Central_Fondo` y `Central_Agua` (Personaje/7: delante de los muelles, debajo de la cortina de los sectores sin energía y del jugador).
+- **Fondo con parallax** (`FondoParallax`): el cielo degradé y la niebla del pack Central City, más un horizonte por zona (ciudad, industria, puerto, árboles) sacado del pack `BACKGROUND` y de los fondos de cada pack, **todos teñidos de violeta** para que sean de la misma familia. Cada horizonte se funde con el siguiente al cruzar de zona (`ZoneBackdrop`). Van en la capa de dibujo `Fondo`, así que el tramo negro del principio los sigue tapando solo.
+- **Caídas**: `CaidaAlVacio` (un `FallRespawn` debajo de todo el mapa, y = −8,6) y `Checkpoint` por zona. Caerse cuesta un corazón y te devuelve al último checkpoint.
+- **Scripts nuevos**: `ParallaxLayer`, `ZoneBackdrop`, `Checkpoint`, `PowerNode` (algo apagado que se prende al resolver: los nodos, la fuente), `CameraShowcase` (la cámara va a mirar la consecuencia si pasa lejos de la consola), `CraneLoad` (el contenedor que baja como puente). `CodeTerminalUI.TypeLine` ahora tipea salidas de varias líneas renglón por renglón. `KiraTriggerZone` ahora elige qué segmento del diálogo dispara.
+- **Herramientas de editor** (`Assets/Editor/`): `MapTools` (capturas del mapa a PNG con o sin grilla, "lo que ve el jugador" en un punto, volcado de un tilemap como texto, pintar por nombre de sprite) y `ZoneBuilder` (las piezas de cada pack y el armado de cada zona en código).
+
+**⚠️ Para retocar el mapa a mano:** se puede pintar encima con el Tile Palette como siempre. Pero **no volver a correr `ZoneBuilder.BuildZoneN...` sobre una zona retocada**: borra el rango y lo rehace, y se pierde lo hecho a mano. Además, `BuildZone4Dressing` / `BuildZone5Dressing` / `BuildZone6Dressing` recrean los nodos, la grúa y la fuente, y hay que volver a correr el `...Gameplay` de esa zona para reenganchar el `onSolved`.
+
+**Pendientes y cosas que conviene mirar jugando:**
+- **Morir reinicia toda la escena.** Los checkpoints solo cubren las caídas. Con un mapa de seis zonas, perder el último corazón en la zona 6 te manda al garage. Hay que decidir: ¿reaparecer en el último checkpoint con los corazones llenos?
+- **Los drones no se probaron con el piloto automático** (se apagaban para probar el recorrido). Hay uno por zona nueva; puede que alguno moleste justo en un salto.
+- **Los ejercicios 2 a 6 son borradores** (ver Fase 2).
+- La niebla, los tintes y la posición de los horizontes se ajustaron mirando capturas: conviene mirarlos jugando y retocar el color desde el Inspector si algo desentona.
+- **Para probar en Play mode con Unity sin foco**, hay que poner `Application.runInBackground = true` (el piloto automático lo hace): si no, el juego se congela en el cuadro 2 cuando la ventana no está activa. No se cambió el Player Setting.
 
 ## La mecánica educativa está en revisión (02/10/2026)
 

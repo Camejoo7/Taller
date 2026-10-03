@@ -144,6 +144,10 @@ Todo en `Assets/Scripts/Terminal/`:
 - `PowerCurtain.cs` — el sector sin energía del otro lado de la puerta; al resolver, la luz entra barriendo.
 - `InteractPrompt.cs` — el cartelito de "E": dibuja una tecla que entra con rebote, flota y late. Se prende y apaga con `SetActive`.
 - `SpriteFlipbook.cs` — cicla frames en un `SpriteRenderer`, para los objetos animados de los packs sin montar un Animator.
+- Consecuencias nuevas (03/10/2026): `PowerNode` (algo apagado que se prende al resolver: nodos, fuente), `CameraShowcase` (la cámara va a mirar la consecuencia si pasa lejos de la consola), `CraneLoad` (contenedor que la grúa baja como puente).
+
+### El mapa del Stage 2 (03/10/2026)
+Seis zonas, una por concepto, de x −34 a x 121. **Leer "El mapa del Stage 2, zona por zona" en `ROADMAP.md` antes de tocarlo**: capas nuevas alineadas con `Piso` (`Fachadas`, `Deco`, `Frente`), la segunda grilla `GridCentral` para los packs de 32 px, el fondo `FondoParallax` (`ParallaxLayer` + `ZoneBackdrop`), caídas (`CaidaAlVacio` + `Checkpoint`) y las herramientas de editor `MapTools` / `ZoneBuilder`. **No volver a correr `ZoneBuilder.BuildZoneN...` sobre una zona retocada a mano**: la borra y la rehace. Para probar en Play mode con Unity sin foco: `Application.runInBackground = true`, si no el juego se congela.
 
 ### Camera
 `Assets/Scripts/CameraFollow.cs` — `LateUpdate` smooth-follow using `Vector3.Lerp(current, target, smoothSpeed * Time.deltaTime)`. Always preserves `transform.position.z` — never overwrite the Z axis.
