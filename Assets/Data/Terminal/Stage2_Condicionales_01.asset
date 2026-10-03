@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Stage2_Condicionales_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Stage2_Condicionales_01
+  concept: condicionales
+  stageNumber: 2
+  prompt: "SENSOR DE RED \u2014 energia = 80. La pasarela se habilita si la energ\xEDa
+    es MAYOR que 50. Complet\xE1 la condici\xF3n."
+  codeBefore: 'if energia '
+  codeAfter: ' 50: print("ABRIR")'
+  blankWidth: 2
+  acceptedAnswers:
+  - '>'
+  - '>='
+  caseSensitive: 1
+  expectedOutput: ABRIR
+  kiraOnSuccess: "80 es mayor que 50: la condici\xF3n dio True y por eso se ejecut\xF3
+    el print. As\xED decide una m\xE1quina, comparando."
+  knownMistakes:
+  - answer: =
+    pythonError: 'SyntaxError: invalid syntax. Maybe you meant ''=='' or '':='' instead
+      of ''=''?'
+    kiraSays: "Un solo = GUARDA un valor, no compara. Y ac\xE1 no quer\xE9s guardar:
+      quer\xE9s preguntar si es mayor."
+  - answer: <
+    pythonError: '(sin salida: 80 < 50 es False)'
+    kiraSays: "Al rev\xE9s: eso pregunta si 80 es MENOR que 50. Es False, as\xED
+      que el print no se ejecuta."
+  - answer: <=
+    pythonError: '(sin salida: 80 <= 50 es False)'
+    kiraSays: "Eso es 'menor o igual'. Da False y el print nunca corre. Quer\xE9s
+      'mayor'."
+  - answer: ==
+    pythonError: '(sin salida: 80 == 50 es False)'
+    kiraSays: "== pregunta si son IGUALES. 80 no es 50, as\xED que da False y no
+      pasa nada."
+  - answer: =>
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "Casi: en Python el orden es >=, primero el signo y despu\xE9s el igual."
+  - answer: mayor
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "Python no habla castellano. 'Mayor que' se escribe con un s\xEDmbolo."
+  - answer: '!='
+    pythonError: "SENSOR: condici\xF3n rechazada (!= significa 'distinto de')"
+    kiraSays: "!= es 'distinto de'. Con 80 dar\xEDa True de casualidad, pero con
+      50 justo abrir\xEDa igual. La pasarela quiere 'mayor que'."
+  fallbackError: 'SyntaxError: invalid syntax'
+  fallbackKiraSays: "En el hueco va un operador de comparaci\xF3n. 'Mayor que' es
+    el que apunta para la derecha."

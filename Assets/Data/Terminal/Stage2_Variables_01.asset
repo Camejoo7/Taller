@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Stage2_Variables_01
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Stage2_Variables_01
+  concept: variables
+  stageNumber: 2
+  prompt: "COMPUERTA DE CARGA \u2014 la cerradura lee la variable puerta y abre si
+    guarda el texto abierta. Guard\xE1selo."
+  codeBefore: 'puerta = '
+  codeAfter: 
+  blankWidth: 9
+  acceptedAnswers:
+  - '"abierta"'
+  - '''abierta'''
+  caseSensitive: 1
+  expectedOutput: 
+  kiraOnSuccess: "Guardado. Una variable es eso: una caja con nombre. La cerradura
+    abri\xF3 la caja 'puerta' y encontr\xF3 justo lo que quer\xEDa."
+  knownMistakes:
+  - answer: abierta
+    pythonError: 'NameError: name ''abierta'' is not defined'
+    kiraSays: Sin comillas, Python cree que abierta es el NOMBRE de otra variable,
+      y esa no existe. El texto va entre comillas.
+  - answer: Abierta
+    pythonError: 'NameError: name ''Abierta'' is not defined'
+    kiraSays: "Dos problemas: le faltan las comillas, y la cerradura compara letra
+      por letra. Todo en min\xFAscula y entre comillas."
+  - answer: '"Abierta"'
+    pythonError: "CERRADURA: puerta = 'Abierta' \u2192 ACCESO DENEGADO"
+    kiraSays: "Python lo guard\xF3 sin quejarse, pero la cerradura compara letra
+      por letra: 'Abierta' no es 'abierta'."
+  - answer: '"ABIERTA"'
+    pythonError: "CERRADURA: puerta = 'ABIERTA' \u2192 ACCESO DENEGADO"
+    kiraSays: "Para una computadora, may\xFAsculas y min\xFAsculas son letras distintas.
+      Prob\xE1 en min\xFAscula."
+  - answer: '"abierta'
+    pythonError: 'SyntaxError: unterminated string literal (detected at line 1)'
+    kiraSays: "Abriste las comillas y nunca las cerraste. Python se qued\xF3 esperando
+      el final del texto."
+  - answer: abierta"
+    pythonError: 'SyntaxError: unterminated string literal (detected at line 1)'
+    kiraSays: "Las comillas van de los dos lados del texto, como un s\xE1ndwich."
+  - answer: = "abierta"
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "El = ya est\xE1 escrito. Vos solo pon\xE9 lo que se guarda."
+  - answer: True
+    pythonError: "CERRADURA: puerta = True \u2192 ACCESO DENEGADO"
+    kiraSays: True es un valor de verdad, no un texto. La cerradura quiere la palabra
+      abierta.
+  fallbackError: "CERRADURA: puerta = {0} \u2192 ACCESO DENEGADO"
+  fallbackKiraSays: La cerradura quiere el texto abierta. Y los textos, en Python,
+    van entre comillas.

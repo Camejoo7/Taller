@@ -122,8 +122,8 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 | Zona | Concepto | Qué escribe el jugador | Hecho |
 |---|---|---|---|
 | 1 | print | `print("ABRIR")` — la cerradura vieja obedece al comando que le mandes | ✅ `Stage2_Print_01.asset` |
-| 2 | variables y tipos | Guardar un valor y usarlo después (una clave, un código de acceso) | ⬜ |
-| 3 | condicionales | Un `if` que decide si la puerta se abre según una lectura del sensor | ⬜ |
+| 2 | variables y tipos | `puerta = "abierta"` — la cerradura lee una variable (el tramo pintado a mano después de la primera puerta; la terminal está en el portal del final) | 🟡 `Stage2_Variables_01.asset` (borrador) |
+| 3 | condicionales | `if energia > 50: print("ABRIR")` — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
 | 4 | bucles | Un `for`/`while` que repita algo N veces — reiniciar N nodos, recorrer una lista de puertas | ⬜ |
 | 5 | listas y cadenas | Sacar un elemento de una lista o un pedazo de una cadena (un código escondido en una trama) | ⬜ |
 | 6 | funciones | Definir una función y llamarla — "la cerradura necesita que le enseñes a abrirse" | ⬜ |
