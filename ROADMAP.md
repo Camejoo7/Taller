@@ -22,6 +22,8 @@ Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas termin
 
 **Al 03/10/2026:** el Stage 2 tiene **las 6 zonas**, una por concepto, y se juega de punta a punta hasta volver al menú (ver "El mapa del Stage 2, zona por zona"). Lo que falta de la fase: **revisar los ejercicios borrador 2 a 6** y cerrar el **flujo del final**. Después, playtest real (Fase 3).
 
+**04/10/2026:** a pedido de Kevin se adelantó la **pasada visual de todo el mapa** (es pulido, de la Fase 4): ver "Pasada visual del mapa (04/10/2026)". Los dos pendientes de esta fase siguen igual.
+
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
 ## Decisiones tomadas (para no repetir la charla)
@@ -181,6 +183,45 @@ Generado por Claude a continuación del tramo pintado a mano, **sin tocar ese tr
 - La niebla, los tintes y la posición de los horizontes se ajustaron mirando capturas: conviene mirarlos jugando y retocar el color desde el Inspector si algo desentona.
 - **Para probar en Play mode con Unity sin foco**, hay que poner `Application.runInBackground = true` (el piloto automático lo hace): si no, el juego se congela en el cuadro 2 cuando la ventana no está activa. No se cambió el Player Setting.
 
+### Pasada visual del mapa (04/10/2026)
+
+Pedido de Kevin: *"una pasada mejorando todo lo visual, solo visual el mapa... quiero que el mapa quede bien, como un videojuego bueno"*. Es pulido (Fase 4/5) hecho antes de tiempo **a pedido**: los dos ítems que quedan de la Fase 2 siguen pendientes. No se tocó nada jugable: terminales, drones, colliders y diálogos quedaron igual.
+
+**La referencia fue el mockup del propio pack** (`Central City/Social/MockUp-01.png`): fondos densos, nada flotando en el vacío, luz en todos lados. El problema principal era ese: las zonas 1-2 eran pasarelas en negro y los cielos de 3-6 estaban vacíos.
+
+| Dónde | Qué se agregó |
+|---|---|
+| **Cielo, todo el mapa** | Estrellas (algunas titilan), luna con halo, torres violetas lejanas del pack Central City (se ven hasta el puerto) y autos voladores cruzando a lo lejos |
+| **Zonas 1-2, interior NEXCORP** | Pared de paneles de metal con pilastras, vigas en el techo y estructura de vigas cruzadas debajo de las pasarelas. **Ventanales con vidrio translúcido: se ve la ciudad de noche del otro lado.** Lámparas de tubo con cono de luz en cada pilastra (una parpadea, vieja), banderas rojas y carteles de neón "NEXCORP", "SALIDA", una pantalla de propaganda ("THE FUTURE HAS COME"), consolas, monitores animados, LEDs, vapor que sube por las rejillas y polvo flotando en el aire |
+| **Zona 3, la calle** | Edificios oscuros detrás de la pasarela de salida y en los huecos, ventanas prendidas, carteles de neón en los locales (RAMEN, BAR, 24H, HOTEL) con su reflejo en la vereda mojada, vidrieras iluminadas, banderines de luces, vapor de alcantarilla, subsuelo con estructura (antes era un negro liso), un cartel publicitario gigante sobre el vacío y la **ciudad de abajo** con luces, que se ve por el vacío |
+| **Zona 4, central** | Caños en la muralla, cables de la red entre las torres-nodo y entre las torres de alta tensión, chispas, tubos de luz en la sala de control. **Los nodos se iluminan de verdad cuando el `for` los reinicia** (el brillo mira la animación de `PowerNode`, sin tocar su código) |
+| **Zona 5, puerto** | La luna reflejada en el agua (sigue a la cámara), reflejos temblando bajo los faroles, chispas en el agua, niebla baja que se arrastra, balizas rojas en la grúa y la ciudad de la otra orilla con sus ventanas |
+| **Zona 6, parque** | La tierra salpicada con las variantes de piedras del pack (antes era violeta liso), arbustos y pastitos, luciérnagas, chispas y niebla en el estanque, la fuente que **brilla** cuando Kira queda libre, la ciudad lejana y brumosa detrás. El final: la columna lisa del borde del mundo ahora es un risco de piedra tapado por árboles, y la salida tiene un portón en la cerca |
+| **Todo el mapa** | Luz cálida (halo, cono y mancha en el piso) en **todos los faroles**, lluvia fina en la ciudad (no entra en la sala de control y se apaga de a poco antes del parque), oscuridad suave en el fondo del vacío (las caídas se pierden en negro en vez de terminar en un corte), halo cian alrededor de Kira, y **post-proceso**: bloom suave para que brillen los neones y una viñeta leve |
+
+> **Cambio del mismo día (04/10/2026), a pedido de Kevin — se sacaron TODAS las luces:** los brillos (faroles, lámparas, neón, ventanas, reflejos, nodos, fuente, luna, autos, balizas, niebla del agua), las lámparas de pared/techo, el halo de Kira, el polvo, las luciérnagas, las chispas, el vapor, la pantalla de propaganda con la cara, los paneles y monitores de pared del interior, las guirnaldas de la plaza y el bloom. **Queda:** paredes, ventanales, carteles (sin brillo), cielo con estrellas y luna, torres y ciudad lejana, edificios, caños, cables, contenedores, piedras del parque, risco del final, lluvia, oscuridad del fondo y viñeta. En el código es un interruptor: `MapDressing.Lights = false` (en `true` vuelven todos los brillos). La tabla de arriba describe la pasada completa, antes de este cambio.
+
+**Cómo está armado** — todo en `Assets/Editor/MapDressing.cs`:
+- **Regla de la casa:** todo lo nuevo vive en objetos y tilemaps que empiezan con `Visual_` (sin colliders). Para rehacerlo: menú **CodeBreak → Stage 2: rehacer decorado visual**, y guardar la escena. Correrlo dos veces da lo mismo que una. ⚠️ Si se retoca a mano algo **dentro** de un `Visual_...`, rehacer el decorado lo pisa: retocar afuera o anotarlo.
+- Cada zona tiene su función (`BuildSky`, `BuildInterior`, `BuildInteriorDetails`, `BuildCity`, `BuildPowerStation`, `BuildPort`, `BuildPark`, `BuildLampGlows`, `BuildAtmosphere`, `BuildKiraGlow`, `BuildPostFX`), por si se quiere rehacer una sola.
+- **Los brillos son sprites aditivos**, no luces 2D (un `Light2D` suelto manda la escena a negro, ver más abajo): shader `Assets/Shaders/SpriteGlow.shader`, material `Generado/Visual/GlowAditivo.mat`. **Para subir o bajar todos los brillos a la vez:** el `Intensidad` de ese material (1,2 hoy).
+- Texturas generadas (brillos, cono de luz, degradés, estrellas, ventanales, carteles de neón con la fuente del juego, la ciudad de abajo): `Assets/ASSETS/Stage2/Generado/Visual/`.
+- Scripts nuevos, todos visuales (`Assets/Scripts/Visual/`): `GlowFlicker` (pulso, parpadeo de neón, temblor de lámpara), `Drifter` (algo que cruza y vuelve a entrar: autos, niebla), `GlowWhenActive` (un brillo que se prende cuando otra cosa se prende), `Wobble` (el temblor de los reflejos en el agua).
+- Post-proceso: `Assets/Settings/Stage2_PostFX.asset` (Bloom + Vignette) en el objeto `Visual_PostProceso`, y la cámara del Stage 2 con **Post Processing** prendido. Los corazones y la terminal no se ven afectados (son canvas superpuestos). Para apagarlo: destildar Post Processing en la Main Camera.
+
+**Lo poco que se tocó de lo que ya existía** (todo visual):
+- `FondoVisual` / `FondoVisual2` (el relleno negro de las zonas 1-2) bajaron a orden −6/−5 para que entre la pared nueva, y tienen **agujeros donde van los ventanales** (si se repinta ese relleno a mano, se tapan las ventanas).
+- El agua (`Central_Agua`) bajó de orden 7 a 5, para que los reflejos y la niebla entren entre el agua y la cortina de los sectores sin energía (8).
+- Las capas de `FondoParallax` se renumeraron de a 10 (el cielo quedó en −20) para que entren capas nuevas entre medio.
+- En la zona 6, tiles del relleno liso de la tierra cambiadas por las variantes con piedras, y el risco del final: **son tiles enteras y opacas, el collider quedó igual**.
+
+**Trampas que aparecieron:**
+- En Unity 6 el color de un `SpriteRenderer` le llega al shader en `unity_SpriteColor`, no en el color del vértice: un shader de sprite propio que lo ignore pinta todo blanco y al máximo.
+- Los screenshots de la herramienta `manage_camera` del MCP salen lavados (gamma mal) en este proyecto: para ver el juego de verdad, `ScreenCapture.CaptureScreenshot` en Play mode o las capturas de `MapTools`.
+- Las capas con `ParallaxLayer` se corren con la cámara: lo que se pone adentro va en posición **local** (≈ (1 − factor) × x de la cámara), no en coordenadas del mapa. Puesto en coordenadas del mapa, queda fuera de cuadro.
+
+**Para ajustar a gusto (todo desde el Inspector, sin código):** el tinte de la pared interior (`Visual_Pared`, color del Tilemap), la intensidad de los brillos (material `GlowAditivo`), la cantidad de lluvia (`Visual_Ambiente/Lluvia`, Emission), el bloom y la viñeta (`Stage2_PostFX`).
+
 ## La mecánica educativa está en revisión (02/10/2026)
 
 **Kevin rechazó el Code Blaster.** Su objeción, textual: *"se ve muy IA, un múltiple opción, algo que podría hacer en cualquier HTML, quiero algo que pueda ver en un juego realmente y no en una página web"*.
@@ -327,6 +368,7 @@ Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una par
 
 ## Fase 4 — Pulido profundo, por tandas
 
+- [x] **Pasada visual de todo el mapa** (04/10/2026, adelantada a pedido de Kevin): fondos, luces, neón, clima y post-proceso en las 6 zonas. Ver "Pasada visual del mapa" en la Fase 2.
 - [ ] Zonas 1-3 del mapa: diálogos reales de Kira, errores previstos bien escritos en cada `TerminalChallenge`, ajuste de dificultad, level design cuidado
 - [ ] Zonas 4-6: lo mismo
 

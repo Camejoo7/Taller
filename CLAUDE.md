@@ -149,8 +149,11 @@ Todo en `Assets/Scripts/Terminal/`:
 ### El mapa del Stage 2 (03/10/2026)
 Seis zonas, una por concepto, de x −34 a x 121. **Leer "El mapa del Stage 2, zona por zona" en `ROADMAP.md` antes de tocarlo**: capas nuevas alineadas con `Piso` (`Fachadas`, `Deco`, `Frente`), la segunda grilla `GridCentral` para los packs de 32 px, el fondo `FondoParallax` (`ParallaxLayer` + `ZoneBackdrop`), caídas (`CaidaAlVacio` + `Checkpoint`) y las herramientas de editor `MapTools` / `ZoneBuilder`. **No volver a correr `ZoneBuilder.BuildZoneN...` sobre una zona retocada a mano**: la borra y la rehace. Para probar en Play mode con Unity sin foco: `Application.runInBackground = true`, si no el juego se congela.
 
+### Decorado visual del Stage 2 (04/10/2026)
+Fondos, luces, neón, clima y post-proceso de todo el mapa los arma `Assets/Editor/MapDressing.cs`. Todo vive en objetos y tilemaps que empiezan con `Visual_` (sin colliders); se rehace con el menú **CodeBreak → Stage 2: rehacer decorado visual** (idempotente). **No retocar a mano adentro de un `Visual_...`**: rehacer lo pisa. **A Kevin no le gustaron las luces: van apagadas** (`MapDressing.Lights = false`, sin brillos, sin bloom, sin halo de Kira, sin polvo/vapor/luciérnagas). No volver a agregar luces sin que lo pida. Los brillos son sprites aditivos (`Assets/Shaders/SpriteGlow.shader`, material `Generado/Visual/GlowAditivo.mat`), **no** `Light2D`. Un shader de sprite propio tiene que multiplicar por `unity_SpriteColor` (Unity 6 manda ahí el color del `SpriteRenderer`). Detalle, órdenes de dibujo tocados y trampas: "Pasada visual del mapa" en `ROADMAP.md`.
+
 ### Camera
-`Assets/Scripts/CameraFollow.cs` — `LateUpdate` smooth-follow using `Vector3.Lerp(current, target, smoothSpeed * Time.deltaTime)`. Always preserves `transform.position.z` — never overwrite the Z axis.
+`Assets/Scripts/CameraFollow.cs` — `LateUpdate` smooth-follow using `Vector3.Lerp(current, target, smoothSpeed * Time.deltaTime)`. Always preserves `transform.position.z` — never overwrite the Z axis. En el Stage 2 la cámara tiene **Post Processing** prendido (bloom + viñeta, `Assets/Settings/Stage2_PostFX.asset`).
 
 ### Menu & UI
 - `Assets/Scripts/ScriptMenu/MainMenu.cs` — `Jugar()` loads `"SampleScene"` via `SceneManager.LoadScene`; `Salir()` calls `Application.Quit()` with an Editor fallback.

@@ -37,6 +37,15 @@ public static class MapTools
             Camera cam = go.AddComponent<Camera>();
             if (main != null) cam.CopyFrom(main);
             cam.orthographic = true;
+            // CopyFrom no copia los datos de URP: sin esto la captura sale sin
+            // post-proceso aunque el juego lo tenga.
+            var mainData = main != null ? main.GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>() : null;
+            if (mainData != null)
+            {
+                var data = go.GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+                if (data == null) data = go.AddComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>();
+                data.renderPostProcessing = mainData.renderPostProcessing;
+            }
 
             float w = x1 - x0, h = y1 - y0;
             cam.orthographicSize = h * 0.5f;
@@ -152,6 +161,62 @@ public static class MapTools
         File.WriteAllBytes(path, sheet.EncodeToPNG());
         File.Delete(tmp);
         return path + " (" + sheet.width + "x" + sheet.height + ")";
+    }
+
+    /// <summary>
+    /// Altura del piso en x: el primer collider sólido (no trigger, no del
+    /// jugador ni de un enemigo) que encuentra un rayo que baja desde fromY.
+    /// Devuelve float.NaN si abajo no hay nada.
+    /// </summary>
+    public static float GroundY(float x, float fromY)
+    {
+        Physics2D.SyncTransforms();
+        foreach (RaycastHit2D h in Physics2D.RaycastAll(new Vector2(x, fromY), Vector2.down, 60f))
+        {
+            if (h.collider.isTrigger) continue;
+            Rigidbody2D rb = h.collider.attachedRigidbody;
+            if (rb != null && rb.bodyType == RigidbodyType2D.Dynamic) continue;
+            if (h.collider.GetComponentInParent<PlayerMovement>() != null) continue;
+            return h.point.y;
+        }
+        return float.NaN;
+    }
+
+    /// <summary>
+    /// Como Views, pero en coordenadas de mundo: xy = {x, y, x, y...} con y =
+    /// los pies del jugador (la cámara del juego lo centra ahí). Si y es NaN
+    /// se usa el piso más alto en esa x (buscando desde fromY).
+    /// </summary>
+    public static string ViewsXY(string path, int cols, int ppu, float fromY, params float[] xy)
+    {
+        float h = 3.6f, w = 6.4f;
+        int n = xy.Length / 2;
+        int rows = (n + cols - 1) / cols;
+        int fw = Mathf.RoundToInt(w * ppu), fh = Mathf.RoundToInt(h * ppu);
+        Texture2D sheet = new Texture2D(cols * (fw + 4), rows * (fh + 4), TextureFormat.RGB24, false);
+        Color[] fill = new Color[sheet.width * sheet.height];
+        for (int i = 0; i < fill.Length; i++) fill[i] = Color.white;
+        sheet.SetPixels(fill);
+        string tmp = Path.Combine(Path.GetDirectoryName(path), "_view_tmp.png");
+        StringBuilder log = new StringBuilder();
+        for (int i = 0; i < n; i++)
+        {
+            float cx = xy[i * 2], cy = xy[i * 2 + 1];
+            if (float.IsNaN(cy)) cy = GroundY(cx, fromY);
+            if (float.IsNaN(cy)) cy = 0f;
+            log.Append(" (" + cx.ToString("F1") + "," + cy.ToString("F2") + ")");
+            Capture(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2, ppu, tmp);
+            Texture2D t = new Texture2D(2, 2);
+            t.LoadImage(File.ReadAllBytes(tmp));
+            int ox = (i % cols) * (fw + 4) + 2, oy = sheet.height - ((i / cols) + 1) * (fh + 4) + 2;
+            sheet.SetPixels(ox, oy, Mathf.Min(fw, t.width), Mathf.Min(fh, t.height), t.GetPixels(0, 0, Mathf.Min(fw, t.width), Mathf.Min(fh, t.height)));
+            Object.DestroyImmediate(t);
+        }
+        sheet.Apply();
+        File.WriteAllBytes(path, sheet.EncodeToPNG());
+        File.Delete(tmp);
+        Object.DestroyImmediate(sheet);
+        return path + " (" + (cols * (fw + 4)) + "x" + (rows * (fh + 4)) + ")" + log;
     }
 
     // ------------------------------------------------------------ tilemaps
