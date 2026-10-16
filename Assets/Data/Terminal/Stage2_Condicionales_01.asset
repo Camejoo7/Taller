@@ -15,46 +15,60 @@ MonoBehaviour:
   challengeId: Stage2_Condicionales_01
   concept: condicionales
   stageNumber: 2
-  prompt: "SENSOR DE RED \u2014 energia = 80. La pasarela se habilita si la energ\xEDa
-    es MAYOR que 50. Complet\xE1 la condici\xF3n."
-  codeBefore: 'if energia '
-  codeAfter: ' 50: print("ABRIR")'
-  blankWidth: 2
-  acceptedAnswers:
-  - '>'
-  - '>='
+  prompt: "SENSOR DE RED \u2014 el sensor corre: if energia > 50: print(\"ABRIR\").
+    La energ\xEDa est\xE1 en 0 y la pasarela, cerrada. Dale a energia un valor que
+    la abra."
+  codeBefore: 'energia = '
+  codeAfter: 
+  blankWidth: 3
+  acceptedAnswers: []
   caseSensitive: 1
+  acceptAnyNumberAbove: 1
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "Con {0}, energia > 50 da False y el if se saltea el print.
+    Necesit\xE1s un n\xFAmero m\xE1s grande que 50."
   expectedOutput: ABRIR
-  kiraOnSuccess: "80 es mayor que 50: la condici\xF3n dio True y por eso se ejecut\xF3
-    el print. As\xED decide una m\xE1quina, comparando."
+  kiraOnSuccess: "La condici\xF3n dio True y el if dej\xF3 pasar el print. Fijate
+    que no tocaste el if: cambiaste el dato, y la m\xE1quina decidi\xF3 sola."
   knownMistakes:
-  - answer: =
-    pythonError: 'SyntaxError: invalid syntax. Maybe you meant ''=='' or '':='' instead
-      of ''=''?'
-    kiraSays: "Un solo = GUARDA un valor, no compara. Y ac\xE1 no quer\xE9s guardar:
-      quer\xE9s preguntar si es mayor."
-  - answer: <
-    pythonError: '(sin salida: 80 < 50 es False)'
-    kiraSays: "Al rev\xE9s: eso pregunta si 80 es MENOR que 50. Es False, as\xED
-      que el print no se ejecuta."
-  - answer: <=
-    pythonError: '(sin salida: 80 <= 50 es False)'
-    kiraSays: "Eso es 'menor o igual'. Da False y el print nunca corre. Quer\xE9s
-      'mayor'."
-  - answer: ==
-    pythonError: '(sin salida: 80 == 50 es False)'
-    kiraSays: "== pregunta si son IGUALES. 80 no es 50, as\xED que da False y no
-      pasa nada."
-  - answer: =>
+  - answer: 50
+    pythonError: '(sin salida: 50 > 50 es False)'
+    kiraSays: "Casi. 50 no es MAYOR que 50, es igual. Ten\xE9s que pasarte aunque
+      sea por uno."
+  - answer: '"80"'
+    pythonError: 'TypeError: ''>'' not supported between instances of ''str'' and
+      ''int'''
+    kiraSays: "Entre comillas, 80 es un TEXTO. Python no puede preguntar si un texto
+      es mayor que un n\xFAmero."
+  - answer: '''80'''
+    pythonError: 'TypeError: ''>'' not supported between instances of ''str'' and
+      ''int'''
+    kiraSays: "Entre comillas, 80 es un TEXTO. Python no puede preguntar si un texto
+      es mayor que un n\xFAmero."
+  - answer: ochenta
+    pythonError: 'NameError: name ''ochenta'' is not defined'
+    kiraSays: "Python no lee n\xFAmeros escritos con letras: para \xE9l, ochenta
+      es el nombre de una variable que no existe."
+  - answer: mucha
+    pythonError: 'NameError: name ''mucha'' is not defined'
+    kiraSays: "Para Python, mucha es el nombre de una variable que no existe. El
+      if compara con 50: dale un n\xFAmero."
+  - answer: True
+    pythonError: '(sin salida: True > 50 es False)'
+    kiraSays: "Para Python, True vale 1 cuando lo compar\xE1s con n\xFAmeros. Y 1
+      no es mayor que 50. Ac\xE1 va un n\xFAmero."
+  - answer: '> 50'
     pythonError: 'SyntaxError: invalid syntax'
-    kiraSays: "Casi: en Python el orden es >=, primero el signo y despu\xE9s el igual."
-  - answer: mayor
+    kiraSays: "El if ya est\xE1 escrito en el sensor. Vos solo guard\xE1 un n\xFAmero
+      en energia, por ejemplo 80."
+  - answer: '>50'
     pythonError: 'SyntaxError: invalid syntax'
-    kiraSays: "Python no habla castellano. 'Mayor que' se escribe con un s\xEDmbolo."
-  - answer: '!='
-    pythonError: "SENSOR: condici\xF3n rechazada (!= significa 'distinto de')"
-    kiraSays: "!= es 'distinto de'. Con 80 dar\xEDa True de casualidad, pero con
-      50 justo abrir\xEDa igual. La pasarela quiere 'mayor que'."
+    kiraSays: "El if ya est\xE1 escrito en el sensor. Vos solo guard\xE1 un n\xFAmero
+      en energia, por ejemplo 80."
+  - answer: = 80
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "El = ya est\xE1 escrito. Vos solo pon\xE9 el n\xFAmero."
   fallbackError: 'SyntaxError: invalid syntax'
-  fallbackKiraSays: "En el hueco va un operador de comparaci\xF3n. 'Mayor que' es
-    el que apunta para la derecha."
+  fallbackKiraSays: "En el hueco va un n\xFAmero, sin comillas. \xBFQu\xE9 n\xFAmero
+    hace que energia > 50 d\xE9 True?"

@@ -257,7 +257,7 @@ public class CodeTerminal : MonoBehaviour
 
     IEnumerator Fail(string answer)
     {
-        WrongAnswer known = challenge.FindKnownMistake(answer);
+        WrongAnswer known = challenge.FindKnownMistake(answer) ?? challenge.NumberTooLow(answer);
 
         string error = known != null && !string.IsNullOrEmpty(known.pythonError)
             ? known.pythonError

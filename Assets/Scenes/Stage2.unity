@@ -33725,7 +33725,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &113445268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65424,7 +65424,7 @@ MonoBehaviour:
   visual: {fileID: 642574333}
   floatAmount: 0.06
   floatSpeed: 2
-  dialogueManager: {fileID: 71104897}
+  dialogueManager: {fileID: 0}
   segmentOnPickup: 1
 --- !u!61 &240945442
 BoxCollider2D:
@@ -126948,7 +126948,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 23.013067, y: 0.64687496, z: 1}
+  m_LocalScale: {x: 22.979713, y: 0.64687496, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 136516816}
@@ -173313,7 +173313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1646602525
 Transform:
   m_ObjectHideFlags: 0
