@@ -201,6 +201,11 @@ public class CodeTerminalUI : MonoBehaviour
 
         codeText = NewText("Codigo", content, 40f, codeColor, TextAlignmentOptions.Left);
         Place(codeText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -274f), new Vector2(-44f, -198f));
+        // Una línea larga (el for) no entra a 40: se achica hasta caber en su
+        // franja en vez de partirse en tres y pisar la salida.
+        codeText.enableAutoSizing = true;
+        codeText.fontSizeMin = 18f;
+        codeText.fontSizeMax = 40f;
 
         // Raya separadora entre la consigna y lo que la consola va escupiendo.
         GameObject rule = NewImage("Raya", content, new Color(frameColor.r, frameColor.g, frameColor.b, 0.35f));
@@ -454,7 +459,26 @@ public class CodeTerminalUI : MonoBehaviour
         // La pantalla es chica: nos quedamos con lo último, como una consola real.
         while (outputLines.Count > 6) outputLines.RemoveAt(0);
 
-        outputText.text = string.Join("\n", outputLines.ToArray());
+        ShowOutput();
+    }
+
+    /// <summary>
+    /// La salida tiene un alto fijo: si lo nuevo no entra, se caen los renglones
+    /// más viejos por arriba en vez de desbordarse sobre la línea de Kira. Se
+    /// mide en renglones de pantalla, no en entradas: un eco largo ocupa dos.
+    /// </summary>
+    void ShowOutput()
+    {
+        Rect box = outputText.rectTransform.rect;
+        string text = string.Join("\n", outputLines.ToArray());
+
+        while (outputLines.Count > 1 && outputText.GetPreferredValues(text, box.width, Mathf.Infinity).y > box.height)
+        {
+            outputLines.RemoveAt(0);
+            text = string.Join("\n", outputLines.ToArray());
+        }
+
+        outputText.text = text;
     }
 
     public void SayKira(string text)
@@ -480,12 +504,11 @@ public class CodeTerminalUI : MonoBehaviour
             outputLines.Add("");
             while (outputLines.Count > 6) outputLines.RemoveAt(0);
 
-            int index = outputLines.Count - 1;
-
             for (int i = 1; i <= line.Length; i++)
             {
-                outputLines[index] = "<color=#" + hex + ">" + line.Substring(0, i) + "</color>";
-                outputText.text = string.Join("\n", outputLines.ToArray());
+                // Siempre el último: ShowOutput puede sacar renglones de arriba.
+                outputLines[outputLines.Count - 1] = "<color=#" + hex + ">" + line.Substring(0, i) + "</color>";
+                ShowOutput();
                 yield return new WaitForSeconds(perChar);
             }
         }

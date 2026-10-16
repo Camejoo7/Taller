@@ -24,6 +24,8 @@ Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas termin
 
 **04/10/2026:** a pedido de Kevin se adelantó la **pasada visual de todo el mapa** (es pulido, de la Fase 4): ver "Pasada visual del mapa (04/10/2026)". Los dos pendientes de esta fase siguen igual.
 
+**16/10/2026:** se sumaron **dos piezas nuevas**, el **libro de Kira** y un **jefe final** en la zona 6: ver "Fase 2B". Van después de cerrar la Fase 2 y antes del playtest de la Fase 3. Ese día también se **desconectaron los diálogos del Stage 2** (se rehacen al final, ver Fase 4), la terminal de condicionales dejó de pedir el signo `>` y se arregló el texto que se pisaba en la terminal del `for`.
+
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
 ## Decisiones tomadas (para no repetir la charla)
@@ -39,6 +41,11 @@ Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase act
 | Audio | Ambiente + efectos, pero al final — baja prioridad |
 | Progresión | **Puertas dentro del mismo mapa**: cada terminal abre la suya. Sin selector de niveles y sin guardado de sesión |
 | Plataforma | Build standalone de Windows, PC/laptop únicamente. Nada de web |
+| Para qué sirve el juego (16/10/2026) | No enseña desde cero: se usa **después** de dar cada unidad en clase. Práctica y consolidación, evaluación **formativa** (no para nota) y, el mapa entero, cierre integrador del curso |
+| Libro de Kira (16/10/2026) | Sí: un manual con la explicación de cada concepto, que se abre cuando quieras y se va completando zona por zona. Ver Fase 2B |
+| Terminales del mapa (16/10/2026) | **Quedan como están**: una por zona, sin agregar versiones más difíciles |
+| Final del juego (16/10/2026) | Un **jefe** en la zona 6 que se derrota resolviendo terminales. Ver Fase 2B |
+| Diálogos (16/10/2026) | Se hacen **al final** (Fase 4). Los del Stage 2 están desconectados mientras tanto |
 
 ## La mecánica central: Code Blaster — ⚠️ CONGELADA (02/10/2026)
 
@@ -105,6 +112,7 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
   - [x] Mapa armado (por Kevin), cámara `CameraFollow` igual que Stage 1, arma que el jugador agarra en el garage (`WeaponPickup` + animaciones armadas vía `PJ_Armed.overrideController`).
   - [x] ~~Primer encuentro Code Blaster~~ → **reemplazado por la terminal** (02/10/2026): consola en x −27,8 y puerta blindada en x −27,0, saliendo del garage. Ver "La mecánica educativa está en revisión" más abajo.
   - [x] **Diálogos**: `Assets/Data/Stage2.asset` con intro (6 líneas), media (5, la explicación del arma) y cierre (1). El `DialogueCanvas`, Kira y el `EventSystem` se **copiaron del Stage 1** para no rehacer el restilado. Kira sigue al jugador desde el arranque (`KiraFollower.followFromStart`), porque en esta stage ya viene con él.
+    - **Desconectados el 16/10/2026** a pedido de Kevin (se rehacen al final, ver Fase 4). Los textos siguen en `Stage2.asset`. Para volver a engancharlos: activar `KiraTrigger_Intro` y `Kira Cierre`, y volver a asignarle el `DialogueManager` al `WeaponPickup` (el arma se sigue equipando igual sin él).
   - [x] **Vida y enemigos**: tres corazones, `PlayerHealth` (que ahora sí contesta el `IPlayerDamageable` del Code Blaster), y tres `DroneEnemy` en los marcadores que dejó Kevin. Los drones se acercan, avisan, embisten y se alejan; se matan a tiros con `EnemyHealth`.
   - [x] **Arma visible**: sprite 7 del pack `Assets/ASSETS/Armas`, flotando en la puerta del garage, con diálogo de Kira al levantarla.
   - [x] **En Build Settings**: `Stage2` quedó en el índice 2 (02/10/2026), así que ya se llega jugando desde el Stage 1 por la puerta `Exit`.
@@ -114,7 +122,7 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
     - ⚠️ **Los bordes de `PowerCurtain` ahora son relativos al objeto, ya no de mundo** (se ignoran su escala y rotación). Sin ese cambio la oscuridad se quedaba en su lugar aunque movieras el prefab. La instancia del Stage 2 se convirtió con los bordes ya recalculados, así que en el mundo quedó igual que antes.
   - [x] **Extender el mapa con una zona nueva por concepto** (03/10/2026, Claude solo mientras Kevin no estaba): zonas 3 a 6 generadas a continuación del tramo a mano, cada una con su terminal, su consecuencia física, checkpoints y un dron. **Las 6 zonas se recorrieron de punta a punta en Play mode con un piloto automático** (saltos, terminales resueltas de verdad escribiendo la respuesta, consecuencias, salida al menú). Detalle completo en "El mapa del Stage 2, zona por zona" más abajo.
   - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira. — **Hay borradores de las zonas 2 a 6** (escritos por Claude para que el mapa se pueda recorrer, con tracebacks reales de Python 3.10+). Falta que Kevin los revise: el tono de Kira, la dificultad y si los errores previstos son los que comete de verdad un alumno de noveno.
-  - [ ] Pantalla / flujo de final del mapa. — **A medias**: pasando la última puerta Kira dice el cierre (segmento `Outro` de `Stage2.asset`, una sola línea, la de siempre) y una `StageExit` lleva al Menú Principal. Falta la pantalla de resumen (es de la Fase 3) y, si Kevin quiere, un cierre de Kira más largo para el final del juego.
+  - [ ] Pantalla / flujo de final del mapa. — **A medias**: pasando la última puerta una `StageExit` lleva al Menú Principal (el cierre de Kira está desconectado desde el 16/10). Falta la pantalla de resumen (es de la Fase 3). **El 16/10 se decidió que el final del juego sea un jefe** (Fase 2B): este ítem se cierra cuando el jefe exista.
 
 > **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
 - [x] **Pipeline de tilemap para el mapa grande** (03/10/2026: las paletas de Central City ya existían y las zonas nuevas se pintan con `MapTools` / `ZoneBuilder`; para Seaport y Green Zone se crearon las `Tile` en `<pack>/1 Tiles/Palette/`, sin prefab de paleta todavía) (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
@@ -127,10 +135,10 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 |---|---|---|---|
 | 1 | print | `print("ABRIR")` — la cerradura vieja obedece al comando que le mandes | ✅ `Stage2_Print_01.asset` |
 | 2 | variables y tipos | `puerta = "abierta"` — la cerradura lee una variable (el tramo pintado a mano después de la primera puerta; la terminal está en el portal del final) | 🟡 `Stage2_Variables_01.asset` (borrador) |
-| 3 | condicionales | `if energia > 50: print("ABRIR")` — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
+| 3 | condicionales | el sensor corre `if energia > 50: print("ABRIR")` y el alumno escribe `energia = ___` (cualquier número > 50; sin tipear `>`, que cuesta en teclado español) — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
 | 4 | bucles | `for nodo in range(4): print(...)` — "Central eléctrica" (pack Power Station): se cruzan 4 torres-nodo apagadas y **la respuesta es cuántas viste**. Al acertar la cámara viaja al patio y los 4 nodos se prenden de a uno | 🟡 `Stage2_Bucles_01.asset` (borrador) |
 | 5 | listas y cadenas | `print(contenedores[3])` — "El puerto" (pack Seaport): los contenedores verde, rojo y gris están en fila en el muelle y el naranja cuelga de la grúa. **La grúa baja el que imprimas**: el naranja queda como puente sobre el agua (`CraneLoad`). Enseña el índice desde cero | 🟡 `Stage2_Listas_01.asset` (borrador) |
-| 6 | funciones | `liberar("KIRA")` — "La zona verde" (pack Green Zone), el final: la función ya existe y hay que llamarla con el nombre de quien tiene que salir. Al acertar se abre la última puerta y **se prende la fuente de la plaza**; Kira se despide (segmento Outro) y la salida lleva al menú | 🟡 `Stage2_Funciones_01.asset` (borrador) |
+| 6 | funciones | `liberar("KIRA")` — "La zona verde" (pack Green Zone), el final: la función ya existe y hay que llamarla con el nombre de quien tiene que salir. Al acertar se abre la última puerta y **se prende la fuente de la plaza**; Kira se despide (segmento Outro, desconectado desde el 16/10) y la salida lleva al menú. Acá va a ir el jefe final (Fase 2B) | 🟡 `Stage2_Funciones_01.asset` (borrador) |
 
 > **Lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Está escrito más abajo y vale para cada terminal nueva: no alcanza con un cartel de "¡Correcto!". La puerta que tiembla, las luces que se encienden, el sector que recupera la energía — eso es lo que no se puede hacer en una página web. Si una terminal nueva no tiene una consecuencia física, le falta la mitad.
 
@@ -359,6 +367,53 @@ Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una par
 
 > **Choque conocido:** la terminal usa ESC para salir y el `PauseMenu` también usa ESC para pausar. En el `Laboratorio` no hay `PauseMenu` así que no se nota, pero si la terminal se lleva a una stage real hay que resolverlo.
 
+## Fase 2B — El libro de Kira y el jefe final (decidido 16/10/2026)
+
+**De dónde sale:** charla del 16/10 sobre cómo justificar el juego en el CERP. El juego **no enseña Python desde cero**: se usa después de dar cada unidad en clase, como práctica y consolidación, como evaluación formativa (los errores que registra el `ScoreTracker` vuelven al aula como material) y, el mapa entero, como cierre integrador. Estas dos piezas salen de ahí: **el libro pone la explicación adentro del juego** y **el jefe es el cierre integrador**.
+
+**Orden:** primero el libro (más chico, y es lo que más sostiene la fundamentación), después el jefe. ⚠️ **Son dos sistemas nuevos**: hasta acá el roadmap decía "falta contenido, no sistemas". Con el plazo de 2 meses, el jefe se diseña para poder entregarse **con una sola fase** si el tiempo aprieta (ver "Qué cortar primero").
+
+**Las terminales del mapa quedan como están** (Kevin, 16/10). Se charló y se dejó de lado, por ahora, agregar más terminales por zona en escalera (fácil / con trampa / que pide algo que solo está en el libro). Si se retoma: no todas pueden necesitar el libro, porque si no el ejercicio pasa a ser de buscar y copiar.
+
+### El libro de Kira
+
+- [ ] **Escribir las 6 páginas antes de programar nada** (print, variables y tipos, condicionales, bucles, listas y cadenas, funciones). Kevin las revisa o se las muestra a su docente; así, si hay que cambiar algo, se cambia antes de armarlo.
+  - **16/10/2026: borrador escrito** en `LIBRO_DE_KIRA.md` (raíz del proyecto): portada + 6 temas, cada uno en dos páginas (qué es, ejemplo, qué imprime, error típico con su traceback real, comentario de Kira). **Falta la revisión de Kevin.**
+  - Arte: Kevin bajó el **Complete UI Book Styles Pack de crusenho**, versión gratis *Travel Book Lite* (`Assets/ASSETS/Libro/`). ⚠️ La licencia **pide crédito** (nombrar a crusenho o linkear el pack).
+  - Propuesta de historia en el borrador, a confirmar: es una libreta de papel porque NEXCORP escanea todo lo digital; Kira dicta y NX-7 anota, por eso las páginas se llenan zona por zona.
+- [ ] Pantalla del libro (Canvas/uGUI, como la terminal) y tecla para abrirlo. Congela el juego mientras está abierto.
+- [ ] Páginas que se desbloquean: Kira lo entrega en el Stage 1 casi vacío ("lo voy a ir completando") y cada zona del Stage 2 agrega su página al llegar.
+- [ ] Que se pueda abrir **desde adentro de la terminal** (y durante el jefe). Como la evaluación es formativa, consultar no es trampa.
+- [ ] Aviso de Kira: si el alumno falla dos veces en una terminal, le dice qué página abrir. Si no, el riesgo es que nadie lo abra.
+
+Reglas del contenido:
+- **Una página por concepto que entre en una pantalla sin scroll:** qué es, un ejemplo y el error más típico. Con la voz de Kira.
+- **El ejemplo nunca es la respuesta de la terminal.** La página de bucles no puede usar `range(4)` con nodos; tiene que ser parecido pero distinto, para que el alumno traslade la idea.
+- Ficción: es lo que Kira se llevó de los servidores de NEXCORP en sus 51 años encadenada.
+- Tecla a definir. Ojo con ESC: ya choca entre la terminal y el `PauseMenu`.
+
+### El jefe final (zona 6)
+
+**Idea de Kevin:** en la última zona, un jefe; en medio de la pelea aparecen terminales con código un poco más complejo que el del resto del juego, y resolverlas es lo que te deja ganarle. Si perdés, se reinicia desde el jefe.
+
+Diseño acordado (16/10):
+1. **El tiempo se congela con la terminal abierta.** Si hay que escribir bajo fuego, pierde el que escribe lento, no el que no sabe Python. La tensión va en la parte de esquivar; la parte de pensar es tranquila.
+2. **El código es la única forma de dañarlo.** Si se le puede ganar a los tiros, las terminales se saltean. Por fases, no terminales al azar: esquivar y aguantar → el jefe queda aturdido o expone el núcleo → aparece la terminal → acertar le rompe el escudo o le arranca una parte. Unas 3 fases, cada una más difícil.
+3. **Equivocarse en la terminal no saca vida.** La dificultad la pone el jefe, no el castigo al error; si no, se rompe la evaluación formativa.
+4. **Al morir se reaparece en la fase donde caíste.** Lo ya resuelto no se vuelve a escribir (reteclear una respuesta sabida no enseña, castiga) y **los diálogos no se repiten**.
+5. **"Más complejo" es leer más código, no escribir más.** La terminal muestra 3-4 líneas que mezclan conceptos (por ejemplo, una función con un `for` adentro) y el hueco sigue siendo una sola pieza fácil de tipear: palabras, números, comillas. Nada de `<`, `>`, `[`, `]`, `{`, `}`, que en teclado español cuestan.
+6. Ficción posible, a confirmar: el sistema de NEXCORP que tuvo encadenada a Kira 51 años. Para ella es personal.
+
+- [ ] Esqueleto de la historia del jefe: quién es y por qué está ahí (ver "Diálogos" en la Fase 4)
+- [ ] Arena y jefe con sus ataques y barra de vida (reusar lo que hay: `DroneEnemy`, `PlayerHealth`, `Checkpoint`)
+- [ ] Terminal dentro del combate: congela el juego y el `onSolved` daña al jefe
+- [ ] Pantalla de la terminal para código de **varias líneas** (hoy está pensada para una)
+- [ ] Reintento por fase
+- [ ] Los ejercicios del jefe (`TerminalChallenge`), con sus errores previstos
+- [ ] Reemplazar el final actual del mapa (cierra el último ítem de la Fase 2)
+
+Para diseñarlo conviene Opus con esfuerzo alto.
+
 ## Fase 3 — Flujo completo
 
 - [ ] Playtest de punta a punta: Menú → Stage 1 → Stage 2 entero → final, anotando qué se siente mal
@@ -371,6 +426,13 @@ Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una par
 - [x] **Pasada visual de todo el mapa** (04/10/2026, adelantada a pedido de Kevin): fondos, luces, neón, clima y post-proceso en las 6 zonas. Ver "Pasada visual del mapa" en la Fase 2.
 - [ ] Zonas 1-3 del mapa: diálogos reales de Kira, errores previstos bien escritos en cada `TerminalChallenge`, ajuste de dificultad, level design cuidado
 - [ ] Zonas 4-6: lo mismo
+- [ ] **Diálogos de todo el juego** (decidido 16/10/2026: van al final). Los del Stage 2 están desconectados (ver Fase 2) y sus textos viejos siguen en `Stage2.asset`.
+  - Lo que pidió Kevin: **que no se puedan saltar**, una buena historia, entretenidos, **sin relleno** y con **información útil**.
+  - **Antes, el esqueleto de la historia** (una página con los momentos clave), porque el libro (Kira lo entrega en el Stage 1) y el jefe dependen de él. La letra fina va al final.
+  - Cada línea hace uno de tres trabajos: avanza la historia, muestra quién es Kira (el humor) o enseña algo / manda a una página del libro. Si no hace ninguno, se corta.
+  - Corto: 3-5 líneas por momento, un momento por zona. Si no se pueden saltar, tienen que ser cortos; largos y obligatorios es la receta para que molesten.
+  - Propuesta para "no se pueden saltar": sin botón de saltar todo y la línea no se adelanta mientras se escribe, pero **con la línea completa, Espacio avanza** (esperar un tiempo fijo aburre al que lee rápido y pierde al que lee lento). **Nunca se repiten al reintentar.**
+  - Cambio de sistema que implica: hoy los segmentos Mid y Outro avanzan solos y no congelan; habría que pasarlos a avance manual como la Intro.
 
 Orden sugerido: las primeras zonas antes (conceptos más simples, valida el patrón de pulido más rápido).
 
@@ -394,8 +456,9 @@ Orden sugerido: las primeras zonas antes (conceptos más simples, valida el patr
 
 1. Audio — ya está marcado como baja prioridad.
 2. Variedad de enemigos — quedarse con un tipo reskineado.
-3. **Zonas del mapa**: con menos conceptos cubiertos el juego sigue siendo jugable y defendible. Cortar por el final (funciones, listas) y quedarse con print, variables y condicionales, que es lo que un noveno año usa más.
-4. Decoración y level design de las zonas tardías — que sean corredores simples.
+3. **Fases del jefe final**: entregarlo con una sola fase (una pelea, una terminal). Sigue cerrando el juego. El libro, en cambio, conviene no cortarlo: es lo que más sostiene la fundamentación.
+4. **Zonas del mapa**: con menos conceptos cubiertos el juego sigue siendo jugable y defendible. Cortar por el final (funciones, listas) y quedarse con print, variables y condicionales, que es lo que un noveno año usa más.
+5. Decoración y level design de las zonas tardías — que sean corredores simples.
 
 > Ojo que esta lista mejoró con el cambio de plan: antes, cortar una stage significaba cortar una escena entera con todo su armado. Ahora cortar es **no agregar una zona más al mapa**, y el juego sigue cerrando solo. Es mucho menos riesgoso llegar justo de tiempo.
 

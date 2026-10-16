@@ -66,6 +66,20 @@ public class TerminalChallenge : ScriptableObject
              "importen. Destildarlo solo si la pregunta no es de sintaxis.")]
     public bool caseSensitive = true;
 
+    [Header("Respuesta numérica (opcional)")]
+    [Tooltip("Si está tildado, también vale CUALQUIER número mayor que " +
+             "'numberAbove'. Para cuando el alumno elige el dato y el if decide.")]
+    public bool acceptAnyNumberAbove = false;
+
+    public float numberAbove = 50f;
+
+    [Tooltip("Error para un número que no alcanza. {0} es el número.")]
+    public string numberTooLowError = "(sin salida: {0} > 50 es False)";
+
+    [TextArea(2, 4)]
+    [Tooltip("Lo que dice Kira con un número que no alcanza. {0} es el número.")]
+    public string numberTooLowKiraSays = "{0} no es mayor que 50: la condición dio False y el print no corrió.";
+
     [Header("Al acertar")]
     [Tooltip("Lo que el programa imprime. Se muestra como salida real de Python, " +
              "que es lo que hace que se sienta programar y no responder un test.")]
@@ -102,6 +116,10 @@ public class TerminalChallenge : ScriptableObject
         if (acceptedAnswers == null || answer == null) return false;
 
         string given = answer.Trim();
+
+        double number;
+        if (acceptAnyNumberAbove && TryParseNumber(given, out number) && number > numberAbove)
+            return true;
 
         for (int i = 0; i < acceptedAnswers.Length; i++)
         {
@@ -145,5 +163,31 @@ public class TerminalChallenge : ScriptableObject
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Si la respuesta es un número que no alcanza, arma el error con ese
+    /// número adentro. Null si no aplica.
+    /// </summary>
+    public WrongAnswer NumberTooLow(string answer)
+    {
+        double number;
+        if (!acceptAnyNumberAbove || answer == null || !TryParseNumber(answer.Trim(), out number))
+            return null;
+
+        string shown = answer.Trim();
+        return new WrongAnswer
+        {
+            answer = shown,
+            pythonError = string.Format(numberTooLowError, shown),
+            kiraSays = string.Format(numberTooLowKiraSays, shown)
+        };
+    }
+
+    /// <summary>Un número como lo escribe Python: punto decimal, sin comillas ni comas.</summary>
+    static bool TryParseNumber(string s, out double number)
+    {
+        return double.TryParse(s, System.Globalization.NumberStyles.AllowLeadingSign | System.Globalization.NumberStyles.AllowDecimalPoint,
+                               System.Globalization.CultureInfo.InvariantCulture, out number);
     }
 }
