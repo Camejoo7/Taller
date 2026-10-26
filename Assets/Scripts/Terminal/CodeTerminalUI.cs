@@ -216,6 +216,11 @@ public class CodeTerminalUI : MonoBehaviour
 
         kiraText = NewText("Kira", content, 21f, kiraColor, TextAlignmentOptions.BottomLeft);
         Place(kiraText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(44f, 64f), new Vector2(-44f, 170f));
+        // Desde el segundo error Kira suma un renglón (qué página del libro
+        // abrir): se achica para caber en vez de subirse encima de la salida.
+        kiraText.enableAutoSizing = true;
+        kiraText.fontSizeMin = 15f;
+        kiraText.fontSizeMax = 21f;
 
         footerText = NewText("Footer", content, 18f, new Color(0.45f, 0.62f, 0.56f, 1f), TextAlignmentOptions.Left);
         Place(footerText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(44f, 22f), new Vector2(-44f, 52f));
@@ -362,6 +367,9 @@ public class CodeTerminalUI : MonoBehaviour
         kiraText.text = "";
         outputText.text = "";
         statusText.text = "";
+        footerText.text = KiraBook.Available
+            ? "ENTER ejecutar    ESC salir    TAB libro"
+            : "ENTER ejecutar    ESC salir";
 
         HideStamp();
         flashImage.color = new Color(1f, 0.15f, 0.15f, 0f);

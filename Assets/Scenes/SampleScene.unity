@@ -722,6 +722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KiraTriggerZone
   dialogueManager: {fileID: 1414682834}
+  segment: 0
 --- !u!61 &371853039
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44993,6 +44994,51 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1394028755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1394028757}
+  - component: {fileID: 1394028756}
+  m_Layer: 0
+  m_Name: LibroDeKira_Entrega
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1394028756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394028755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34dfd37aa124a0f4a885e55c7d4b2730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BookPageUnlock
+  chapterId: 
+--- !u!4 &1394028757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394028755}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1414682833
 GameObject:
   m_ObjectHideFlags: 0
@@ -45034,6 +45080,21 @@ MonoBehaviour:
   autoAdvanceIntro: 3
   autoAdvanceMid: 4
   autoAdvanceOutro: 3.5
+  onIntroEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1394028756}
+        m_TargetAssemblyTypeName: BookPageUnlock, Assembly-CSharp
+        m_MethodName: Unlock
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &1414682835
 Transform:
   m_ObjectHideFlags: 0
@@ -49795,6 +49856,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2022616157
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 661696011544483822, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_Name
+      value: LibroDeKira
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4322602344341060794, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 44024fc04dac8ad40a665b0672da6542, type: 3}
 --- !u!1 &2050834631
 GameObject:
   m_ObjectHideFlags: 0
@@ -50075,3 +50193,5 @@ SceneRoots:
   - {fileID: 1603492317}
   - {fileID: 497217772}
   - {fileID: 189487691}
+  - {fileID: 2022616157}
+  - {fileID: 1394028757}

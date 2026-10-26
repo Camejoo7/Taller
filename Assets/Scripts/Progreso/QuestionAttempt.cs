@@ -25,6 +25,13 @@ public class QuestionAttempt
 
     public float seconds;
 
+    /// <summary>
+    /// Cuántas veces abrió el libro de Kira mientras resolvía. No resta
+    /// puntos (consultar no es trampa), pero le dice al docente quién acertó
+    /// solo y quién necesitó repasar el tema.
+    /// </summary>
+    public int bookOpens;
+
     /// <summary>Texto de las opciones equivocadas que eligió, en orden.</summary>
     public List<string> wrongChoices = new List<string>();
 
