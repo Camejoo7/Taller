@@ -49,10 +49,14 @@ public class TerminalChallenge : ScriptableObject
     public string prompt = "Completá la línea para que imprima Hola";
 
     [Header("La línea de código")]
-    [Tooltip("Lo que va ANTES del hueco. Puede quedar vacío.")]
+    [TextArea(1, 6)]
+    [Tooltip("Lo que va ANTES del hueco. Puede quedar vacío.\n" +
+             "Puede tener varias líneas (Enter): la pantalla las numera y el " +
+             "hueco queda en la línea donde caiga. Es lo que usa el jefe.")]
     public string codeBefore = "";
 
-    [Tooltip("Lo que va DESPUÉS del hueco.")]
+    [TextArea(1, 6)]
+    [Tooltip("Lo que va DESPUÉS del hueco. También puede tener varias líneas.")]
     public string codeAfter = "(\"Hola\")";
 
     [Tooltip("Cuántos guiones bajos se muestran mientras el hueco está vacío.")]
@@ -96,6 +100,11 @@ public class TerminalChallenge : ScriptableObject
              "{0} se reemplaza por lo que escribió el alumno.")]
     public string fallbackError = "SyntaxError: invalid syntax";
 
+    [Tooltip("Opcional: error para cuando escribe una PALABRA suelta que no " +
+             "está en la lista (sin comillas, sin números). En Python eso casi " +
+             "siempre es un NameError. {0} es la palabra. Vacío = se usa el de arriba.")]
+    public string fallbackErrorForWords = "";
+
     [TextArea(2, 4)]
     public string fallbackKiraSays = "Eso no es. Mirá bien la línea y probá otra vez.";
 
@@ -103,6 +112,35 @@ public class TerminalChallenge : ScriptableObject
     public string BuildLine(string answer)
     {
         return codeBefore + answer + codeAfter;
+    }
+
+    /// <summary>Si el código tiene varias líneas (los ejercicios del jefe).</summary>
+    public bool IsMultiLine
+    {
+        get
+        {
+            return (codeBefore != null && codeBefore.Contains("\n")) ||
+                   (codeAfter != null && codeAfter.Contains("\n"));
+        }
+    }
+
+    /// <summary>El error para una respuesta que no estaba prevista.</summary>
+    public string FallbackError(string answer)
+    {
+        string given = answer == null ? "" : answer.Trim();
+        if (!string.IsNullOrEmpty(fallbackErrorForWords) && IsBareWord(given))
+            return string.Format(fallbackErrorForWords, given);
+        return string.Format(fallbackError, given);
+    }
+
+    /// <summary>Un nombre suelto, como los de las variables: letras, números y _.</summary>
+    static bool IsBareWord(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return false;
+        if (!char.IsLetter(s[0]) && s[0] != '_') return false;
+        for (int i = 1; i < s.Length; i++)
+            if (!char.IsLetterOrDigit(s[i]) && s[i] != '_') return false;
+        return true;
     }
 
     /// <summary>El hueco vacío, para mostrar antes de que escriba nada.</summary>

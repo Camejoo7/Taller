@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Jefe_1_Escudo
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Jefe_1_Escudo
+  concept: bucles
+  stageNumber: 2
+  prompt: "CUSTODIO :: ESCUDO \u2014 tiene tantas capas como dice la variable capas.
+    Complet\xE1 el for para bajarlas todas."
+  codeBefore: 'capas = 3
+
+    for capa in range('
+  codeAfter: "):\n    print(\"CAPA\", capa, \"ABAJO\")"
+  blankWidth: 5
+  acceptedAnswers:
+  - capas
+  - 3
+  caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 0
+  numberTooLowError: 
+  numberTooLowKiraSays: 
+  expectedOutput: 'CAPA 0 ABAJO
+
+    CAPA 1 ABAJO
+
+    CAPA 2 ABAJO'
+  kiraOnSuccess: "\xA1Escudo abajo! Tres vueltas: 0, 1 y 2. Si usaste capas en vez
+    de 3, mejor: si le suman capas, el for se acomoda solo."
+  knownMistakes:
+  - answer: capa
+    pythonError: 'NameError: name ''capa'' is not defined. Did you mean: ''capas''?'
+    kiraSays: "capa (sin s) es la variable del for, y todav\xEDa no existe cuando
+      se arma el range. La que guarda el 3 es capas."
+  - answer: Capas
+    pythonError: 'NameError: name ''Capas'' is not defined. Did you mean: ''capas''?'
+    kiraSays: "Python distingue may\xFAsculas: Capas y capas son dos nombres distintos."
+  - answer: '"capas"'
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Con comillas es un texto, no la variable. range necesita un n\xFAmero:
+      capas, sin comillas."
+  - answer: '''capas'''
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Con comillas es un texto, no la variable. range necesita un n\xFAmero:
+      capas, sin comillas."
+  - answer: '"3"'
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Entre comillas, 3 es un TEXTO. range cuenta con n\xFAmeros de verdad:
+      3 sin comillas."
+  - answer: '''3'''
+    pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
+    kiraSays: "Entre comillas, 3 es un TEXTO. range cuenta con n\xFAmeros de verdad:
+      3 sin comillas."
+  - answer: tres
+    pythonError: 'NameError: name ''tres'' is not defined'
+    kiraSays: "Python no lee n\xFAmeros escritos con letras: tres ser\xEDa el nombre
+      de una variable que no existe."
+  - answer: 0
+    pythonError: '(sin salida: range(0) no da ninguna vuelta)'
+    kiraSays: "range(0) no da ninguna vuelta: el escudo ni se enter\xF3."
+  - answer: 2
+    pythonError: "CAPA 0 ABAJO, CAPA 1 ABAJO \u2192 la tercera capa sigue en pie"
+    kiraSays: 'range(2) da dos vueltas: 0 y 1. El escudo tiene tres capas.'
+  - answer: 4
+    pythonError: "CAPA 3 ABAJO \u2192 ERROR: el escudo no tiene capa 3"
+    kiraSays: 'Te pasaste por una: range(4) da cuatro vueltas, y el escudo tiene
+      tres capas.'
+  - answer: 5
+    pythonError: "CAPA 3 ABAJO \u2192 ERROR: el escudo no tiene capa 3"
+    kiraSays: 'Te pasaste: range(5) da cinco vueltas, y el escudo tiene tres capas.'
+  fallbackError: 'SyntaxError: invalid syntax'
+  fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
+  fallbackKiraSays: "Fijate en la primera l\xEDnea: ah\xED dice cu\xE1ntas capas
+    tiene el escudo. range necesita ese n\xFAmero."

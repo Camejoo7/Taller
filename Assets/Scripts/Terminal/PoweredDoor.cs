@@ -29,6 +29,14 @@ public class PoweredDoor : MonoBehaviour
 
     public float shakeAmount = 0.02f;
 
+    [Header("Cerrarse")]
+    [Tooltip("Arranca abierta, sin bloquear. Es para la puerta de la arena del " +
+             "jefe, que se cierra de golpe detrás del jugador (Close).")]
+    public bool startOpen = false;
+
+    [Tooltip("Lo que tarda en cerrarse. Corto: es un portazo.")]
+    public float closeDuration = 0.25f;
+
     [Header("Luces")]
     [Tooltip("Opcional: sprites que cambian de color cuando la puerta se habilita.")]
     public SpriteRenderer[] indicators;
@@ -54,6 +62,67 @@ public class PoweredDoor : MonoBehaviour
         if (sprite != null) closedSprite = sprite.sprite;
         closedPos = transform.position;
         Tint(lockedColor);
+        if (startOpen) ShowOpen();
+    }
+
+    /// <summary>Queda abierta de una, sin animación.</summary>
+    void ShowOpen()
+    {
+        transform.position = closedPos + (Vector3)openOffset;
+        if (sprite != null && openFrames != null && openFrames.Length > 0 && openFrames[openFrames.Length - 1] != null)
+            sprite.sprite = openFrames[openFrames.Length - 1];
+        if (blocker != null) blocker.enabled = false;
+        Tint(unlockedColor);
+        if (hideIndicatorsWhenOpen && indicators != null)
+            for (int i = 0; i < indicators.Length; i++)
+                if (indicators[i] != null) indicators[i].enabled = false;
+    }
+
+    /// <summary>Se cierra de golpe (la animación de abrir, al revés y rápida).</summary>
+    public void Close()
+    {
+        StopAllCoroutines();
+        opening = false;
+        StartCoroutine(CloseRoutine());
+    }
+
+    IEnumerator CloseRoutine()
+    {
+        // Bloquea desde el primer cuadro: es un portazo, no se pasa por debajo.
+        if (blocker != null) blocker.enabled = true;
+        if (indicators != null)
+            for (int i = 0; i < indicators.Length; i++)
+                if (indicators[i] != null) indicators[i].enabled = true;
+        Tint(lockedColor);
+
+        Vector3 from = transform.position;
+        bool animar = openFrames != null && openFrames.Length > 0;
+        float t = 0f;
+        while (t < closeDuration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / closeDuration);
+            transform.position = Vector3.Lerp(from, closedPos, p * p);
+            if (animar && sprite != null)
+            {
+                int i = Mathf.Max(0, openFrames.Length - 1 - Mathf.FloorToInt(p * openFrames.Length));
+                if (openFrames[i] != null) sprite.sprite = openFrames[i];
+            }
+            yield return null;
+        }
+
+        transform.position = closedPos;
+        if (sprite != null && closedSprite != null) sprite.sprite = closedSprite;
+
+        // El golpe: un sacudón corto, como algo pesado que llega al tope.
+        t = 0f;
+        while (t < 0.2f)
+        {
+            t += Time.deltaTime;
+            transform.position = closedPos + (Vector3)(Random.insideUnitCircle * shakeAmount * 1.5f);
+            yield return null;
+        }
+        transform.position = closedPos;
     }
 
     /// <summary>Lo que engancha el <c>onSolved</c> de la terminal.</summary>

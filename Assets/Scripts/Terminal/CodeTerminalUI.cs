@@ -79,6 +79,8 @@ public class CodeTerminalUI : MonoBehaviour
     private TextMeshProUGUI outputText;
     private TextMeshProUGUI kiraText;
     private TextMeshProUGUI footerText;
+    private RectTransform ruleRect;
+    private bool multiLine;
 
     private readonly List<string> outputLines = new List<string>();
     private Coroutine flicker;
@@ -192,6 +194,12 @@ public class CodeTerminalUI : MonoBehaviour
 
         headerText = NewText("Header", content, 26f, frameColor, TextAlignmentOptions.Left);
         Place(headerText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -58f), new Vector2(-300f, -20f));
+        // "TERMINAL NEXCORP :: CONDICIONALES" no entra a 26: partida en dos se
+        // pisaba con la consigna. Así se achica y queda en un renglón.
+        headerText.textWrappingMode = TextWrappingModes.NoWrap;
+        headerText.enableAutoSizing = true;
+        headerText.fontSizeMin = 16f;
+        headerText.fontSizeMax = 26f;
 
         statusText = NewText("Estado", content, 20f, outputColor, TextAlignmentOptions.Right);
         Place(statusText.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-290f, -56f), new Vector2(-44f, -22f));
@@ -209,7 +217,8 @@ public class CodeTerminalUI : MonoBehaviour
 
         // Raya separadora entre la consigna y lo que la consola va escupiendo.
         GameObject rule = NewImage("Raya", content, new Color(frameColor.r, frameColor.g, frameColor.b, 0.35f));
-        Place(rule.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -286f), new Vector2(-44f, -284f));
+        ruleRect = rule.GetComponent<RectTransform>();
+        Place(ruleRect, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -286f), new Vector2(-44f, -284f));
 
         outputText = NewText("Salida", content, 24f, outputColor, TextAlignmentOptions.TopLeft);
         Place(outputText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(44f, 176f), new Vector2(-44f, -296f));
@@ -361,6 +370,7 @@ public class CodeTerminalUI : MonoBehaviour
     {
         outputLines.Clear();
         root.SetActive(true);
+        LayoutFor(challenge);
 
         headerText.text = "TERMINAL NEXCORP  ::  " + (challenge != null ? challenge.concept.ToUpper() : "");
         promptText.text = challenge != null ? challenge.prompt : "";
@@ -380,6 +390,45 @@ public class CodeTerminalUI : MonoBehaviour
         StartCoroutine(PowerOn());
     }
 
+    /// <summary>
+    /// Una línea va en su franja de siempre, con el ">>>" de la consola. Un
+    /// programa de varias líneas (el jefe) baja la raya y achica la salida
+    /// para hacerle lugar, y numera los renglones como un editor: los
+    /// tracebacks de Python hablan de "line 3", y así se puede buscar.
+    /// </summary>
+    void LayoutFor(TerminalChallenge challenge)
+    {
+        multiLine = challenge != null && challenge.IsMultiLine;
+
+        if (!multiLine)
+        {
+            Place(codeText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -274f), new Vector2(-44f, -198f));
+            codeText.alignment = TextAlignmentOptions.Left;
+            codeText.textWrappingMode = TextWrappingModes.Normal;
+            codeText.fontSizeMax = 40f;
+            codeText.lineSpacing = 0f;
+            Place(ruleRect, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -286f), new Vector2(-44f, -284f));
+            Place(outputText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(44f, 176f), new Vector2(-44f, -296f));
+            return;
+        }
+
+        int lines = challenge.BuildLine(challenge.Blank).Split('\n').Length;
+        const float top = -190f;
+        float bottom = top - lines * 38f - 8f;
+
+        Place(codeText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, bottom), new Vector2(-44f, top));
+        codeText.alignment = TextAlignmentOptions.TopLeft;
+        // Sin cortar renglones: una línea de código partida en dos parece otra
+        // línea. Si no entra, la letra se achica (autoSize).
+        codeText.textWrappingMode = TextWrappingModes.NoWrap;
+        codeText.fontSizeMax = 26f;
+        // La fuente pixel viene con los renglones pegados: con varias líneas,
+        // la de abajo se comía la de arriba.
+        codeText.lineSpacing = 30f;
+        Place(ruleRect, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, bottom - 12f), new Vector2(-44f, bottom - 10f));
+        Place(outputText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(44f, 176f), new Vector2(-44f, bottom - 22f));
+    }
+
     public void Close()
     {
         StopAllCoroutines();
@@ -390,7 +439,10 @@ public class CodeTerminalUI : MonoBehaviour
 
     /// <summary>El tubo no se prende de golpe: primero es una raya y después se
     /// abre. Son dos décimas, pero es la diferencia entre encender un monitor y
-    /// que aparezca un panel.</summary>
+    /// que aparezca un panel.
+    ///
+    /// Toda la pantalla anda en tiempo real (unscaled): la terminal del jefe
+    /// congela el juego, y la pantalla tiene que seguir viva igual.</summary>
     IEnumerator PowerOn()
     {
         contentGroup.alpha = 0f;
@@ -399,7 +451,7 @@ public class CodeTerminalUI : MonoBehaviour
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / 0.18f;
+            t += Time.unscaledDeltaTime / 0.18f;
             glass.localScale = new Vector3(1f, Mathf.SmoothStep(0.02f, 1f, t), 1f);
             yield return null;
         }
@@ -408,7 +460,7 @@ public class CodeTerminalUI : MonoBehaviour
         t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / 0.12f;
+            t += Time.unscaledDeltaTime / 0.12f;
             contentGroup.alpha = t;
             yield return null;
         }
@@ -424,7 +476,7 @@ public class CodeTerminalUI : MonoBehaviour
         float y = 0f;
         while (true)
         {
-            y -= Time.deltaTime * glassHeight * 0.22f;
+            y -= Time.unscaledDeltaTime * glassHeight * 0.22f;
             if (y < -glassHeight - roll.sizeDelta.y) y = roll.sizeDelta.y;
             roll.anchoredPosition = new Vector2(0f, y);
             yield return null;
@@ -439,7 +491,7 @@ public class CodeTerminalUI : MonoBehaviour
         {
             statusText.text = on ? "● EN LÍNEA" : "<color=#00000000>●</color> EN LÍNEA";
             on = !on;
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSecondsRealtime(0.6f);
         }
     }
 
@@ -455,9 +507,23 @@ public class CodeTerminalUI : MonoBehaviour
             hueco = "<mark=#00FF8820>" + Escape(typed) + "</mark>";
 
         string caret = caretVisible ? "<color=#00FF88>|</color>" : "<color=#00000000>|</color>";
+        string code = Escape(challenge.codeBefore) + hueco + caret + Escape(challenge.codeAfter);
 
-        codeText.text = "<color=#4FD6A8>>>> </color>" +
-                        Escape(challenge.codeBefore) + hueco + caret + Escape(challenge.codeAfter);
+        if (!multiLine)
+        {
+            codeText.text = "<color=#4FD6A8>>>> </color>" + code;
+            return;
+        }
+
+        // Varias líneas: cada una con su número, apagadito, como un editor.
+        string[] lines = code.Split('\n');
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (i > 0) sb.Append('\n');
+            sb.Append("<color=#3F6B5C>").Append(i + 1).Append("</color>  ").Append(lines[i]);
+        }
+        codeText.text = sb.ToString();
     }
 
     public void PushLine(string text, Color color)
@@ -517,7 +583,7 @@ public class CodeTerminalUI : MonoBehaviour
                 // Siempre el último: ShowOutput puede sacar renglones de arriba.
                 outputLines[outputLines.Count - 1] = "<color=#" + hex + ">" + line.Substring(0, i) + "</color>";
                 ShowOutput();
-                yield return new WaitForSeconds(perChar);
+                yield return new WaitForSecondsRealtime(perChar);
             }
         }
     }
@@ -554,7 +620,7 @@ public class CodeTerminalUI : MonoBehaviour
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / 0.14f;
+            t += Time.unscaledDeltaTime / 0.14f;
             float s = Mathf.Lerp(1.45f, 1f, Mathf.SmoothStep(0f, 1f, t));
             stampRect.localScale = new Vector3(s, s, 1f);
             stampImage.color = new Color(1f, 1f, 1f, Mathf.Clamp01(t * 1.6f));
@@ -563,12 +629,12 @@ public class CodeTerminalUI : MonoBehaviour
         stampRect.localScale = Vector3.one;
         stampImage.color = Color.white;
 
-        yield return new WaitForSeconds(granted ? 1.1f : 0.8f);
+        yield return new WaitForSecondsRealtime(granted ? 1.1f : 0.8f);
 
         t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / 0.25f;
+            t += Time.unscaledDeltaTime / 0.25f;
             stampImage.color = new Color(1f, 1f, 1f, 1f - t);
             yield return null;
         }
@@ -585,7 +651,7 @@ public class CodeTerminalUI : MonoBehaviour
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime / 0.35f;
+            t += Time.unscaledDeltaTime / 0.35f;
             flashImage.color = new Color(1f, 0.15f, 0.15f, 0.09f * (1f - t));
             yield return null;
         }
@@ -605,7 +671,7 @@ public class CodeTerminalUI : MonoBehaviour
                 Mathf.Clamp01(baseColor.g + n),
                 Mathf.Clamp01(baseColor.b + n),
                 baseColor.a);
-            yield return new WaitForSeconds(Random.Range(0.05f, 0.18f));
+            yield return new WaitForSecondsRealtime(Random.Range(0.05f, 0.18f));
         }
     }
 

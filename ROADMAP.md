@@ -28,6 +28,8 @@ Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas termin
 
 **26/10/2026:** a pedido de Kevin se adelantó el **libro de Kira** (Fase 2B), con los dos pendientes de la Fase 2 todavía abiertos. **El libro funciona** (TAB, páginas por zona, desde la terminal, aviso de Kira): ver "El libro de Kira" en la Fase 2B. Lo que le falta es **que Kevin revise el texto**, que ahora se corrige desde el Inspector sin programar.
 
+**26/10/2026 (más tarde):** también se armó el **jefe final, EL CUSTODIO**, en una arena nueva al final de la zona verde (que se estiró hacia la derecha): ver "Cómo está armado el jefe" en la Fase 2B. Funciona de punta a punta. **Pendientes:** que Kevin revise sus 3 ejercicios (y los de las zonas 2 a 6) y jugarlo de verdad para ajustar la dificultad. Con esto, de la Fase 2 solo queda la revisión de los ejercicios.
+
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
 ## Decisiones tomadas (para no repetir la charla)
@@ -124,7 +126,7 @@ No es opcional ni se puede saltar — todo lo demás se apoya en esto.
     - ⚠️ **Los bordes de `PowerCurtain` ahora son relativos al objeto, ya no de mundo** (se ignoran su escala y rotación). Sin ese cambio la oscuridad se quedaba en su lugar aunque movieras el prefab. La instancia del Stage 2 se convirtió con los bordes ya recalculados, así que en el mundo quedó igual que antes.
   - [x] **Extender el mapa con una zona nueva por concepto** (03/10/2026, Claude solo mientras Kevin no estaba): zonas 3 a 6 generadas a continuación del tramo a mano, cada una con su terminal, su consecuencia física, checkpoints y un dron. **Las 6 zonas se recorrieron de punta a punta en Play mode con un piloto automático** (saltos, terminales resueltas de verdad escribiendo la respuesta, consecuencias, salida al menú). Detalle completo en "El mapa del Stage 2, zona por zona" más abajo.
   - [ ] Escribir los `TerminalChallenge` de cada concepto, con sus errores previstos y la explicación de Kira. — **Hay borradores de las zonas 2 a 6** (escritos por Claude para que el mapa se pueda recorrer, con tracebacks reales de Python 3.10+). Falta que Kevin los revise: el tono de Kira, la dificultad y si los errores previstos son los que comete de verdad un alumno de noveno.
-  - [ ] Pantalla / flujo de final del mapa. — **A medias**: pasando la última puerta una `StageExit` lleva al Menú Principal (el cierre de Kira está desconectado desde el 16/10). Falta la pantalla de resumen (es de la Fase 3). **El 16/10 se decidió que el final del juego sea un jefe** (Fase 2B): este ítem se cierra cuando el jefe exista.
+  - [x] Pantalla / flujo de final del mapa. — **El 16/10 se decidió que el final del juego sea un jefe** (Fase 2B): este ítem se cierra cuando el jefe exista. **26/10/2026: el jefe existe** (EL CUSTODIO, ver Fase 2B): pasando la última puerta está su arena, y la `Salida Final` al Menú Principal se prende recién cuando cae. La pantalla de resumen sigue siendo de la Fase 3.
 
 > **Trampa a recordar:** los sprites que se ponen en la capa de dibujo `Default` quedan **detrás** del nivel. Kira apareció invisible hasta que se la pasó a la capa `Personaje`. Todo lo que tenga que verse por delante del mapa va en `Personaje`.
 - [x] **Pipeline de tilemap para el mapa grande** (03/10/2026: las paletas de Central City ya existían y las zonas nuevas se pintan con `MapTools` / `ZoneBuilder`; para Seaport y Green Zone se crearon las `Tile` en `<pack>/1 Tiles/Palette/`, sin prefab de paleta todavía) (movido desde Fase 0): los tilesets vienen de archivos `.aseprite` (Aseprite Importer, 100 PPU, importados como sprite único). El botón **Slice del Sprite Editor está deshabilitado a propósito** para cualquier asset de scripted importer — no es un bug, es cómo funciona el importador. Para armar el Tile Palette: exportar cada tileset a PNG, importarlo con el **Texture Importer a 16 PPU**, cortar en grilla 16×16, y usar un **Grid nuevo con Cell Size (1,1,0)**. NO tocar el Grid de `SampleScene` (Cell Size 0.16) — el piso de Stage 1 ya está pintado sobre él con `CompositeCollider2D` y cambiarlo rompe el nivel.
@@ -140,7 +142,7 @@ Mapeo de concepto → qué pide la terminal. Lo que se escribe es el **hueco** d
 | 3 | condicionales | el sensor corre `if energia > 50: print("ABRIR")` y el alumno escribe `energia = ___` (cualquier número > 50; sin tipear `>`, que cuesta en teclado español) — "Distrito Neón": la salida a la calle (generada, ver abajo) | 🟡 `Stage2_Condicionales_01.asset` (borrador) |
 | 4 | bucles | `for nodo in range(4): print(...)` — "Central eléctrica" (pack Power Station): se cruzan 4 torres-nodo apagadas y **la respuesta es cuántas viste**. Al acertar la cámara viaja al patio y los 4 nodos se prenden de a uno | 🟡 `Stage2_Bucles_01.asset` (borrador) |
 | 5 | listas y cadenas | `print(contenedores[3])` — "El puerto" (pack Seaport): los contenedores verde, rojo y gris están en fila en el muelle y el naranja cuelga de la grúa. **La grúa baja el que imprimas**: el naranja queda como puente sobre el agua (`CraneLoad`). Enseña el índice desde cero | 🟡 `Stage2_Listas_01.asset` (borrador) |
-| 6 | funciones | `liberar("KIRA")` — "La zona verde" (pack Green Zone), el final: la función ya existe y hay que llamarla con el nombre de quien tiene que salir. Al acertar se abre la última puerta y **se prende la fuente de la plaza**; Kira se despide (segmento Outro, desconectado desde el 16/10) y la salida lleva al menú. Acá va a ir el jefe final (Fase 2B) | 🟡 `Stage2_Funciones_01.asset` (borrador) |
+| 6 | funciones | `liberar("KIRA")` — "La zona verde" (pack Green Zone), el final: la función ya existe y hay que llamarla con el nombre de quien tiene que salir. Al acertar se abre la última puerta y **se prende la fuente de la plaza**; Kira se despide (segmento Outro, desconectado desde el 16/10). Después de esa puerta está la **arena del jefe final, EL CUSTODIO** (26/10, Fase 2B), y recién al ganarle se abre la salida al menú | 🟡 `Stage2_Funciones_01.asset` (borrador) |
 
 > **Lo que hace que sea un juego no es cómo se responde, es qué pasa en el mundo cuando acertás.** Está escrito más abajo y vale para cada terminal nueva: no alcanza con un cartel de "¡Correcto!". La puerta que tiembla, las luces que se encienden, el sector que recupera la energía — eso es lo que no se puede hacer en una página web. Si una terminal nueva no tiene una consecuencia física, le falta la mitad.
 
@@ -174,7 +176,7 @@ Generado por Claude a continuación del tramo pintado a mano, **sin tocar ese tr
 | 3 | 2 → 33,6 | **Distrito Neón**, Central City + cielo nuevo | rampa a la calle, edificio con local, zanja (pozo), plataformas grises y pasarelas sobre el vacío | **condicionales** al final de la pasarela alta → puerta 3 |
 | 4 | 33,9 → 61,4 | **Central eléctrica**, Power Station | muralla, escalones, 4 torres-nodo en arco sobre el vacío, sala de control | **bucles** en la sala de control → puerta 4 + la cámara viaja al patio y **los 4 nodos se prenden** |
 | 5 | 61,4 → 87 | **El puerto**, Seaport | muelles con agua, caja + contenedor para tomar altura, fila de contenedores para trepar | **listas** arriba del contenedor gris → **la grúa baja el contenedor naranja como puente** (sin puerta) |
-| 6 | 87 → 121 | **La zona verde**, Green Zone | colina, estanque con islas flotantes, plaza | **funciones** → última puerta + **se prende la fuente**; Kira se despide y la salida va al Menú Principal |
+| 6 | 87 → 137 | **La zona verde**, Green Zone | colina, estanque con islas flotantes, plaza y (desde el 26/10) la **arena del jefe**, de x 125 al risco en x 135 | **funciones** → última puerta + **se prende la fuente**. Después, el jefe; al ganarle se prende la salida al Menú Principal |
 
 **Cómo está armado:**
 - **Capas nuevas alineadas con `Piso`** (la capa `Visual` original está corrida 2 px): `Fachadas` (Default/−1, edificios del fondo), `Deco` (Default/2, props sin colisión) y `Frente` (Personaje/15, sin usar todavía).
@@ -417,15 +419,27 @@ Diseño acordado (16/10):
 5. **"Más complejo" es leer más código, no escribir más.** La terminal muestra 3-4 líneas que mezclan conceptos (por ejemplo, una función con un `for` adentro) y el hueco sigue siendo una sola pieza fácil de tipear: palabras, números, comillas. Nada de `<`, `>`, `[`, `]`, `{`, `}`, que en teclado español cuestan.
 6. Ficción posible, a confirmar: el sistema de NEXCORP que tuvo encadenada a Kira 51 años. Para ella es personal.
 
-- [ ] Esqueleto de la historia del jefe: quién es y por qué está ahí (ver "Diálogos" en la Fase 4)
-- [ ] Arena y jefe con sus ataques y barra de vida (reusar lo que hay: `DroneEnemy`, `PlayerHealth`, `Checkpoint`)
-- [ ] Terminal dentro del combate: congela el juego y el `onSolved` daña al jefe
-- [ ] Pantalla de la terminal para código de **varias líneas** (hoy está pensada para una)
-- [ ] Reintento por fase
-- [ ] Los ejercicios del jefe (`TerminalChallenge`), con sus errores previstos
-- [ ] Reemplazar el final actual del mapa (cierra el último ítem de la Fase 2)
+- [x] Esqueleto de la historia del jefe: quién es y por qué está ahí (ver "Diálogos" en la Fase 4) — **26/10/2026: EL CUSTODIO**, el programa de NEXCORP que tuvo encadenada a Kira 51 años (la ficción que proponía el punto 6). Por ahora la historia la cuenta la barra del jefe en una línea; los diálogos de Kira van con los demás en la Fase 4.
+- [x] Arena y jefe con sus ataques y barra de vida — **26/10/2026**. Ver "Cómo está armado el jefe" abajo.
+- [x] Terminal dentro del combate: congela el juego y el `onSolved` daña al jefe — **26/10/2026**: `CodeTerminal.freezeTime`.
+- [x] Pantalla de la terminal para código de **varias líneas** (hoy está pensada para una) — **26/10/2026**: si `codeBefore`/`codeAfter` tienen Enter, la pantalla numera los renglones (como un editor) y le hace lugar.
+- [x] Reintento por fase — **26/10/2026**: morir en la pelea te devuelve a la arena con los corazones llenos, y el jefe vuelve al principio de esa fase. Las fases ganadas quedan ganadas.
+- [ ] Los ejercicios del jefe (`TerminalChallenge`), con sus errores previstos — **26/10/2026: borradores escritos** (`Assets/Data/Terminal/Jefe_1_Escudo`, `Jefe_2_Defensa`, `Jefe_3_Apagado`), con tracebacks reales de Python 3.10+. **Falta que Kevin los revise**, igual que los de las zonas 2 a 6.
+- [x] Reemplazar el final actual del mapa (cierra el último ítem de la Fase 2) — **26/10/2026**: la salida al menú (`Salida Final`) quedó al fondo de la arena, apagada hasta que el Custodio cae.
 
 Para diseñarlo conviene Opus con esfuerzo alto.
+
+**Cómo está armado el jefe (26/10/2026):**
+- **Dónde:** la zona verde se estiró hacia la derecha (`ZoneBuilder.Z6End` pasó de 188 a 210). Pasando la última puerta (la de funciones) hay un pasillo corto y la **arena: de x 125 (una puerta blindada que arranca abierta) al risco nuevo en x 135**. El risco y los árboles del final se movieron con `MapDressing.BuildPark`, así que rehacer el decorado da lo mismo.
+- **Todo está en el objeto `JefeFinal`** de la escena: `Custodio` (el jefe), `ConsolaJefe`, `PuertaArena`, `Reaparicion`, `FocoCamara` y `Barra`.
+- **El dibujo:** el dron 5 del pack `DRONES` (una caja blindada que flota) a escala 3. Su animación `Death` se usa entera: los primeros cuadros son el núcleo expuesto (aturdido) y los últimos, la caja rota (derrota).
+- **Cómo se pelea:** al pasar x 125,75 la puerta se cierra de golpe, la cámara se aleja (zoom 2,7: entra la arena entera y el pixel art sigue nítido) y el Custodio baja. Ataca y se va **recalentando** (barra naranja); los tiros del jugador lo recalientan más rápido pero **no le sacan vida**. Recalentado, se va a la derecha, abre el núcleo y **se prende la consola** (a la izquierda) con el ejercicio de esa fase. Con la terminal abierta **el juego se congela**. Acertar le rompe un tramo de la barra y te llena los corazones; equivocarse no saca vida.
+- **Las 3 fases** (se ajustan en el Inspector del `Custodio`, lista `Phases`): 1) bolas de a una, ejercicio de `for` con variable; 2) abanico de 3 + pasadas tirando bombas, ejercicio de función con `if`; 3) lo mismo más rápido, ejercicio de listas con función. Cada fase dice cuánto tarda en recalentarse, cada cuánto ataca, qué tan rápido, y qué ejercicio aparece.
+- **Al ganarle:** se rompe y se cae, se abre la puerta de la arena, la cámara vuelve a la normal y su evento `onDefeated` prende la `Salida Final` (ahí se puede enganchar más cosas, como el cierre de Kira de la Fase 4).
+- **Scripts nuevos:** `BossController` (la pelea), `BossShot` (la bola y la bomba, prefabs `JefeDisparo` y `JefeBomba`) y `BossHealthBar` (la barra de arriba, que también dice qué hacer en cada momento). **Cambios chicos:** `CodeTerminal.freezeTime` (y la terminal anda en tiempo real), código de varias líneas en `CodeTerminalUI`, `PoweredDoor.startOpen` + `Close()`, `PlayerHealth.RespawnOverride` + `Revive()`, la bala del jugador le avisa al jefe, y `TerminalChallenge.fallbackErrorForWords` (una palabra suelta que no estaba prevista da `NameError`, como en Python).
+- **Arreglado de paso:** en la terminal, el título "TERMINAL NEXCORP :: CONDICIONALES" no entraba, se partía en dos y se pisaba con la consigna (pasaba también en la zona 3). Ahora se achica para entrar en un renglón.
+- **Idea para más adelante (Kevin, 26/10):** más ejercicios para hacerle daño. Por ahora queda con 3.
+- **Probado en Play mode** de punta a punta: puerta, intro, ataques, morir y reaparecer, las 3 consolas (con errores previstos y respuesta buena), derrota, puerta que se abre y salida habilitada. **Falta jugarlo de verdad** (con teclado, esquivando) para ajustar la dificultad.
 
 ## Fase 3 — Flujo completo
 
