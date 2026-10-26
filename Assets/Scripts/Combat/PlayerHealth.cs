@@ -37,6 +37,14 @@ public class PlayerHealth : MonoBehaviour, IPlayerDamageable
     public bool IsDead { get; private set; }
     public bool IsInvulnerable { get { return Time.time < invulnerableUntil; } }
 
+    /// <summary>
+    /// Si alguien lo pone, morir NO reinicia la stage: se le avisa a él y él
+    /// decide dónde reaparece el jugador. Lo usa la pelea con el jefe, para
+    /// que perder te devuelva a la arena (a la fase donde caíste) y no al
+    /// garage del principio del mapa.
+    /// </summary>
+    public static Action<PlayerHealth> RespawnOverride;
+
     /// <summary>Avisa a la UI de corazones que algo cambió.</summary>
     public event Action OnHealthChanged;
 
@@ -153,11 +161,48 @@ public class PlayerHealth : MonoBehaviour, IPlayerDamageable
 
         yield return new WaitForSeconds(restartDelay);
 
+        if (RespawnOverride != null)
+        {
+            RespawnOverride(this);
+            yield break;
+        }
+
         // De vuelta al principio de la stage. Recargar la escena deja todo como
         // estaba: enemigos, diálogos y posición de arranque.
         Scene current = SceneManager.GetActiveScene();
         Time.timeScale = 1f;
         SceneManager.LoadScene(current.name);
+    }
+
+    /// <summary>
+    /// Vuelve a la vida en <paramref name="position"/> con los corazones llenos
+    /// y un rato de gracia. Lo llama quien haya puesto <see cref="RespawnOverride"/>.
+    /// </summary>
+    public void Revive(Vector3 position)
+    {
+        IsDead = false;
+        Current = maxHealth;
+        Raise();
+
+        transform.position = position;
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+        }
+        if (visual != null) visual.enabled = true;
+        if (movement != null) movement.SetCanMove(true);
+
+        invulnerableUntil = Time.time + invulnerableTime;
+        if (blinking != null) StopCoroutine(blinking);
+        blinking = StartCoroutine(Blink(invulnerableTime));
+    }
+
+    void OnDestroy()
+    {
+        // El enganche es estático: si la escena se va, que no quede apuntando
+        // a una pelea que ya no existe.
+        RespawnOverride = null;
     }
 
     void Raise()

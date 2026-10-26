@@ -40,6 +40,12 @@ public class CodeTerminal : MonoBehaviour
     [Tooltip("Se puede volver a usar después de resuelta.")]
     public bool reusable = false;
 
+    [Header("Jefe")]
+    [Tooltip("Congela el juego mientras la terminal está abierta. Es para la del " +
+             "jefe: si hubiera que escribir bajo fuego, perdería el que escribe " +
+             "lento, no el que no sabe Python.")]
+    public bool freezeTime = false;
+
     [Header("Tiempos")]
     public float outputCharDelay = 0.02f;
     public float pauseAfterSuccess = 1.6f;
@@ -58,6 +64,7 @@ public class CodeTerminal : MonoBehaviour
     private bool busy;
     private QuestionAttempt record;
     private int bookOpensAtStart;
+    private float timeScaleBefore = 1f;
 
     void Start()
     {
@@ -122,7 +129,9 @@ public class CodeTerminal : MonoBehaviour
         busy = false;
         typed = "";
         attempts = 0;
-        startedAt = Time.time;
+        // Tiempo real: con freezeTime el reloj del juego se queda quieto, y el
+        // registro igual tiene que saber cuánto tardó.
+        startedAt = Time.unscaledTime;
 
         record = new QuestionAttempt();
         record.encounterId = challenge.challengeId;
@@ -142,6 +151,12 @@ public class CodeTerminal : MonoBehaviour
 
         Keyboard.current.onTextInput += OnTextInput;
 
+        if (freezeTime)
+        {
+            timeScaleBefore = Time.timeScale;
+            Time.timeScale = 0f;
+        }
+
         ui.Open(challenge);
         ui.SetTyped(challenge, typed, true);
     }
@@ -151,6 +166,8 @@ public class CodeTerminal : MonoBehaviour
         open = false;
         Keyboard.current.onTextInput -= OnTextInput;
         KiraBook.ClearContext();
+
+        if (freezeTime) Time.timeScale = timeScaleBefore;
 
         if (movement != null) movement.SetCanMove(true);
         if (shooting != null) shooting.enabled = true;
@@ -162,6 +179,9 @@ public class CodeTerminal : MonoBehaviour
     {
         if (open && Keyboard.current != null)
             Keyboard.current.onTextInput -= OnTextInput;
+
+        // Nunca dejar el juego congelado si la consola desaparece abierta.
+        if (open && freezeTime) Time.timeScale = timeScaleBefore;
     }
 
     // --------------------------------------------------------------- tecleo
@@ -209,7 +229,7 @@ public class CodeTerminal : MonoBehaviour
             return;
         }
 
-        caretTimer += Time.deltaTime;
+        caretTimer += Time.unscaledDeltaTime;
         if (caretTimer >= 0.45f)
         {
             caretTimer = 0f;
@@ -228,9 +248,16 @@ public class CodeTerminal : MonoBehaviour
         string answer = typed.Trim();
         ui.SetTyped(challenge, typed, false);
 
-        // El eco de la línea, como cualquier consola.
-        ui.PushLine(">>> " + challenge.BuildLine(answer), ui.CodeColor);
-        yield return new WaitForSeconds(0.25f);
+        // El eco de la línea, como cualquier consola. Un programa de varias
+        // líneas ya está entero en pantalla: repetirlo taparía la salida.
+        if (challenge.IsMultiLine)
+            ui.PushLine("> ejecutando...", ui.CodeColor);
+        else
+            ui.PushLine(">>> " + challenge.BuildLine(answer), ui.CodeColor);
+
+        // Todas las esperas de la terminal van en tiempo real: con freezeTime
+        // el juego está congelado, y la terminal tiene que seguir andando.
+        yield return new WaitForSecondsRealtime(0.25f);
 
         if (challenge.IsCorrect(answer))
             yield return StartCoroutine(Succeed());
@@ -253,11 +280,15 @@ public class CodeTerminal : MonoBehaviour
         ui.ShowStamp(true);
 
         record.attempts = attempts;
-        record.seconds = Time.time - startedAt;
+        record.seconds = Time.unscaledTime - startedAt;
         record.bookOpens = KiraBook.TimesOpened - bookOpensAtStart;
         if (ScoreTracker.Instance != null) ScoreTracker.Instance.Record(record);
 
-        yield return new WaitForSeconds(pauseAfterSuccess);
+        yield return new WaitForSecondsRealtime(pauseAfterSuccess);
+
+        // Si abrió el libro justo al acertar, se cierra la terminal cuando lo
+        // cierre: si no, los dos se pisan al devolverle el control al jugador.
+        while (KiraBook.BlocksInput) yield return null;
 
         CloseTerminal();
 
@@ -272,7 +303,7 @@ public class CodeTerminal : MonoBehaviour
 
         string error = known != null && !string.IsNullOrEmpty(known.pythonError)
             ? known.pythonError
-            : string.Format(challenge.fallbackError, answer);
+            : challenge.FallbackError(answer);
 
         string kira = known != null && !string.IsNullOrEmpty(known.kiraSays)
             ? known.kiraSays
@@ -292,7 +323,7 @@ public class CodeTerminal : MonoBehaviour
         ui.SayKira(kira);
         ui.ShowStamp(false);
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(0.3f);
 
         // Le dejamos lo que escribió para que lo corrija en vez de rehacerlo
         // desde cero: equivocarse en una letra no debería costar la línea entera.

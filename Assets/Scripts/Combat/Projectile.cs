@@ -109,6 +109,12 @@ public class Projectile : MonoBehaviour
         if (enemy != null)
             enemy.TakeDamage(damage);
 
+        // Al jefe los tiros no le sacan vida (eso solo lo hace el código),
+        // pero lo recalientan más rápido.
+        BossController boss = other.GetComponentInParent<BossController>();
+        if (boss != null)
+            boss.TakeShot();
+
         if (impactEffect != null)
             Instantiate(impactEffect, transform.position, Quaternion.identity);
 

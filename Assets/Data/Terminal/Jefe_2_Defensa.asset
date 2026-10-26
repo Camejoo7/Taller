@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Jefe_2_Defensa
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Jefe_2_Defensa
+  concept: condicionales
+  stageNumber: 2
+  prompt: "CUSTODIO :: DEFENSA \u2014 atacar solo le pega a lo que deja pasar el
+    if. Llamala con el texto exacto que espera."
+  codeBefore: "def atacar(objetivo):\n    if objetivo == \"nucleo\":\n        print(\"NUCLEO
+    ROTO\")\natacar("
+  codeAfter: )
+  blankWidth: 8
+  acceptedAnswers:
+  - '"nucleo"'
+  - '''nucleo'''
+  caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 0
+  numberTooLowError: 
+  numberTooLowKiraSays: 
+  expectedOutput: NUCLEO ROTO
+  kiraOnSuccess: "\xA1Directo al n\xFAcleo! El if compar\xF3 tu texto con \"nucleo\",
+    dio True y el print corri\xF3."
+  knownMistakes:
+  - answer: nucleo
+    pythonError: 'NameError: name ''nucleo'' is not defined'
+    kiraSays: 'Sin comillas, Python busca una variable llamada nucleo, y no existe.
+      Es un texto: va entre comillas.'
+  - answer: '"NUCLEO"'
+    pythonError: '(sin salida: "NUCLEO" == "nucleo" es False)'
+    kiraSays: "Para Python, \"NUCLEO\" y \"nucleo\" son textos distintos: las may\xFAsculas
+      cuentan. El if dio False."
+  - answer: '"Nucleo"'
+    pythonError: '(sin salida: "Nucleo" == "nucleo" es False)'
+    kiraSays: "Para Python, \"Nucleo\" y \"nucleo\" son textos distintos: las may\xFAsculas
+      cuentan. El if dio False."
+  - answer: "\"n\xFAcleo\""
+    pythonError: "(sin salida: \"n\xFAcleo\" == \"nucleo\" es False)"
+    kiraSays: "La \xFA con tilde y la u sin tilde son letras distintas para Python.
+      Copi\xE1 el texto tal cual est\xE1 en el if."
+  - answer: objetivo
+    pythonError: 'NameError: name ''objetivo'' is not defined'
+    kiraSays: "objetivo solo existe adentro de la funci\xF3n. Desde afuera, sos vos
+      el que le da el valor: el texto que espera el if."
+  - answer: '"objetivo"'
+    pythonError: '(sin salida: "objetivo" == "nucleo" es False)'
+    kiraSays: Le pasaste la palabra "objetivo" como texto. El if pregunta si es "nucleo"...
+      y no.
+  - answer: '"nucleo'
+    pythonError: 'SyntaxError: unterminated string literal (detected at line 4)'
+    kiraSays: "Te falt\xF3 cerrar las comillas: un texto abre y cierra con comillas."
+  - answer: nucleo"
+    pythonError: 'SyntaxError: unterminated string literal (detected at line 4)'
+    kiraSays: "Te falt\xF3 abrir las comillas: un texto abre y cierra con comillas."
+  fallbackError: '(sin salida: el if dio False y atacar no hizo nada)'
+  fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
+  fallbackKiraSays: "El if solo deja pasar un texto: el que est\xE1 entre comillas
+    al lado del ==. Pasale exactamente ese, con comillas."

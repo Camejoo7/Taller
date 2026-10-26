@@ -1010,7 +1010,9 @@ public static class ZoneBuilder
     // El final: un parque fuera del control de NEXCORP (pack Green Zone, en
     // la grilla de 32 px). La terminal de funciones libera a Kira; al
     // acertar se abre la última puerta y se prende la fuente de la plaza.
-    public const int Z6Start = 136, Z6End = 188;
+    // (26/10/2026: la plaza se estiró de 188 a 210 para la arena del jefe,
+    //  el Custodio. La arena va de la puerta en x 125 al risco en x 135.)
+    public const int Z6Start = 136, Z6End = 210;
 
     public static string GZ(int n) { return "Green Zone:Tile_" + n.ToString("00") + "/Tile_" + n.ToString("00") + "_0"; }
 
@@ -1173,9 +1175,11 @@ public static class ZoneBuilder
         kz.dialogueManager = Object.FindFirstObjectByType<DialogueManager>();
         kz.segment = DialogueSegment.Outro;
 
+        // (26/10/2026: la salida quedó al fondo de la arena del jefe, apagada
+        //  hasta que se le gana: la prende el onDefeated del BossController.)
         GameObject exit = new GameObject("Salida Final");
         exit.transform.SetParent(z.transform, false);
-        exit.transform.position = new Vector3(CX(185) + 0.32f, CTop(-6) + 0.6f, 0f);
+        exit.transform.position = new Vector3(CX(Z6End - 3) + 0.32f, CTop(-6) + 0.6f, 0f);
         BoxCollider2D eb = exit.AddComponent<BoxCollider2D>();
         eb.isTrigger = true;
         eb.size = new Vector2(0.3f, 3f);

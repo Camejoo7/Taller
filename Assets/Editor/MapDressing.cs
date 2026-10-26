@@ -1191,7 +1191,7 @@ public static class MapDressing
         //     cerca con el portón marca la salida.
         Transform end = Group(root, "Final");
         float ground = CTop(-6);                                 // -3,16: la plaza
-        float wallX = CX(ZoneBuilder.Z6End + 1);                 // 120,95
+        float wallX = CX(ZoneBuilder.Z6End + 1);                 // 135,03 (era 120,95 antes de la arena)
         // la columna pasa a ser un risco de piedra (mismas celdas, mismas
         // tiles opacas: el collider queda igual)
         for (int y = -13; y <= 1; y++)
@@ -1206,7 +1206,8 @@ public static class MapDressing
         Prop(end, S(ob + "Bushes/19.png"), wallX + 0.6f, ground, "Default", 7, night, true);
         Prop(end, S(ob + "Bushes/18.png"), wallX - 0.9f, ground, "Default", 7, night);
         // la salida: un portón abierto en la cerca, justo donde está el trigger
-        float exitX = CX(185) + 0.32f;
+        // (al fondo de la arena del jefe desde el 26/10/2026)
+        float exitX = CX(ZoneBuilder.Z6End - 3) + 0.32f;
         Prop(end, S(ob + "Fence/6.png"), exitX - 0.95f, ground, "Default", -1, night);
         Prop(end, S(ob + "Fence/2.png"), exitX + 0.2f, ground, "Default", -1, night);
         Prop(end, S(ob + "Fence/7.png"), exitX + 1.25f, ground, "Default", -1, night);
