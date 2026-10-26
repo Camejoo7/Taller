@@ -146,6 +146,13 @@ Todo en `Assets/Scripts/Terminal/`:
 - `SpriteFlipbook.cs` — cicla frames en un `SpriteRenderer`, para los objetos animados de los packs sin montar un Animator.
 - Consecuencias nuevas (03/10/2026): `PowerNode` (algo apagado que se prende al resolver: nodos, fuente), `CameraShowcase` (la cámara va a mirar la consecuencia si pasa lejos de la consola), `CraneLoad` (contenedor que la grúa baja como puente).
 
+### El libro de Kira (26/10/2026)
+`Assets/Scripts/Libro/`. La explicación de cada tema, adentro del juego. **TAB** lo abre en cualquier lado, también desde adentro de una terminal (y ahí se abre en la página de ese tema). Congela el juego (`timeScale` 0 + apaga `PlayerMovement`/`PlayerShooting`).
+- `KiraBook` — la pantalla, armada en runtime igual que `CodeTerminalUI`. Prefab `Assets/Prefabs/UI/LibroDeKira.prefab` (en `SampleScene` y `Stage2`). Expone `KiraBook.BlocksInput`: **todo lo que lea el teclado y pueda chocar con el libro (ESC, Espacio, letras) tiene que consultarlo**, incluido el cuadro en que se cierra. Ya lo hacen `CodeTerminal`, `PauseMenu` y `DialogueManager`.
+- `KiraBookContent` — el texto, en `Assets/Data/Libro/LibroDeKira.asset`. El `id` de cada tema tiene que ser igual al `concept` de los `TerminalChallenge`. **Ese asset es el texto que vale**, no `LIBRO_DE_KIRA.md`.
+- `KiraBookProgress` — qué páginas están escritas (estático, en memoria). `BookPageUnlock` — escribe una página: franja en trigger al principio de cada zona del Stage 2, o `Unlock()` desde un evento (en el Stage 1, `DialogueManager.onIntroEnded`).
+- La fuente PressStart2P dibuja las **mayúsculas acentuadas (É, Ó, Í, Ú) como minúsculas**: en textos nuevos, mejor "Qué es" que "QUÉ ES".
+
 ### El mapa del Stage 2 (03/10/2026)
 Seis zonas, una por concepto, de x −34 a x 121. **Leer "El mapa del Stage 2, zona por zona" en `ROADMAP.md` antes de tocarlo**: capas nuevas alineadas con `Piso` (`Fachadas`, `Deco`, `Frente`), la segunda grilla `GridCentral` para los packs de 32 px, el fondo `FondoParallax` (`ParallaxLayer` + `ZoneBackdrop`), caídas (`CaidaAlVacio` + `Checkpoint`) y las herramientas de editor `MapTools` / `ZoneBuilder`. **No volver a correr `ZoneBuilder.BuildZoneN...` sobre una zona retocada a mano**: la borra y la rehace. Para probar en Play mode con Unity sin foco: `Application.runInBackground = true`, si no el juego se congela.
 

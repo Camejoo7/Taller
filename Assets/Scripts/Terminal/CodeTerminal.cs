@@ -57,6 +57,7 @@ public class CodeTerminal : MonoBehaviour
     private bool caretOn = true;
     private bool busy;
     private QuestionAttempt record;
+    private int bookOpensAtStart;
 
     void Start()
     {
@@ -80,6 +81,10 @@ public class CodeTerminal : MonoBehaviour
 
     void Update()
     {
+        // Con el libro de Kira abierto, las teclas son del libro: A y D pasan
+        // de página y ESC lo cierra sin cerrar también la terminal.
+        if (KiraBook.BlocksInput) return;
+
         if (open)
         {
             TickOpen();
@@ -125,6 +130,10 @@ public class CodeTerminal : MonoBehaviour
         record.stageNumber = challenge.stageNumber;
         record.question = challenge.prompt;
 
+        // Si el alumno abre el libro desde acá, se abre en la página de este tema.
+        KiraBook.SetContext(challenge.concept);
+        bookOpensAtStart = KiraBook.TimesOpened;
+
         // Sin esto, las teclas A y D que el jugador escribe también lo hacen
         // caminar, y el click del mouse le dispara a la pantalla.
         if (movement != null) movement.SetCanMove(false);
@@ -141,6 +150,7 @@ public class CodeTerminal : MonoBehaviour
     {
         open = false;
         Keyboard.current.onTextInput -= OnTextInput;
+        KiraBook.ClearContext();
 
         if (movement != null) movement.SetCanMove(true);
         if (shooting != null) shooting.enabled = true;
@@ -158,7 +168,7 @@ public class CodeTerminal : MonoBehaviour
 
     void OnTextInput(char c)
     {
-        if (!open || busy) return;
+        if (!open || busy || KiraBook.BlocksInput) return;
 
         // Los de control (enter, backspace, tab) llegan por acá también y no son
         // texto: se manejan como teclas más abajo.
@@ -244,6 +254,7 @@ public class CodeTerminal : MonoBehaviour
 
         record.attempts = attempts;
         record.seconds = Time.time - startedAt;
+        record.bookOpens = KiraBook.TimesOpened - bookOpensAtStart;
         if (ScoreTracker.Instance != null) ScoreTracker.Instance.Record(record);
 
         yield return new WaitForSeconds(pauseAfterSuccess);
@@ -266,6 +277,14 @@ public class CodeTerminal : MonoBehaviour
         string kira = known != null && !string.IsNullOrEmpty(known.kiraSays)
             ? known.kiraSays
             : challenge.fallbackKiraSays;
+
+        // A partir del segundo error, Kira manda al libro. Si no se lo dice
+        // nadie, el riesgo es que el libro exista y ningún alumno lo abra.
+        if (attempts >= 2)
+        {
+            string hint = KiraBook.HintFor(challenge.concept);
+            if (hint != null) kira = string.IsNullOrEmpty(kira) ? hint : kira + "\n" + hint;
+        }
 
         record.wrongChoices.Add(answer);
 

@@ -1,6 +1,8 @@
 # El libro de Kira — borrador de las páginas
 
-> **Estado:** borrador escrito por Claude el 16/10/2026. **Falta que Kevin lo revise** (o se lo muestre a su docente) antes de programar nada. Es el primer ítem del libro en la Fase 2B del `ROADMAP.md`.
+> **Estado:** borrador escrito por Claude el 16/10/2026. **Falta que Kevin lo revise** (o se lo muestre a su docente). Es el primer ítem del libro en la Fase 2B del `ROADMAP.md`.
+>
+> ⚠️ **26/10/2026: el libro ya está en el juego, y el texto que vale ahora es el de `Assets/Data/Libro/LibroDeKira.asset`** (se corrige desde el Inspector, sin programar). Este archivo queda como borrador original. Diferencias: los subtítulos van en minúscula ("Qué es": la fuente dibuja la É mayúscula como minúscula), y el ejemplo de funciones usa `saludar("Central City")` en vez de `saludar("KIRA")`, porque `"KIRA"` es justo la respuesta de la terminal de funciones.
 >
 > Todo lo que está acá es texto para cambiar: tono de Kira, largo, ejemplos, qué error se muestra en cada página.
 

@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &661696011544483822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4322602344341060794}
+  - component: {fileID: 7557437891304688365}
+  m_Layer: 0
+  m_Name: LibroDeKira
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4322602344341060794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661696011544483822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7557437891304688365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661696011544483822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 649ad7719c63a404f9b3af5683c24dcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KiraBook
+  content: {fileID: 11400000, guid: 2de9d5765c8102e4fa1d31ab15debabe, type: 2}
+  font: {fileID: 11400000, guid: bf3eae7d3b169ae4eb38419536e96390, type: 2}
+  coverSprite: {fileID: -1866502661102261482, guid: 8505253b5dc6d5e499a18d20b8070ce4, type: 3}
+  pageLeftSprite: {fileID: 6122349293346651858, guid: a109b8ef61ecbd945abf0d90fa29e364, type: 3}
+  pageRightSprite: {fileID: -4888004727993626715, guid: 9d87850b4a933214bae9285ff584c115, type: 3}
+  arrowSprite: {fileID: -855249897331885556, guid: 50aba4bc10a3c07499d7e96a23927a74, type: 3}
+  tabSprite: {fileID: 7312381034854393574, guid: f46a98c030bca854f894fe50e674d614, type: 3}
+  toastSprite: {fileID: 5213811460216674143, guid: 85028069a5d518945b4977604a7c7efb, type: 3}
+  hudSprite: {fileID: -6806252260950705880, guid: bc4190eea7408ce49862ae4fb1d3ce79, type: 3}
+  pixelScale: 6
+  hudPixelScale: 5
+  bodySize: 18
+  titleSize: 26
+  showHudHint: 1
+  inkColor: {r: 0.28627452, g: 0.2, b: 0.2, a: 1}
+  accentColor: {r: 0.6117647, g: 0.2627451, b: 0.31764707, a: 1}
+  ruleColor: {r: 0.87058824, g: 0.6627451, b: 0.45490196, a: 1}
+  codeBoxColor: {r: 0.87058824, g: 0.6627451, b: 0.45490196, a: 0.47058824}
+  screenBoxColor: {r: 0.28627452, g: 0.2, b: 0.2, a: 1}
+  outputColor: {r: 1, g: 0.84313726, b: 0.65882355, a: 1}
+  errorColor: {r: 1, g: 0.56078434, b: 0.47843137, a: 1}
+  kiraColor: {r: 0.12156863, g: 0.43137255, b: 0.4627451, a: 1}

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -41,6 +42,10 @@ public class DialogueManager : MonoBehaviour
     public float autoAdvanceIntro = 3f;
     public float autoAdvanceMid = 4f;
     public float autoAdvanceOutro = 3.5f;
+
+    [Header("Al terminar la intro")]
+    [Tooltip("En el Stage 1, acá Kira entrega el libro (BookPageUnlock.Unlock).")]
+    public UnityEvent onIntroEnded;
 
     static readonly Color KiraColor = new Color(0f, 1f, 1f);   // cyan
     static readonly Color NxColor = new Color(1f, 1f, 0f);     // amarillo
@@ -182,6 +187,9 @@ public class DialogueManager : MonoBehaviour
     {
         if (!dialogueActive) return;
 
+        // Espacio y Enter son del libro mientras está abierto.
+        if (KiraBook.BlocksInput) return;
+
         if (AllowsManualAdvance && Keyboard.current != null &&
             (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame))
         {
@@ -231,5 +239,8 @@ public class DialogueManager : MonoBehaviour
             if (follower != null)
                 follower.StartFollowing(playerMovement.transform);
         }
+
+        if (segment == DialogueSegment.Intro && onIntroEnded != null)
+            onIntroEnded.Invoke();
     }
 }

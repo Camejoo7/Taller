@@ -26,6 +26,8 @@ Textual: *"este stage 2 va a ser un mapa gigante, con un montón de estas termin
 
 **16/10/2026:** se sumaron **dos piezas nuevas**, el **libro de Kira** y un **jefe final** en la zona 6: ver "Fase 2B". Van después de cerrar la Fase 2 y antes del playtest de la Fase 3. Ese día también se **desconectaron los diálogos del Stage 2** (se rehacen al final, ver Fase 4), la terminal de condicionales dejó de pedir el signo `>` y se arregló el texto que se pisaba en la terminal del `for`.
 
+**26/10/2026:** a pedido de Kevin se adelantó el **libro de Kira** (Fase 2B), con los dos pendientes de la Fase 2 todavía abiertos. **El libro funciona** (TAB, páginas por zona, desde la terminal, aviso de Kira): ver "El libro de Kira" en la Fase 2B. Lo que le falta es **que Kevin revise el texto**, que ahora se corrige desde el Inspector sin programar.
+
 Antes de aceptar o proponer cualquier tarea nueva, mirá la lista de la fase actual más abajo. Si en algún momento Claude Code (o vos mismo) propone algo de una fase más adelante mientras todavía quedan ítems sin marcar en la fase actual, es una señal de alerta — no está prohibido saltar el orden, pero hacerlo a propósito y no por perderse.
 
 ## Decisiones tomadas (para no repetir la charla)
@@ -381,10 +383,21 @@ Síntoma de Kevin: *"cuando corro hacia adelante y salto chocándome con una par
   - **16/10/2026: borrador escrito** en `LIBRO_DE_KIRA.md` (raíz del proyecto): portada + 6 temas, cada uno en dos páginas (qué es, ejemplo, qué imprime, error típico con su traceback real, comentario de Kira). **Falta la revisión de Kevin.**
   - Arte: Kevin bajó el **Complete UI Book Styles Pack de crusenho**, versión gratis *Travel Book Lite* (`Assets/ASSETS/Libro/`). ⚠️ La licencia **pide crédito** (nombrar a crusenho o linkear el pack).
   - Propuesta de historia en el borrador, a confirmar: es una libreta de papel porque NEXCORP escanea todo lo digital; Kira dicta y NX-7 anota, por eso las páginas se llenan zona por zona.
-- [ ] Pantalla del libro (Canvas/uGUI, como la terminal) y tecla para abrirlo. Congela el juego mientras está abierto.
-- [ ] Páginas que se desbloquean: Kira lo entrega en el Stage 1 casi vacío ("lo voy a ir completando") y cada zona del Stage 2 agrega su página al llegar.
-- [ ] Que se pueda abrir **desde adentro de la terminal** (y durante el jefe). Como la evaluación es formativa, consultar no es trampa.
-- [ ] Aviso de Kira: si el alumno falla dos veces en una terminal, le dice qué página abrir. Si no, el riesgo es que nadie lo abra.
+  - **26/10/2026: el texto ya está adentro del juego**, en `Assets/Data/Libro/LibroDeKira.asset` (se edita desde el Inspector: cada página es una lista de bloques Título / Etiqueta / Texto / Código / Salida / Error / Kira / Espacio). **Desde ahora el texto que vale es el del asset, no el del `.md`.** Cambios respecto del borrador: los subtítulos van en minúscula ("Qué es", no "QUÉ ES": la fuente dibuja É, Ó, Í mayúsculas como minúsculas) y **el ejemplo de funciones dejó de usar `saludar("KIRA")`**, porque la respuesta de la terminal de funciones es justo `"KIRA"`; ahora es `saludar("Central City")`. Este ítem se marca cuando Kevin apruebe el texto.
+- [x] Pantalla del libro (Canvas/uGUI, como la terminal) y tecla para abrirlo. Congela el juego mientras está abierto. — **26/10/2026**, `KiraBook`. Ver "Cómo está armado el libro" abajo.
+- [x] Páginas que se desbloquean: Kira lo entrega en el Stage 1 casi vacío ("lo voy a ir completando") y cada zona del Stage 2 agrega su página al llegar. — **26/10/2026**. Stage 1: al terminar la intro de Kira (`DialogueManager.onIntroEnded` → `LibroDeKira_Entrega`). Stage 2: una franja invisible al principio de cada zona (`LibroDeKira_Paginas/Pagina_<tema>`, x −31; −25,8; 3; 34,6; 62; 87,6).
+- [x] Que se pueda abrir **desde adentro de la terminal** (y durante el jefe). Como la evaluación es formativa, consultar no es trampa. — **26/10/2026**: desde la terminal se abre **directo en la página de ese tema**. El jefe todavía no existe, pero su terminal va a ser un `CodeTerminal` igual, así que funciona solo; y como el libro devuelve el `timeScale` que había, si el jefe congela el tiempo, sigue congelado al cerrar el libro.
+- [x] Aviso de Kira: si el alumno falla dos veces en una terminal, le dice qué página abrir. Si no, el riesgo es que nadie lo abra. — **26/10/2026**: desde el segundo error, Kira suma "¿Trabado? Apretá TAB: está en la página de ___." (el texto está en el asset, `terminalHint`).
+
+**Cómo está armado el libro (26/10/2026):**
+- Scripts en `Assets/Scripts/Libro/`: `KiraBook` (la pantalla, se arma sola en runtime como la terminal), `KiraBookContent` (el asset con el texto), `KiraBookProgress` (qué páginas están escritas; vive en memoria como el `ScoreTracker`: sobrevive a cambiar de escena y a morir) y `BookPageUnlock` (la franja que escribe una página, o el evento que entrega el libro).
+- Prefab `Assets/Prefabs/UI/LibroDeKira.prefab`, puesto en `SampleScene` y `Stage2`. Para otra escena: soltar el prefab y listo.
+- **TAB** abre y cierra (también ESC o click afuera); **A/D o flechas** pasan de página; las **pestañas** del costado saltan a un tema. Solo aparecen las pestañas de las páginas ya escritas: el libro se ve llenarse. Se abre en la primera página sin leer, o donde se dejó.
+- Mientras está abierto: `Time.timeScale = 0` y se apagan `PlayerMovement` y `PlayerShooting` (si no, las flechas darían vuelta al jugador y Espacio lo haría saltar al cerrar). La terminal, la pausa y los diálogos ignoran el teclado mientras el libro está abierto (`KiraBook.BlocksInput`), así el ESC que cierra el libro no cierra también la terminal.
+- Avisos: un **aviso "Kira anotó: ___"** que entra deslizando al escribirse una página, y un cartel **"TAB LIBRO"** con un **!** que titila, arriba a la derecha. **El cartel no es fijo** (Kevin, 26/10: así molestaba): aparece cuando Kira escribe algo nuevo y se va apenas el jugador abre el libro (`KiraBookProgress.HasNews`). También se esconde con la terminal abierta, que ya dice "TAB libro" en su pie. Se apaga del todo con `showHudHint`.
+- Arte: el pack de crusenho a **escala 6** (cada pixel del dibujo = 6 de pantalla, para que se vea nítido), con los sprites en filtro Point y sin compresión. Letra PressStart2P a 18 (lo más grande que entra en la página más cargada; si una página no entra, sale un warning en la consola diciendo cuál).
+- **Puntaje:** cada `QuestionAttempt` ahora guarda `bookOpens`, cuántas veces se abrió el libro mientras se resolvía esa terminal. No resta puntos; le sirve al docente para ver quién acertó solo y quién repasó.
+- ⚠️ **Falta poner el crédito de crusenho** (lo pide la licencia). No hay pantalla de créditos todavía: anotado en la Fase 5.
 
 Reglas del contenido:
 - **Una página por concepto que entre en una pantalla sin scroll:** qué es, un ejemplo y el error más típico. Con la voz de Kira.
@@ -449,6 +462,7 @@ Orden sugerido: las primeras zonas antes (conceptos más simples, valida el patr
     - **Kira** (`MenuKira`, imagen de UI con los cuadros de `Scan` y `Walk_scan`): entra volando, pasea eligiendo puntos (prefiere los costados), se queda escaneando, **se acerca al botón que marcás**, y **sale disparada por la derecha al apretar Jugar** (`FlyAway` en el `onClick`). Va detrás del cartel en el orden de dibujo, así que cuando cruza por el medio pasa por atrás.
     - Todo usa tiempo sin escalar: si se vuelve al menú desde la pausa con `timeScale` 0, igual se mueve.
     - Quedaría para más adelante: música del menú y un sonido al seleccionar o apretar.
+- [ ] Créditos: los packs que lo pidan en su licencia. Seguro **crusenho** (*Complete UI Book Styles Pack*, el libro de Kira: https://crusenho.itch.io/complete-ui-book-styles-pack).
 - [ ] Build final de Windows
 - [ ] Bug bash general
 
