@@ -350,10 +350,15 @@ public class BossController : MonoBehaviour
         if (body != null) body.color = Color.white;
 
         phase++;
-        if (bar != null) bar.SetSegments(phases.Length - phase);
+        if (phase >= phases.Length)
+        {
+            // El último tramo lo rompen los golpes del while, no la consola.
+            StartCoroutine(Defeat());
+            return;
+        }
 
-        if (phase >= phases.Length) StartCoroutine(Defeat());
-        else StartCoroutine(Recover());
+        if (bar != null) bar.SetSegments(phases.Length - phase);
+        StartCoroutine(Recover());
     }
 
     /// <summary>Le pegaste: se sacude, cierra el núcleo y vuelve a subir.</summary>
@@ -380,7 +385,25 @@ public class BossController : MonoBehaviour
         state = State.Dead;
         if (PlayerHealth.RespawnOverride == (System.Action<PlayerHealth>)OnPlayerDied)
             PlayerHealth.RespawnOverride = null;
-        if (bar != null) bar.SetStatus("¡El Custodio se rompió! Kira es libre.");
+
+        // Cada renglón que imprimió el programa es un golpe de verdad: una
+        // vuelta del while, una sacudida. Si no, el bucle sería solo texto.
+        TerminalChallenge last = phases[phases.Length - 1].challenge;
+        if (last != null && !string.IsNullOrEmpty(last.expectedOutput))
+        {
+            foreach (string line in last.expectedOutput.Split('\n'))
+            {
+                if (bar != null) bar.SetStatus(line);
+                yield return Shake(0.35f, 0.14f);
+                yield return new WaitForSeconds(0.3f);
+            }
+        }
+
+        if (bar != null)
+        {
+            bar.SetSegments(0);
+            bar.SetStatus("¡El Custodio se rompió! Kira es libre.");
+        }
 
         yield return Shake(1.2f, 0.12f);
 

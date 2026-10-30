@@ -55,6 +55,16 @@ public static class KiraBookProgress
         return true;
     }
 
+    /// <summary>
+    /// Escribe varias páginas sin avisar. Es para probar el juego (CodeBreak →
+    /// Probar el jefe): con Unlock saldrían todos los avisos en fila.
+    /// </summary>
+    public static void UnlockQuietly(IEnumerable<string> ids)
+    {
+        HasBook = true;
+        foreach (string id in ids) unlocked.Add(id);
+    }
+
     /// <summary>El jugador abrió el libro: lo nuevo ya lo vio.</summary>
     public static void ClearNews()
     {
