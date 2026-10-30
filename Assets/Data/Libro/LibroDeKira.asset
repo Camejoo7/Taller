@@ -28,15 +28,15 @@ MonoBehaviour:
     - kind: 1
       text: "\xBFQu\xE9 es programar?"
     - kind: 2
-      text: "Programar es darle instrucciones a una m\xE1quina, en un idioma que
-        entienda. Python es uno de esos idiomas: se lee casi como ingl\xE9s y se
+      text: "Programar es darle instrucciones a una m\xE1quina, en un lenguaje que
+        entienda. Python es uno de esos lenguajes: se lee casi como ingl\xE9s y se
         usa para p\xE1ginas web, inteligencia artificial, ciencia y videojuegos."
     right:
     - kind: 1
       text: Tres reglas para todo el libro
     - kind: 2
-      text: "1. Python distingue may\xFAsculas: <b>print</b> y <b>Print</b> son cosas
-        distintas."
+      text: "1. Python distingue may\xFAsculas de min\xFAsculas: <b>print</b> y <b>Print</b>
+        son cosas distintas."
     - kind: 2
       text: '2. El texto va entre comillas: "hola". Sin comillas, Python cree que
         es el nombre de algo.'
@@ -60,11 +60,12 @@ MonoBehaviour:
     - kind: 1
       text: "Qu\xE9 es"
     - kind: 2
-      text: "<b>print</b> muestra algo en la pantalla. Lo que pongas entre los par\xE9ntesis,
-        sale impreso."
+      text: "<b>print</b> muestra algo en la pantalla. Lo que pongas entre los par\xE9ntesis
+        es lo que aparece. A eso se le llama <b>imprimir</b>, aunque no haya papel."
     - kind: 2
-      text: "Si pon\xE9s varias cosas separadas por comas, las imprime en fila con
-        un espacio en el medio."
+      text: "Para imprimir varias cosas juntas, separalas con comas. Esa coma no
+        sale en pantalla: queda un espacio. La de adentro de las comillas s\xED sale,
+        porque es parte del texto. El texto va con comillas; los n\xFAmeros, sin."
     - kind: 1
       text: Ejemplo
     - kind: 3
@@ -79,9 +80,10 @@ MonoBehaviour:
     - kind: 3
       text: Print("Hola")
     - kind: 5
-      text: 'NameError: name ''Print'' is not defined'
+      text: 'NameError: name ''Print'' is not defined. Did you mean: ''print''?'
     - kind: 2
-      text: "Con P may\xFAscula, Python no la reconoce. <b>print</b> va todo en min\xFAscula."
+      text: "Con P may\xFAscula, Python no la reconoce. <b>print</b> va todo en min\xFAscula.
+        'Did you mean' quiere decir '\xBFquisiste decir?': hasta te sopla la respuesta."
     - kind: 6
       text: "Es la primera palabra que aprende todo programador del planeta. Hasta
         yo empec\xE9 por ac\xE1, y eso que soy una IA brillante."
@@ -98,7 +100,7 @@ MonoBehaviour:
       text: "Qu\xE9 es"
     - kind: 2
       text: "Una variable es una caja con nombre donde guard\xE1s un dato. El <b>=</b>
-        guarda: lo de la derecha entra en la caja de la izquierda. Despu\xE9s us\xE1s
+        guarda, lo de la derecha entra en la caja de la izquierda. Despu\xE9s us\xE1s
         el nombre y Python busca lo que hay adentro."
     - kind: 1
       text: Ejemplo
@@ -109,12 +111,22 @@ MonoBehaviour:
 
         print(nombre, edad)'
     - kind: 1
-      text: Los tipos de dato
+      text: Cada dato tiene un tipo
     - kind: 3
-      text: "\"KIRA\"  str    texto\n51      int    entero\n3.5     float  decimal\nTrue   
-        bool   s\xED o no"
+      text: '"KIRA"  str    texto
+
+        51      int    entero
+
+        3.5    
+        float  decimal
+
+        True    bool   verdadero
+
+        False   bool  
+        falso'
     - kind: 2
-      text: 'El decimal va con punto: 3.5, no 3,5. El texto, siempre entre comillas.'
+      text: "Los decimales van con punto: 3.5, no 3,5. True y False van con may\xFAscula
+        y sin comillas."
     right:
     - kind: 1
       text: Imprime
@@ -129,9 +141,13 @@ MonoBehaviour:
     - kind: 2
       text: Sin comillas, Python cree que KIRA es el nombre de <b>otra variable</b>,
         y esa no existe.
+    - kind: 2
+      text: "Con coma no da error, y es peor: print(3,5) imprime 3 5, porque Python
+        cree que son dos n\xFAmeros."
     - kind: 6
       text: "El = no es el igual de matem\xE1tica: quiere decir 'guard\xE1 esto ac\xE1'.
-        Por eso vidas = vidas + 1 tiene todo el sentido del mundo."
+        Por eso vidas = vidas + 1 est\xE1 bien: suma 1 a lo que hab\xEDa y lo guarda
+        de nuevo en vidas."
   - id: condicionales
     title: condicionales
     tabLabel: 3
@@ -144,9 +160,9 @@ MonoBehaviour:
     - kind: 1
       text: "Qu\xE9 es"
     - kind: 2
-      text: "Con <b>if</b> el programa decide. Si la condici\xF3n es verdadera (True),
-        corre lo de adentro. Si es falsa (False), lo saltea. Con <b>else</b> le dec\xEDs
-        qu\xE9 hacer en el otro caso."
+      text: "Con <b>if</b> el programa decide. La condici\xF3n es una pregunta que
+        da True (verdadero) o False (falso). Si da True, hace lo de adentro. Si da
+        False, lo saltea. Con <b>else</b> le dec\xEDs qu\xE9 hacer en ese caso."
     - kind: 1
       text: Ejemplo
     - kind: 3
@@ -181,8 +197,11 @@ MonoBehaviour:
         of ''=''?'
     - kind: 2
       text: "Un solo = <b>guarda</b>. Para preguntar si son iguales van dos: ==.
-        Y no te olvides los dos puntos al final, ni los espacios al principio de
-        la l\xEDnea de adentro."
+        Y no te olvides los dos puntos al final, ni la <b>sangr\xEDa</b>: los espacios
+        al principio de la l\xEDnea de adentro."
+    - kind: 2
+      text: "El == tambi\xE9n compara textos, letra por letra: \"norte\" == \"Norte\"
+        da False."
     - kind: 6
       text: "Fijate que 30 > 30 da False: 'mayor' no incluye al igual. Si quer\xE9s
         que entre el 30, es >=. Las m\xE1quinas son literales."
@@ -194,20 +213,24 @@ MonoBehaviour:
     toastText: 
     left:
     - kind: 0
-      text: 4. Bucles
+      text: '4. Bucles: for'
     - kind: 1
       text: "Qu\xE9 es"
     - kind: 2
       text: Un <b>for</b> repite instrucciones. Con <b>range(n)</b> se repite n veces,
         y la variable va contando las vueltas.
     - kind: 2
-      text: "El contador arranca en 0, as\xED que nunca llega al n\xFAmero que pusiste."
+      text: "El contador arranca en 0, as\xED que termina uno antes del n\xFAmero
+        que pusiste."
     - kind: 1
       text: Ejemplo
     - kind: 3
       text: "for vuelta in range(3):\n    print(\"Salto\", vuelta)"
     - kind: 2
       text: 'Tres vueltas: 0, 1 y 2.'
+    - kind: 2
+      text: "Adentro de <b>range</b> tambi\xE9n puede ir una variable que guarde
+        un n\xFAmero: range(saltos)."
     right:
     - kind: 1
       text: Imprime
@@ -227,20 +250,70 @@ MonoBehaviour:
       text: 'IndentationError: expected an indented block after ''for'' statement
         on line 1'
     - kind: 2
-      text: "Lo que se repite va <b>corrido para adentro</b> (4 espacios). Sin eso,
-        Python no sabe qu\xE9 es parte del bucle."
+      text: "Lo que se repite lleva <b>sangr\xEDa</b>: va corrido para adentro (lo
+        normal son 4 espacios). Sin eso, Python no sabe qu\xE9 es parte del bucle.
+        IndentationError quiere decir \"error de sangr\xEDa\"."
     - kind: 6
-      text: "S\xED, los programadores cuentan desde cero. No, no tiene mucho sentido.
+      text: "S\xED, los programadores cuentan desde cero. S\xED, al principio confunde.
         S\xED, te vas a acostumbrar."
-  - id: listas
-    title: listas y cadenas
+  - id: while
+    title: while
     tabLabel: 5
     alwaysUnlocked: 0
     toastHeader: 
     toastText: 
     left:
     - kind: 0
-      text: 5. Listas y cadenas
+      text: '5. Bucles: while'
+    - kind: 1
+      text: "Qu\xE9 es"
+    - kind: 2
+      text: "<b>while</b> quiere decir 'mientras'. Repite lo de adentro mientras
+        la condici\xF3n d\xE9 True. Cuando da False, sigue de largo."
+    - kind: 2
+      text: "<b>for</b> va mejor cuando sab\xE9s cu\xE1ntas vueltas son. <b>while</b>,
+        cuando depende de algo que va cambiando."
+    - kind: 1
+      text: Ejemplo
+    - kind: 3
+      text: "pasos = 0\nwhile pasos < 3:\n    print(\"Paso\", pasos)\n    pasos =
+        pasos + 1"
+    right:
+    - kind: 1
+      text: Imprime
+    - kind: 4
+      text: 'Paso 0
+
+        Paso 1
+
+        Paso 2'
+    - kind: 1
+      text: Ojo con esto
+    - kind: 3
+      text: "pasos = 0\nwhile pasos < 3:\n    print(\"Paso\", pasos)"
+    - kind: 4
+      text: 'Paso 0
+
+        Paso 0
+
+        Paso 0
+
+        ... y no para nunca'
+    - kind: 2
+      text: "Python no avisa nada: pasos nunca cambia, la condici\xF3n siempre da
+        True. Es un <b>bucle infinito</b>. Adentro del while, algo tiene que cambiar."
+    - kind: 6
+      text: "Un bucle infinito se parece bastante a estar encadenada 51 a\xF1os.
+        Si te pasa, apret\xE1 Ctrl+C."
+  - id: listas
+    title: listas
+    tabLabel: 6
+    alwaysUnlocked: 0
+    toastHeader: 
+    toastText: 
+    left:
+    - kind: 0
+      text: 6. Listas
     - kind: 1
       text: "Qu\xE9 es"
     - kind: 2
@@ -257,14 +330,6 @@ MonoBehaviour:
         print(equipo[1])
 
         print(len(equipo))'
-    - kind: 1
-      text: "Los textos tambi\xE9n"
-    - kind: 2
-      text: 'Una cadena es una fila de letras y se cuenta igual:'
-    - kind: 3
-      text: 'nombre = "KIRA"
-
-        print(nombre[0])   # K'
     right:
     - kind: 1
       text: Imprime
@@ -281,26 +346,28 @@ MonoBehaviour:
     - kind: 5
       text: 'IndexError: list index out of range'
     - kind: 2
-      text: "La lista tiene 2 elementos: sus \xEDndices son 0 y 1. El 2 no existe.
-        <b>El \xFAltimo \xEDndice es siempre uno menos que la cantidad.</b>"
+      text: "La lista tiene 2 elementos: sus \xEDndices son 0 y 1. El 2 no existe:
+        est\xE1 'out of range', fuera de rango. <b>El \xFAltimo \xEDndice es siempre
+        uno menos que la cantidad.</b>"
     - kind: 6
       text: "El primero es el 0, el segundo es el 1... Si una lista tiene 5 cosas,
         la \xFAltima es la [4]. Anotalo. Ah, no, ya est\xE1 anotado."
   - id: funciones
     title: funciones
-    tabLabel: 6
+    tabLabel: 7
     alwaysUnlocked: 0
     toastHeader: 
     toastText: 
     left:
     - kind: 0
-      text: 6. Funciones
+      text: 7. Funciones
     - kind: 1
       text: "Qu\xE9 es"
     - kind: 2
       text: "Una funci\xF3n es un pedazo de c\xF3digo con nombre. La escrib\xEDs
         una vez con <b>def</b> y la us\xE1s (la <b>llam\xE1s</b>) cuantas veces quieras.
-        Lo que va entre par\xE9ntesis es el dato que recibe."
+        Lo que va entre par\xE9ntesis en el def es el <b>par\xE1metro</b>: una variable
+        que recibe el dato y solo existe adentro de la funci\xF3n."
     - kind: 2
       text: "Ojo: def solo la crea. No pasa nada hasta que la llam\xE1s."
     - kind: 1
@@ -322,12 +389,12 @@ MonoBehaviour:
     - kind: 5
       text: 'TypeError: saludar() missing 1 required positional argument: ''nombre'''
     - kind: 2
-      text: "La funci\xF3n espera un dato (nombre) y no le pasaste ninguno. Lo que
-        va entre par\xE9ntesis al crearla es lo que ten\xE9s que darle al llamarla."
+      text: "'missing' quiere decir 'falta': la funci\xF3n espera un dato (nombre)
+        y no le pasaste ninguno. Lo que va entre par\xE9ntesis al crearla es lo que
+        ten\xE9s que darle al llamarla."
     - kind: 6
-      text: "print, len y range tambi\xE9n son funciones: alguien las escribi\xF3
-        una vez y desde entonces todo el mundo las llama. Ahora vos pod\xE9s hacer
-        las tuyas."
+      text: "print y len tambi\xE9n son funciones: alguien las escribi\xF3 una vez
+        y desde entonces todo el mundo las llama. Ahora vos pod\xE9s hacer las tuyas."
   toastHeader: "Kira anot\xF3:"
   toastHint: TAB  abrir
   terminalHint: "\xBFTrabado? Apret\xE1 TAB: est\xE1 en la p\xE1gina de {0}."

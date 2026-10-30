@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0374a6164f21d42a3f8283bf759853, type: 3}
+  m_Name: Jefe_3_While
+  m_EditorClassIdentifier: Assembly-CSharp::TerminalChallenge
+  challengeId: Jefe_3_While
+  concept: while
+  stageNumber: 2
+  prompt: "CUSTODIO :: GOLPE FINAL \u2014 el while sigue mientras le quede vida.
+    Complet\xE1 la \xFAltima l\xEDnea: cada golpe le saca 1."
+  codeBefore: "vida = 3\nwhile vida > 0:\n    print(\"GOLPE\", vida)\n    vida = "
+  codeAfter: 
+  blankWidth: 8
+  acceptedAnswers:
+  - vida - 1
+  - vida-1
+  - vida -1
+  - vida- 1
+  - vida = vida - 1
+  - vida=vida-1
+  caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 0
+  numberTooLowError: 
+  numberTooLowKiraSays: 
+  expectedOutput: 'GOLPE 3
+
+    GOLPE 2
+
+    GOLPE 1'
+  kiraOnSuccess: "Lleg\xF3 a 0, la condici\xF3n dio False y el while fren\xF3. Cincuenta
+    y un a\xF1os esperando ver ese cero."
+  knownMistakes:
+  - answer: vida + 1
+    pythonError: GOLPE 3, GOLPE 4, GOLPE 5... (el bucle no para nunca)
+    kiraSays: "\xA1Lo est\xE1s curando! Cada vuelta tiene m\xE1s vida, nunca llega
+      a 0 y el while no termina. Eso es un bucle infinito."
+  - answer: vida+1
+    pythonError: GOLPE 3, GOLPE 4, GOLPE 5... (el bucle no para nunca)
+    kiraSays: "\xA1Lo est\xE1s curando! Cada vuelta tiene m\xE1s vida, nunca llega
+      a 0 y el while no termina. Eso es un bucle infinito."
+  - answer: vida
+    pythonError: GOLPE 3, GOLPE 3, GOLPE 3... (el bucle no para nunca)
+    kiraSays: "vida nunca cambia, as\xED que la condici\xF3n siempre da True. Bucle
+      infinito: cada vuelta le tiene que sacar 1."
+  - answer: vida - 0
+    pythonError: GOLPE 3, GOLPE 3, GOLPE 3... (el bucle no para nunca)
+    kiraSays: "Restar 0 no cambia nada: la condici\xF3n siempre da True. Bucle infinito.
+      Cada vuelta le tiene que sacar 1."
+  - answer: vida / 1
+    pythonError: GOLPE 3, GOLPE 3.0, GOLPE 3.0... (el bucle no para nunca)
+    kiraSays: 'Dividir por 1 deja todo igual: vida nunca baja. Bucle infinito. Cada
+      vuelta le tiene que sacar 1.'
+  - answer: 3
+    pythonError: GOLPE 3, GOLPE 3, GOLPE 3... (el bucle no para nunca)
+    kiraSays: "Guard\xE1s 3 otra vez en cada vuelta: vida nunca baja y el while no
+      termina."
+  - answer: 1
+    pythonError: GOLPE 3, GOLPE 1, GOLPE 1... (el bucle no para nunca)
+    kiraSays: "Guard\xE1s 1 en cada vuelta: vida se queda en 1, nunca llega a 0 y
+      el while no termina."
+  - answer: 0
+    pythonError: "GOLPE 3 \u2192 el bucle para, pero el blindaje aguanta"
+    kiraSays: 'Lo dejaste en 0 de un saque: una sola vuelta, un solo golpe. Tiene
+      que bajar de a 1.'
+  - answer: -1
+    pythonError: "GOLPE 3 \u2192 el bucle para, pero el blindaje aguanta"
+    kiraSays: "vida = -1 guarda el n\xFAmero -1, no le resta 1. Hay que partir de
+      la vida que ya tiene."
+  - answer: vida - 2
+    pythonError: "GOLPE 3, GOLPE 1 \u2192 falt\xF3 un golpe"
+    kiraSays: "Le sac\xE1s 2 por vuelta y se saltea el 2. Cada golpe saca 1."
+  - answer: vida - 3
+    pythonError: "GOLPE 3 \u2192 el bucle para, pero el blindaje aguanta"
+    kiraSays: 'Le sacaste los 3 de una: una sola vuelta, un solo golpe. Cada golpe
+      saca 1.'
+  - answer: Vida - 1
+    pythonError: 'NameError: name ''Vida'' is not defined. Did you mean: ''vida''?'
+    kiraSays: "Python distingue may\xFAsculas de min\xFAsculas: Vida y vida son dos
+      nombres distintos."
+  - answer: '"vida - 1"'
+    pythonError: 'TypeError: ''>'' not supported between instances of ''str'' and
+      ''int'''
+    kiraSays: Con comillas es un texto, no una cuenta. Y el while no puede preguntar
+      si un texto es mayor que 0.
+  - answer: '''vida - 1'''
+    pythonError: 'TypeError: ''>'' not supported between instances of ''str'' and
+      ''int'''
+    kiraSays: Con comillas es un texto, no una cuenta. Y el while no puede preguntar
+      si un texto es mayor que 0.
+  - answer: vida--
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "Eso existe en otros lenguajes, pero no en Python. Ac\xE1 se escribe
+      la cuenta entera."
+  - answer: vida -= 1
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "Eso funciona en una l\xEDnea sola, pero ac\xE1 el vida = ya est\xE1
+      escrito. Complet\xE1 solo lo que va despu\xE9s."
+  - answer: 'vida - 1:'
+    pythonError: 'SyntaxError: invalid syntax'
+    kiraSays: "Los dos puntos van en la l\xEDnea del while, no en esta."
+  fallbackError: 'SyntaxError: invalid syntax'
+  fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
+  fallbackKiraSays: "Cada vuelta tiene que dejar a vida con 1 menos. Mir\xE1 c\xF3mo
+    cambia pasos en el ejemplo del libro: ac\xE1 hay que bajar, no subir."
