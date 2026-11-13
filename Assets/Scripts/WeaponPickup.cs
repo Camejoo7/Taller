@@ -20,6 +20,9 @@ public class WeaponPickup : MonoBehaviour
     [Tooltip("Opcional. Si está puesto, Kira habla cuando el jugador la levanta.")]
     public DialogueManager dialogueManager;
 
+    [Tooltip("El id del momento que dispara (2.2). Si está vacío, usa el segmento de abajo.")]
+    public string momentOnPickup;
+
     public DialogueSegment segmentOnPickup = DialogueSegment.Mid;
 
     private bool picked = false;
@@ -50,7 +53,12 @@ public class WeaponPickup : MonoBehaviour
         player.EquipWeapon();
 
         if (dialogueManager != null)
-            dialogueManager.StartDialogue(segmentOnPickup, player);
+        {
+            if (!string.IsNullOrEmpty(momentOnPickup))
+                dialogueManager.StartMoment(momentOnPickup, player);
+            else
+                dialogueManager.StartDialogue(segmentOnPickup, player);
+        }
 
         gameObject.SetActive(false);
     }

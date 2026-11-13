@@ -1344,13 +1344,15 @@ public static class MapDressing
         //     sacaron el polvo flotando, las luciérnagas, las chispas y el vapor.)
         Material drop = ParticleMaterial("ParticulaGota", "Gota.png");
 
-        // lluvia fina en toda la ciudad (calle, central, puerto). Arranca en la
-        // pared del complejo, no entra en la sala de control (tiene techo) y
-        // se va apagando en tandas al llegar al parque, para que no haya una
-        // "pared de lluvia" donde termina.
+        // lluvia fina en la central y el puerto. (12/11/2026, a pedido de
+        // Kevin, se sacó la del Distrito Neón: antes arrancaba en x 2,6.)
+        // Entra de a poco pasando la muralla de la central, no entra en la
+        // sala de control (tiene techo) y se va apagando en tandas al llegar
+        // al parque, para que no haya una "pared de lluvia" en las puntas.
         //   {desde, hasta, densidad}
         float[][] rainZones = {
-            new[] { 2.6f, 52.4f, 1f }, new[] { 61.5f, 84.5f, 1f },
+            new[] { 34.4f, 36.4f, 0.15f }, new[] { 36.4f, 38.4f, 0.4f }, new[] { 38.4f, 40.4f, 0.7f },
+            new[] { 40.4f, 52.4f, 1f }, new[] { 61.5f, 84.5f, 1f },
             new[] { 84.5f, 86.5f, 0.6f }, new[] { 86.5f, 88.5f, 0.3f }, new[] { 88.5f, 90.5f, 0.12f } };
         Transform rains = Group(root, "Lluvia");
         foreach (float[] rz in rainZones)

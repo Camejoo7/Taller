@@ -3,12 +3,14 @@ using UnityEngine;
 
 /// <summary>
 /// Quién pronuncia una línea de diálogo. Mapea al color del nombre:
-/// Kira -> cyan, NX7 -> amarillo.
+/// Kira -> cyan, NX7 -> amarillo, Custodio -> rojo.
+/// (Los nuevos van al final: el número de cada uno está guardado en los assets.)
 /// </summary>
 public enum Speaker
 {
     Kira,
-    NX7
+    NX7,
+    Custodio
 }
 
 /// <summary>

@@ -54,6 +54,13 @@ public class CodeTerminal : MonoBehaviour
     private PlayerMovement movement;
     private MonoBehaviour shooting;
 
+    /// <summary>Si hay alguna terminal abierta. Lo mira el diálogo: un
+    /// comentario de Kira se corta cuando el jugador abre una.</summary>
+    public static bool AnyOpen { get; private set; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetOnPlay() { AnyOpen = false; }
+
     private bool open;
     private bool solved;
     private string typed = "";
@@ -111,7 +118,11 @@ public class CodeTerminal : MonoBehaviour
         if (promptIndicator != null && promptIndicator.activeSelf != near)
             promptIndicator.SetActive(near);
 
-        if (near && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        // Con el jugador frenado (Kira está hablando) la consola no se abre:
+        // al cerrarse lo soltaría en mitad de la escena.
+        bool free = movement == null || movement.CanMove;
+
+        if (near && free && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             OpenTerminal();
     }
 
@@ -126,6 +137,7 @@ public class CodeTerminal : MonoBehaviour
         }
 
         open = true;
+        AnyOpen = true;
         busy = false;
         typed = "";
         attempts = 0;
@@ -164,6 +176,7 @@ public class CodeTerminal : MonoBehaviour
     void CloseTerminal()
     {
         open = false;
+        AnyOpen = false;
         Keyboard.current.onTextInput -= OnTextInput;
         KiraBook.ClearContext();
 
@@ -179,6 +192,7 @@ public class CodeTerminal : MonoBehaviour
     {
         if (open && Keyboard.current != null)
             Keyboard.current.onTextInput -= OnTextInput;
+        if (open) AnyOpen = false;
 
         // Nunca dejar el juego congelado si la consola desaparece abierta.
         if (open && freezeTime) Time.timeScale = timeScaleBefore;

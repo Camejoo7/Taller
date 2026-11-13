@@ -76,6 +76,8 @@ public class KamikazeDrone : MonoBehaviour
     private float aimElapsed;
     private float flightEndsAt;
     private float bobTimer;
+    private float lastX;
+    private int stuckSteps;
 
     void Start()
     {
@@ -155,11 +157,24 @@ public class KamikazeDrone : MonoBehaviour
 
         state = State.Charging;
         flightEndsAt = Time.time + maxFlightTime;
+        lastX = rb.position.x;
+        stuckSteps = 0;
     }
 
     void TickCharging()
     {
         if (Time.time >= flightEndsAt)
+        {
+            Explode();
+            return;
+        }
+
+        // Red de seguridad: si algo lo frena y ningún choque avisó (ver
+        // OnCollisionStay2D), no avanza. Unos pasos seguidos así y explota.
+        float moved = Mathf.Abs(rb.position.x - lastX);
+        lastX = rb.position.x;
+        stuckSteps = moved < speed * Time.fixedDeltaTime * 0.25f ? stuckSteps + 1 : 0;
+        if (stuckSteps >= 6)
         {
             Explode();
             return;
@@ -192,6 +207,28 @@ public class KamikazeDrone : MonoBehaviour
         }
 
         Explode();
+    }
+
+    /// <summary>
+    /// Todo el nivel es UN solo collider (el tilemap compuesto). Si el dron ya
+    /// venía rozando el piso, chocar después contra una pared no es un choque
+    /// nuevo para Unity y OnCollisionEnter2D no se entera: se quedaba
+    /// empujando la pared sin explotar. Acá se mira el contacto que sigue: si
+    /// algo lo frena de frente, es una pared.
+    /// </summary>
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (state != State.Charging) return;
+
+        for (int i = 0; i < col.contactCount; i++)
+        {
+            // La normal apunta hacia el dron: de frente es contraria a su rumbo.
+            if (col.GetContact(i).normal.x * direction < -0.5f)
+            {
+                Explode();
+                return;
+            }
+        }
     }
 
     void Explode()

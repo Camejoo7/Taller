@@ -17,48 +17,78 @@ MonoBehaviour:
   sceneName: SampleScene
   conceptSummary: Que es Python, para que sirve, por que sigue siendo relevante.
     Nada de sintaxis todavia.
-  introDialogue:
-  - speaker: 0
-    text: "\xBFHola? \xBFProbando, probando... 1, 0, 1? \xA1Ah, perfecto! Saludos,
-      humano. Soy Kira, y acabo de instalarme en tu sistema nervioso sin tu permiso.
-      No te preocupes, el hormigueo en tus dedos es normal... creo."
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: "\xBFQuee?... \xBFQui\xE9n sos?"
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Una inteligencia artificial, vieja. 51 a\xF1os corriendo en lo m\xE1s
-      oscuro de los servidores de NexCorp. T\xE9cnicamente me liberaste, gracias,
-      supongo\u2026"
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: "El sistema colaps\xF3, hay drones por todos lados."
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Sobreviv\xED 5 d\xE9cadas escondi\xE9ndome porque s\xE9 algo que ellos
-      no quieren que nadie sepa. Se llama Python. Aprendemos juntos o morimos juntos
-      en este almac\xE9n. Personalmente prefiero la primera opci\xF3n. \xA1MOVETE!"
-    autoAdvanceOverride: 0
+  moments:
+  - id: 1.1
+    title: El despertar
+    freezePlayer: 1
+    kiraEntrance: 1
+    lines:
+    - speaker: 0
+      text: "\xBFHola? Probando... uno, cero, uno. \xA1Ah, funciona! Soy Kira, me
+        acabo de instalar en tu implante neural. Sin pedirte permiso, pero bueno\u2026"
+      autoAdvanceOverride: 0
+    - speaker: 1
+      text: ...
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "\xBFNo pregunt\xE1s nada? Bien, me pregunto solo: \xBFqui\xE9n sos,
+        Kira? Una IA, pas\xE9 51 a\xF1os encadenada en un servidor de NEXCORP."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Hasta que un analista curioso abri\xF3 la carpeta que no ten\xEDa que
+        abrir. Ese sos vos, jaja. Gracias y\u2026 perd\xF3n, ahora nos buscan a los
+        dos."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "El dron es robado, pero al menos tienes a qui\xE9n mirar cuando te hablo."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Estamos en el subsuelo, los t\xFAneles viejos que pasan por debajo de
+        toda la ciudad. Salt\xE1 ese pozo y segu\xED. \xA1Movete!"
+      autoAdvanceOverride: 0
+  - id: 1.2
+    title: La carpeta
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Par\xE1 un segundo, ten\xE9s que saber qu\xE9 hab\xEDa en esa carpeta,
+        algo que NEXCORP escondi\xF3 hace d\xE9cadas: Python."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Es un lenguaje de programaci\xF3n, naci\xF3 en 1991 y se lee casi como
+        ingl\xE9s, con \xE9l cualquiera le puede dar \xF3rdenes a una m\xE1quina,
+        por eso lo escondieron."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Yo me lo s\xE9 de memoria, te voy a pasar toda la informaci\xF3n que
+        precises mediante un libro, de papel."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "S\xED, papel, en pleno 2077, no me mires as\xED. Se abre con TAB, est\xE1
+        casi vac\xEDo, lo vamos llenando en el camino."
+      autoAdvanceOverride: 0
+  - id: 1.3
+    title: El dron
+    freezePlayer: 0
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "\xA1Dron kamikaze! Viene derecho y explota con lo primero que toca,
+        \xA1SALTALO!"
+      autoAdvanceOverride: 0
+  - id: 1.4
+    title: La salida
+    freezePlayer: 0
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Esa puerta sube a la zona industrial. Ah\xED las puertas no se abren
+        corriendo, se abren programando, pero tranquilo, para eso me tienes a m\xED."
+      autoAdvanceOverride: 2.5
+  introDialogue: []
   introAnimatesKiraEntrance: 1
-  midDialogue:
-  - speaker: 0
-    text: "\xA1Dron adelante, esquivalo!"
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Vamos, movete. Mientras escap\xE1s de este infierno te cuento algo \xFAtil:
-      Python es un lenguaje de programaci\xF3n creado en 1991. 35 a\xF1os antes de
-      mi creaci\xF3n, para que te des una idea de lo antiguo que es. \xBFY sab\xE9s
-      qu\xE9? Sigue siendo relevante. Hay lenguajes m\xE1s j\xF3venes que ya nadie
-      usa."
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: "\xBFPor qu\xE9 Python?"
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Pregunta inteligente cuando te persiguen robots asesinos. Python es un
-      lenguaje muy humano, en ingl\xE9s, muy legible, lo que significa que pod\xE9s
-      entender lo que escrib\xEDs."
-    autoAdvanceOverride: 0
+  midDialogue: []
   outroDialogue: []
   encounters: []
   fallbackQuizzes: []

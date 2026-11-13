@@ -1,5 +1,30 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// Un momento de diálogo: unas pocas líneas que salen en un punto del mapa.
+/// Lo dispara un <see cref="KiraTriggerZone"/> (o un evento) por su id.
+/// </summary>
+[Serializable]
+public class DialogueMoment
+{
+    [Tooltip("Con este id lo piden los disparadores de la escena: 1.1, 2.3...")]
+    public string id;
+
+    [Tooltip("Nota interna, no se muestra.")]
+    public string title;
+
+    [Tooltip("Tildado = escena: frena al jugador y se avanza con Espacio. " +
+             "Sin tildar = comentario: no frena y pasa solo.")]
+    public bool freezePlayer = true;
+
+    [Tooltip("El dron de Kira sube desde abajo antes de la primera línea y, al " +
+             "terminar, empieza a seguir al jugador. Solo el primer encuentro.")]
+    public bool kiraEntrance;
+
+    public List<DialogueLine> lines = new List<DialogueLine>();
+}
 
 /// <summary>
 /// Todo el contenido de una stage en un solo asset. Duplicar una stage
@@ -22,7 +47,11 @@ public class StageData : ScriptableObject
     [Tooltip("Qué enseña la stage. Nota interna, no se muestra al jugador.")]
     public string conceptSummary;
 
-    [Header("Diálogo")]
+    [Header("Diálogos del juego (momentos)")]
+    [Tooltip("Los diálogos de la stage, en orden. Cada uno sale una sola vez.")]
+    public List<DialogueMoment> moments = new List<DialogueMoment>();
+
+    [Header("Diálogo (sistema viejo, sin usar)")]
     [Tooltip("Diálogo de entrada con Kira. Reemplaza el hardcode de DialogueManager.Awake.")]
     public List<DialogueLine> introDialogue = new List<DialogueLine>();
 
@@ -45,4 +74,12 @@ public class StageData : ScriptableObject
     [Header("Progresión")]
     [Tooltip("Siguiente stage para el gating del selector. Null si es la última.")]
     public StageData nextStage;
+
+    public DialogueMoment FindMoment(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return null;
+        for (int i = 0; i < moments.Count; i++)
+            if (moments[i] != null && moments[i].id == id) return moments[i];
+        return null;
+    }
 }

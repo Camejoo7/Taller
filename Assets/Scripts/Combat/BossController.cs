@@ -120,6 +120,16 @@ public class BossController : MonoBehaviour
     [Tooltip("Lo que pasa cuando cae: se habilita la salida del mapa, etc.")]
     public UnityEvent onDefeated = new UnityEvent();
 
+    [Header("Diálogo de entrada")]
+    [Tooltip("Opcional: si se deja vacío lo busca solo en la escena.")]
+    public DialogueManager dialogue;
+
+    [Tooltip("Momento del StageData que sale apenas se cierra la puerta, antes de que el jefe baje.")]
+    public string momentBeforeEntrance = "2.8";
+
+    [Tooltip("Momento que sale con el jefe ya en pantalla, antes de que empiece a atacar.")]
+    public string momentAfterEntrance = "2.8b";
+
     enum State { Waiting, Intro, Attacking, Stunned, Hurt, Dead }
 
     private State state = State.Waiting;
@@ -218,6 +228,9 @@ public class BossController : MonoBehaviour
         // Si te mata, volvés a la arena, no al garage.
         PlayerHealth.RespawnOverride = OnPlayerDied;
 
+        // Kira se da cuenta de que algo viene, antes de que se vea.
+        yield return PlayMoment(momentBeforeEntrance);
+
         if (bar != null)
         {
             bar.Show(bossName, phases.Length);
@@ -226,9 +239,25 @@ public class BossController : MonoBehaviour
 
         // Baja desde arriba de la pantalla.
         yield return MoveTo((leftX + rightX) * 0.5f, hoverY, 2.2f);
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.6f);
+
+        // Ya en pantalla, habla él. Recién después ataca.
+        yield return PlayMoment(momentAfterEntrance);
+        yield return new WaitForSeconds(0.6f);
 
         BeginPhase();
+    }
+
+    /// <summary>Dispara un momento de diálogo y espera a que termine. Si ya
+    /// salió en esta partida (o no hay diálogo en la escena), sigue de largo.</summary>
+    IEnumerator PlayMoment(string id)
+    {
+        if (string.IsNullOrEmpty(id)) yield break;
+        if (dialogue == null) dialogue = FindFirstObjectByType<DialogueManager>();
+        if (dialogue == null) yield break;
+
+        if (!dialogue.StartMoment(id)) yield break;
+        while (dialogue.IsActive) yield return null;
     }
 
     void BeginPhase()

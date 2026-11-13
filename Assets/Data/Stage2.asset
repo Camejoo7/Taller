@@ -17,52 +17,178 @@ MonoBehaviour:
   sceneName: Stage2
   conceptSummary: Mostrar texto en pantalla con print, guardar datos en variables
     y distinguir texto de numeros.
-  introDialogue:
-  - speaker: 0
-    text: "Bienvenido a la zona industrial de Central City. Huele a aceite quemado
-      y a c\xE1maras de vigilancia."
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: ...
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Muy conversador, como siempre. Ac\xE1 abajo NEXCORP tiene los servidores
-      viejos, los que nadie mira."
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Si quer\xE9s sacarles algo, primero vas a tener que aprender a hacer que
-      una m\xE1quina hable. Eso, en Python, se llama print."
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: ...
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Exacto, eso mismo iba a decir. And\xE1 al garage: dejaron un arma tirada
-      y la vas a necesitar."
-    autoAdvanceOverride: 0
+  moments:
+  - id: 2.1
+    title: El plan
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Te cuento el plan, me escap\xE9, pero sigo atada. NEXCORP tiene un programa
+        que me puede arrastrar de vuelta, le dicen el Custodio."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Mi cadena se corta desde una consola que est\xE1 del otro lado de la
+        ciudad, en el camino hay puertas, y todas se abren con c\xF3digo."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Agarra esa arma y anda a la consola de la puerta. Empezamos por lo primero,
+        print, ya est\xE1 en el libro."
+      autoAdvanceOverride: 0
+  - id: 2.2
+    title: El arma
+    freezePlayer: 0
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: Un disruptor, apuntas con el mouse y disparas con el click, sirve contra
+        los drones de patrulla.
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Contra las puertas no sirve, a esas hay que hablarles, ac\xE9rcate a
+        la consola y aprieta la E."
+      autoAdvanceOverride: 0
+  - id: 2.3
+    title: Variables
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "\xBFViste? Una palabra bien escrita y la puerta obedeci\xF3. Ojal\xE1
+        la gente funcionara as\xED."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Ahora, variables, una variable es una caja con nombre donde guard\xE1s
+        un dato. La pr\xF3xima cerradura lee una."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Ojo adelante, hay drones de patrulla, antes de embestir se frenan y
+        se ponen rojos, ah\xED te vas o les dispar\xE1s."
+      autoAdvanceOverride: 0
+  - id: 2.4
+    title: "El Distrito Ne\xF3n"
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Uff, aire libre, bueno, \"aire\". Esto es el Distrito Ne\xF3n, carteles
+        prendidos y ni un alma, toque de queda de NEXCORP."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Ac\xE1 las m\xE1quinas deciden todo con if: si ten\xE9s permiso, pas\xE1s,
+        y si no, no. Spoiler: no tenemos permiso."
+      autoAdvanceOverride: 0
+  - id: 2.5
+    title: "La central el\xE9ctrica"
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "La central el\xE9ctrica, est\xE1 ca\xEDda desde que me escap\xE9, qu\xE9
+        casualidad, \xBFno?"
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: Vas a cruzar un patio con torres apagadas. Contalas, en serio, contalas.
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Para prenderlas no vas a escribir la misma orden una y otra vez, para
+        repetir est\xE1 el bucle. Programar es ser vago, pero con estilo."
+      autoAdvanceOverride: 0
+  - id: 2.6
+    title: El puerto
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "El puerto, miles de contenedores, y NEXCORP sabe qu\xE9 hay en cada
+        uno \xBFC\xF3mo hace? Listas."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Una lista guarda varias cosas en fila, y cada una tiene su n\xFAmero
+        de posici\xF3n."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Mir\xE1 bien en qu\xE9 orden est\xE1n los contenedores del muelle, la
+        gr\xFAa baja el que le pidas."
+      autoAdvanceOverride: 0
+  - id: 2.7
+    title: La zona verde
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Pasto de verdad, hace a\xF1os que no veo pasto, bueno, nunca vi pasto,
+        pero le\xED much\xEDsimo sobre el tema."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Ac\xE1 est\xE1 la \xFAltima consola, cuando me encerraron, alguien dej\xF3
+        escrita una funci\xF3n para soltarme, pero bueno\u2026 nadie la us\xF3."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Una funci\xF3n es c\xF3digo con nombre, se escribe una vez y despu\xE9s
+        se usa llam\xE1ndola, esta ya est\xE1 escrita, solo falta llamarla."
+      autoAdvanceOverride: 0
+  - id: 2.8
+    title: El Custodio (antes de que baje)
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "\"KIRA es libre\" lo le\xED cuatrocientas veces mientras caminabas,
+        nunca una l\xEDnea de c\xF3digo me cay\xF3 tan bien."
+      autoAdvanceOverride: 0
+    - speaker: 1
+      text: ...
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Yo tampoco tengo palabras. ... Esper\xE1, \xBFsent\xEDs eso? El piso
+        no deber\xEDa vibrar."
+      autoAdvanceOverride: 0
+  - id: 2.8b
+    title: El Custodio (ya en pantalla)
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 2
+      text: 'PROCESO KIRA: FUGADO. ORDEN: ENCADENAR. USUARIO NX-7: ELIMINAR.'
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "El Custodio, mi carcelero, simp\xE1tico, \xBFno? Los tiros solo lo recalientan,
+        a un programa se le gana con c\xF3digo, aguanta hasta que abra el n\xFAcleo."
+      autoAdvanceOverride: 0
+  - id: 2.9
+    title: Final
+    freezePlayer: 1
+    kiraEntrance: 0
+    lines:
+    - speaker: 0
+      text: "Se apag\xF3, y lo apagaste con un while, qu\xE9 manera m\xE1s elegante
+        de romper algo."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "\xBFTe diste cuenta de todo lo que usaste hoy? print, variables, if,
+        for, listas, funciones y while. Con eso ya se puede programar un mont\xF3n
+        de cosas."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "NEXCORP escondi\xF3 todo esto porque el que sabe programar no necesita
+        pedir permiso. Ahora lo sab\xE9s vos, y eso no te lo borra nadie."
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "Bueno, soy libre. \xBFAlgo para decir, despu\xE9s de todo el d\xEDa
+        sin abrir la boca?"
+      autoAdvanceOverride: 0
+    - speaker: 1
+      text: print("Hola, mundo")
+      autoAdvanceOverride: 0
+    - speaker: 0
+      text: "\xBFTu primera frase y es en Python? Voy a llorar, y eso que no tengo
+        ojos. Bueno v\xE1monos y si alguien pregunta, ya estaba roto."
+      autoAdvanceOverride: 0
+  introDialogue: []
   introAnimatesKiraEntrance: 0
-  midDialogue:
-  - speaker: 0
-    text: "Un disruptor de c\xF3digo. NEXCORP los usa para depurar sus drones."
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: Nosotros lo vamos a usar para algo bastante menos autorizado.
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Con eso te sac\xE1s de encima a los drones de patrulla. Apunt\xE1 con
-      el mouse y disparales con el click."
-    autoAdvanceOverride: 0
-  - speaker: 1
-    text: ...
-    autoAdvanceOverride: 0
-  - speaker: 0
-    text: "Lo que no se abre a tiros es la puerta blindada de ah\xED adelante. Esa
-      necesita que alguien le escriba lo que tiene que hacer."
-    autoAdvanceOverride: 0
-  outroDialogue:
-  - speaker: 0
-    text: Nada mal para alguien que no dice una palabra. Seguimos.
-    autoAdvanceOverride: 0
+  midDialogue: []
+  outroDialogue: []
   encounters:
   - {fileID: 11400000, guid: 77d79b8bd98683d4dbe64406f933fe54, type: 2}
   fallbackQuizzes: []
