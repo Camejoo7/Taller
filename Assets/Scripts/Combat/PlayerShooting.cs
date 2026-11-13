@@ -1,24 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Disparo del jugador: se apunta con el mouse y se dispara con click izquierdo.
-/// Solo funciona despues de agarrar el arma en el garage (PlayerMovement.HasWeapon).
-/// </summary>
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerShooting : MonoBehaviour
 {
     [Header("Bala")]
     public GameObject projectilePrefab;
 
-    [Tooltip("Segundos entre disparo y disparo.")]
     public float fireCooldown = 0.28f;
 
     [Header("De donde sale")]
-    [Tooltip("Altura del arma respecto del centro del jugador.")]
     public float gunHeight = 0.02f;
 
-    [Tooltip("Cuanto se adelanta la bala para no nacer dentro del jugador.")]
     public float muzzleDistance = 0.22f;
 
     private PlayerMovement movement;
@@ -48,14 +41,9 @@ public class PlayerShooting : MonoBehaviour
         if (cooldownTimer > 0f) return false;
         if (movement == null || !movement.HasWeapon) return false;
 
-        // Durante un dialogo el jugador esta congelado: tampoco dispara.
         return movement.CanMove;
     }
 
-    /// <summary>
-    /// Deja al jugador sin poder disparar un rato. La usa CodeBlasterFight
-    /// como penalidad por errarle al fragmento.
-    /// </summary>
     public void BlockFor(float seconds)
     {
         cooldownTimer = Mathf.Max(cooldownTimer, seconds);
@@ -74,7 +62,6 @@ public class PlayerShooting : MonoBehaviour
         Vector2 dir = mouseWorld - origin;
         dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector2.right;
 
-        // Que el personaje mire hacia donde dispara, si no queda disparando de espaldas.
         movement.FaceDirection(dir.x);
 
         Vector3 spawn = origin + (Vector3)(dir * muzzleDistance);

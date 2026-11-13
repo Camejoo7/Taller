@@ -8,23 +8,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// Los tres segmentos del sistema viejo (uno de cada uno por stage). Los
-/// diálogos del juego ahora son "momentos" (ver <see cref="DialogueMoment"/>),
-/// pero esto sigue andando para lo que todavía lo use.
-/// - Intro: congela al jugador, anima la entrada del dron de Kira (si el
-///   StageData lo pide), permite avance manual, y al terminar arranca el
-///   KiraFollower.
-/// - Mid: no congela, sin animación de dron, solo avance automático.
-/// - Outro: congela al jugador, solo avance automático.
-/// </summary>
 public enum DialogueSegment { Intro, Mid, Outro }
 
-/// <summary>
-/// Qué momentos de diálogo ya se vieron. Vive en memoria, como el progreso del
-/// libro: morir recarga la escena, y sin esto Kira repetiría todo lo que ya
-/// dijo. Volver al Menú Principal lo borra: es otra partida.
-/// </summary>
 public static class DialogueProgress
 {
     static readonly HashSet<string> played = new HashSet<string>();
@@ -44,28 +29,14 @@ public static class DialogueProgress
 
     static string[] saved = new string[0];
 
-    /// <summary>Guarda qué momentos ya salieron al entrar a un stage (lo llama <see cref="RunProgress"/>).</summary>
     public static void Snapshot() { saved = new string[played.Count]; played.CopyTo(saved); }
 
-    /// <summary>Botón Reiniciar de la pausa: los momentos de este stage vuelven a salir.</summary>
     public static void RestoreSnapshot() { played.Clear(); played.UnionWith(saved); }
 
     public static bool WasPlayed(string key) { return played.Contains(key); }
     public static void MarkPlayed(string key) { played.Add(key); }
 }
 
-/// <summary>
-/// Manager único de diálogo. Lee el contenido de un StageData.
-///
-/// Los diálogos del juego son "momentos" (<see cref="StartMoment"/>), de dos
-/// clases:
-/// - Escena (freezePlayer): frena al jugador y se avanza con Espacio. Espacio
-///   completa la línea que se está escribiendo y, ya completa, pasa a la que
-///   sigue. No hay forma de saltarla entera.
-/// - Comentario: no frena y avanza solo. Si el jugador abre una terminal, se
-///   corta: la terminal usa la misma parte de la pantalla.
-/// Cada momento sale una sola vez por partida (<see cref="DialogueProgress"/>).
-/// </summary>
 public class DialogueManager : MonoBehaviour
 {
     [Header("Contenido")]
@@ -75,7 +46,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject dialogueCanvas;
     public TextMeshProUGUI speakerNameText;
     public TextMeshProUGUI dialogueText;
-    [Tooltip("El retrato. Arranca con el de Kira; cuando habla otro, se cambia el dibujo.")]
+
     public Image kiraAvatar;
 
     [Header("Retratos de los otros")]
@@ -88,26 +59,21 @@ public class DialogueManager : MonoBehaviour
     public Transform kiraTargetPos;
 
     [Header("Configuración")]
-    [Tooltip("Segundos por letra en una escena (el jugador está frenado y lee tranquilo).")]
     public float typingSpeed = 0.03f;
 
-    [Tooltip("Segundos por letra en un comentario. Más rápido: el jugador está " +
-             "en medio de la acción y tiene que alcanzar a leerlo.")]
     public float commentTypingSpeed = 0.008f;
     public float autoAdvanceIntro = 3f;
     public float autoAdvanceMid = 4f;
     public float autoAdvanceOutro = 3.5f;
 
-    [Tooltip("En una escena (momento que frena) se avanza con Espacio. Si nadie " +
-             "lo aprieta, la línea pasa sola después de estos segundos. 0 = nunca.")]
     public float sceneFallbackAdvance = 15f;
 
     [Header("Al terminar la intro (sistema viejo)")]
     public UnityEvent onIntroEnded;
 
-    static readonly Color KiraColor = new Color(0f, 1f, 1f);            // cyan
-    static readonly Color NxColor = new Color(1f, 1f, 0f);              // amarillo
-    static readonly Color CustodioColor = new Color(1f, 0.33f, 0.28f);  // rojo
+    static readonly Color KiraColor = new Color(0f, 1f, 1f);
+    static readonly Color NxColor = new Color(1f, 1f, 0f);
+    static readonly Color CustodioColor = new Color(1f, 0.33f, 0.28f);
     static readonly Color HintColor = new Color(0.341f, 0.816f, 0.855f);
 
     private List<DialogueLine> lines;
@@ -118,14 +84,12 @@ public class DialogueManager : MonoBehaviour
     private float autoAdvanceTimer;
     private PlayerMovement playerMovement;
 
-    // Cómo se comporta el diálogo que está corriendo.
     private bool freezes;
     private bool manual;
     private float autoTime;
     private bool handoffKira;
     private Action onEnded;
 
-    // Un momento que se pidió mientras Kira todavía hablaba.
     private string pendingId;
     private PlayerMovement pendingPlayer;
     private Action pendingEnded;
@@ -133,8 +97,6 @@ public class DialogueManager : MonoBehaviour
     private Sprite kiraPortrait;
     private TextMeshProUGUI hint;
 
-    /// <summary>Si Kira está hablando ahora mismo. Lo consulta el combate para
-    /// no arrancar una pelea encima de un diálogo.</summary>
     public bool IsActive => dialogueActive;
 
     private float CurrentAutoAdvance
@@ -153,9 +115,6 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        // Si la escena se recargó (el jugador murió) y Kira ya había hecho su
-        // entrada, esa escena no vuelve a salir: que aparezca directamente
-        // siguiendo al jugador en vez de quedarse escondida.
         if (stageData == null || kiraDrone == null) return;
 
         foreach (DialogueMoment m in stageData.moments)
@@ -179,18 +138,11 @@ public class DialogueManager : MonoBehaviour
         return (stageData != null ? stageData.name : "") + ":" + momentId;
     }
 
-    // ------------------------------------------------------------- momentos
-
-    /// <summary>Para enganchar desde un UnityEvent (el jefe al caer, por ejemplo).</summary>
     public void PlayMoment(string id)
     {
         StartMoment(id);
     }
 
-    /// <summary>
-    /// Dispara un momento del StageData. Devuelve false si no existe o si ya
-    /// salió en esta partida. <paramref name="ended"/> se llama cuando termina.
-    /// </summary>
     public bool StartMoment(string id, PlayerMovement player = null, Action ended = null)
     {
         if (stageData == null)
@@ -212,8 +164,6 @@ public class DialogueManager : MonoBehaviour
         {
             if (!freezes)
             {
-                // Lo nuevo le gana a un comentario que venía de antes: si no,
-                // Kira terminaría hablando de algo que ya quedó atrás.
                 pendingId = null;
                 pendingPlayer = null;
                 pendingEnded = null;
@@ -221,7 +171,6 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
-                // Una escena no se corta: lo nuevo espera a que termine.
                 pendingId = id;
                 pendingPlayer = player;
                 pendingEnded = ended;
@@ -236,11 +185,6 @@ public class DialogueManager : MonoBehaviour
         return true;
     }
 
-    // ------------------------------------------------- segmentos (sistema viejo)
-
-    /// <summary>
-    /// Dispara un segmento del StageData (intro / mid / outro).
-    /// </summary>
     public void StartDialogue(DialogueSegment which, PlayerMovement player = null)
     {
         if (dialogueActive) return;
@@ -269,8 +213,6 @@ public class DialogueManager : MonoBehaviour
               isIntro && stageData.introAnimatesKiraEntrance, isIntro, player, ended);
     }
 
-    // ---------------------------------------------------------------- común
-
     void Begin(List<DialogueLine> newLines, bool freeze, bool manualAdvance, float autoAdvance,
                bool kiraEnters, bool kiraHandoff, PlayerMovement player, Action ended)
     {
@@ -293,7 +235,6 @@ public class DialogueManager : MonoBehaviour
 
         if (kiraEnters && kiraDrone != null && kiraSpawnBelow != null && kiraTargetPos != null)
         {
-            // Mientras el dron sube, el cuadro espera vacío.
             ShowSpeaker(lines[0].speaker);
             dialogueText.text = "";
             StartCoroutine(KiraEnterFromBelow());
@@ -366,8 +307,7 @@ public class DialogueManager : MonoBehaviour
         {
             kiraAvatar.gameObject.SetActive(portrait != null);
             kiraAvatar.sprite = portrait;
-            // El de Kira se dibuja como siempre (ocupa el recuadro entero); los
-            // otros tienen otra forma y estirados quedarían deformes.
+
             kiraAvatar.preserveAspect = speaker != Speaker.Kira;
         }
     }
@@ -386,15 +326,11 @@ public class DialogueManager : MonoBehaviour
     {
         isTyping = true;
 
-        // El texto entra entero y se va destapando: así las palabras no saltan
-        // de renglón a medio escribir.
         dialogueText.text = line;
         dialogueText.maxVisibleCharacters = 0;
         dialogueText.ForceMeshUpdate();
         int total = dialogueText.textInfo.characterCount;
 
-        // Por tiempo y no una letra por cuadro: así la velocidad no depende
-        // de los cuadros por segundo y puede ir más rápido que uno por cuadro.
         float perChar = freezes ? typingSpeed : commentTypingSpeed;
         float elapsed = 0f;
         int shown = 0;
@@ -414,10 +350,8 @@ public class DialogueManager : MonoBehaviour
     {
         if (!dialogueActive || entering) return;
 
-        // Espacio y Enter son del libro mientras está abierto.
         if (KiraBook.BlocksInput) return;
 
-        // Un comentario no compite con la terminal: si se abre una, se corta.
         if (!freezes && CodeTerminal.AnyOpen)
         {
             EndDialogue();
@@ -454,8 +388,6 @@ public class DialogueManager : MonoBehaviour
     {
         if (hint == null) return;
 
-        // El cartel de ESPACIO aparece cuando la línea ya está entera y hay
-        // que apretar para seguir. Titila en tiempo real.
         bool show = dialogueActive && manual && !entering && !isTyping &&
                     Mathf.Repeat(Time.unscaledTime, 1f) < 0.65f;
         if (hint.enabled != show) hint.enabled = show;
@@ -501,12 +433,9 @@ public class DialogueManager : MonoBehaviour
         isTyping = false;
         dialogueCanvas.SetActive(false);
 
-        // Se suelta al jugador un cuadro después: el Espacio que cerró la
-        // última línea es el mismo que lo haría saltar.
         if (freezes && playerMovement != null)
             StartCoroutine(ReleaseNextFrame(playerMovement));
 
-        // Tras su entrada, el dron acaba de aparecer: que empiece a seguir al jugador.
         if (handoffKira && kiraDrone != null && playerMovement != null)
         {
             KiraFollower follower = kiraDrone.GetComponent<KiraFollower>();
@@ -534,7 +463,6 @@ public class DialogueManager : MonoBehaviour
     {
         yield return null;
 
-        // Salvo que justo haya arrancado otra escena que también lo frena.
         if (player != null && !(dialogueActive && freezes))
             player.SetCanMove(true);
     }

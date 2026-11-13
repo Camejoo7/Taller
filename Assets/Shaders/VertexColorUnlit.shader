@@ -1,6 +1,3 @@
-// Sin luces, sin textura: el color del vértice tal cual, con transparencia.
-// Para los cables (LineRenderer): los shaders de sprite de URP multiplican por
-// unity_SpriteColor, que un LineRenderer no tiene.
 Shader "CodeBreak/Vertex Color Unlit"
 {
     Properties

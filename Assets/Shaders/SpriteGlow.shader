@@ -1,14 +1,3 @@
-// Brillo aditivo para sprites: suma luz sobre lo que hay detrás en vez de
-// taparlo. Es lo que hace que un farol, un cartel de neón o una pantalla se
-// vean "prendidos" sin usar luces 2D (agregar un Light2D al Stage 2 manda la
-// escena a negro, ver ROADMAP).
-//
-// El color del SpriteRenderer tiñe el brillo y su alfa lo atenúa. _Intensity
-// pasa de 1 para que el bloom (si la cámara tiene post-proceso) lo agarre.
-//
-// Un solo pase, con LightMode Universal2D: el renderer 2D dibuja los pases
-// Universal2D y también los que no tienen LightMode, así que con dos pases
-// el brillo se sumaría dos veces.
 Shader "CodeBreak/Sprite Glow (Aditivo)"
 {
     Properties
@@ -73,9 +62,7 @@ Shader "CodeBreak/Sprite Glow (Aditivo)"
                 Varyings o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
                 o.uv = v.uv;
-                // En Unity 6 el color del SpriteRenderer no viene en el color
-                // del vértice: llega en unity_SpriteColor (como en los shaders
-                // de sprite de URP). Sin esto todo brilla blanco y al máximo.
+
                 o.color = v.color * unity_SpriteColor;
                 return o;
             }

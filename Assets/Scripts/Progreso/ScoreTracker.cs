@@ -1,15 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Junta el resultado de todas las preguntas de la sesión y lleva el puntaje.
-///
-/// Vive solo en memoria: no escribe archivos ni guarda nada en el disco. Si en
-/// algún momento hace falta un informe para el docente, se arma leyendo de acá.
-///
-/// Se crea solo al arrancar el juego y sobrevive a los cambios de escena, así
-/// que no hay que acordarse de ponerlo en cada stage.
-/// </summary>
 public class ScoreTracker : MonoBehaviour
 {
     public static ScoreTracker Instance { get; private set; }
@@ -40,17 +31,11 @@ public class ScoreTracker : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// El indicador principal: qué porcentaje de preguntas acertó de primera.
-    /// Es el número que mejor separa saber de tantear, porque completar el juego
-    /// no prueba nada — disparándole a todos los fragmentos se acierta igual.
-    /// </summary>
     public float FirstTryRate
     {
         get { return attempts.Count == 0 ? 0f : (float)FirstTryCount / attempts.Count; }
     }
 
-    /// <summary>Respuestas dadas en total, contando las equivocadas.</summary>
     public int TotalShots
     {
         get

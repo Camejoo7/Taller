@@ -3,20 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// La barra del jefe, arriba al medio: el nombre, un tramo por fase (cada
-/// terminal resuelta rompe uno), la temperatura (cuando se llena, el jefe
-/// queda aturdido) y un renglón que dice qué hacer ahora.
-///
-/// Ese renglón es lo que hace entendible la pelea sin diálogos: la regla es
-/// rara para un juego de tiros ("a los tiros no se le gana"), así que hay que
-/// decirla en el momento.
-///
-/// Como la terminal, se arma sola en runtime.
-/// </summary>
 public class BossHealthBar : MonoBehaviour
 {
-    [Tooltip("PressStart2P.")]
     public TMP_FontAsset font;
 
     public Color nameColor = new Color(1f, 0.32f, 0.42f, 1f);
@@ -40,8 +28,6 @@ public class BossHealthBar : MonoBehaviour
         group.gameObject.SetActive(false);
     }
 
-    // ------------------------------------------------------------ lo que usa el jefe
-
     public void Show(string bossName, int phases)
     {
         nameText.text = bossName;
@@ -57,14 +43,12 @@ public class BossHealthBar : MonoBehaviour
         Fade(0f);
     }
 
-    /// <summary>Cuántos tramos le quedan sanos.</summary>
     public void SetSegments(int left)
     {
         for (int i = 0; i < segments.Length; i++)
             segments[i].color = i < left ? segmentColor : brokenColor;
     }
 
-    /// <summary>Temperatura, de 0 a 1.</summary>
     public void SetHeat(float t)
     {
         if (heatFill != null) heatFill.anchorMax = new Vector2(Mathf.Clamp01(t), 1f);
@@ -75,15 +59,13 @@ public class BossHealthBar : MonoBehaviour
         statusText.text = text;
     }
 
-    // ------------------------------------------------------------ armado
-
     void Build()
     {
         GameObject canvasGO = new GameObject("BarraJefe");
         canvasGO.transform.SetParent(transform, false);
         Canvas canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        // Encima de los corazones (40), debajo de la terminal (90) y del libro (95).
+
         canvas.sortingOrder = 45;
         CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -109,7 +91,6 @@ public class BossHealthBar : MonoBehaviour
         segmentRow.SetParent(p, false);
         Row(segmentRow, 42f, 26f);
 
-        // La temperatura: una rayita naranja debajo de los tramos.
         Image heatBack = NewImage("Temperatura", p, new Color(0f, 0f, 0f, 0.6f));
         RectTransform hb = heatBack.rectTransform;
         hb.anchorMin = hb.anchorMax = new Vector2(0.5f, 1f);
@@ -139,8 +120,6 @@ public class BossHealthBar : MonoBehaviour
         float total = segments.Length * w + (segments.Length - 1) * gap;
         for (int i = 0; i < segments.Length; i++)
         {
-            // Borde oscuro y el tramo adentro, para que se lea como una barra
-            // partida y no como tres rectángulos sueltos.
             Image frame = NewImage("Tramo" + (i + 1), segmentRow, new Color(0f, 0f, 0f, 0.75f));
             RectTransform r = frame.rectTransform;
             r.anchorMin = r.anchorMax = new Vector2(0.5f, 0.5f);
@@ -206,8 +185,7 @@ public class BossHealthBar : MonoBehaviour
         t.color = color;
         t.alignment = TextAlignmentOptions.Center;
         t.raycastTarget = false;
-        // Contorno oscuro: la barra va sobre el cielo y sobre el jefe, y sin
-        // esto el texto claro se pierde.
+
         t.outlineWidth = 0.2f;
         t.outlineColor = new Color32(0, 0, 0, 255);
         return t;

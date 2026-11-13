@@ -5,7 +5,6 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
     public float smoothSpeed = 5f;
 
-    [Tooltip("Qué tan rápido se abre o cierra el zoom.")]
     public float zoomSpeed = 2.5f;
 
     private Camera cam;
@@ -30,9 +29,6 @@ public class CameraFollow : MonoBehaviour
 
         Vector3 focus = target.position;
 
-        // Durante el combate la cámara mira al punto medio entre el jugador y el
-        // dron. Si siguiera solo al jugador, el dron y los fragmentos de arriba
-        // quedarían tapados por el cartel de la pregunta.
         if (secondaryTarget != null)
             focus = Vector3.Lerp(target.position, secondaryTarget.position, secondaryWeight);
 
@@ -43,11 +39,6 @@ public class CameraFollow : MonoBehaviour
             cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, zoomSpeed * Time.deltaTime);
     }
 
-    /// <summary>
-    /// Aleja la cámara durante el combate. A la escala de este juego el dron con
-    /// los fragmentos girando no entra en la vista normal, así que la pelea abre
-    /// el encuadre y al terminar lo devuelve.
-    /// </summary>
     public void SetZoom(float size)
     {
         targetSize = size > 0f ? size : baseSize;
@@ -58,10 +49,6 @@ public class CameraFollow : MonoBehaviour
         targetSize = baseSize;
     }
 
-    /// <summary>
-    /// Hace que la cámara encuadre al jugador y a otro punto a la vez.
-    /// <paramref name="weight"/> 0 = solo el jugador, 1 = solo el otro punto.
-    /// </summary>
     public void SetSecondaryTarget(Transform other, float weight)
     {
         secondaryTarget = other;

@@ -2,50 +2,25 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>
-/// El jefe final: EL CUSTODIO, el programa de NEXCORP que tuvo encadenada a
-/// Kira 51 años. Está al final de la zona verde.
-///
-/// Cómo se pelea (lo que se acordó el 16/10, ver la Fase 2B del ROADMAP):
-/// 1. Ataca y el jugador esquiva. Mientras ataca se va recalentando; los
-///    tiros del jugador lo recalientan más rápido, pero NO le sacan vida.
-/// 2. Recalentado, baja, abre el núcleo y se queda quieto, sin atacar.
-/// 3. La consola de la arena se prende con el código de esa fase. Con la
-///    terminal abierta el juego se congela: pensar no tiene apuro.
-/// 4. Acertar le rompe un tramo de la barra. Equivocarse no saca vida: la
-///    dificultad la ponen los ataques, no el castigo al error.
-/// 5. Son tres fases, cada una con ataques más difíciles. Si el jugador
-///    muere, reaparece en la arena y el jefe vuelve al principio de ESA
-///    fase: lo que ya resolvió no se vuelve a escribir.
-///
-/// La pelea arranca sola cuando el jugador pasa <see cref="startX"/>.
-/// </summary>
 public class BossController : MonoBehaviour
 {
     [System.Serializable]
     public class Phase
     {
-        [Tooltip("Segundos atacando hasta recalentarse y quedar aturdido.")]
         public float heatTime = 12f;
 
-        [Tooltip("Pausa entre un ataque y el siguiente.")]
         public float pause = 1.4f;
 
-        [Tooltip("Cuántas bolas por disparo: 1 va derecho al jugador, 3 es un abanico.")]
         public int shotsPerVolley = 1;
 
         public float shotSpeed = 3.2f;
 
-        [Tooltip("Si además hace pasadas soltando bombas.")]
         public bool bombs = false;
 
-        [Tooltip("Cada cuántos segundos suelta una bomba durante la pasada.")]
         public float bombEvery = 0.6f;
 
-        [Tooltip("Qué tan rápido se mueve de un lado al otro.")]
         public float moveSpeed = 1.4f;
 
-        [Tooltip("El ejercicio que aparece en la consola cuando queda aturdido.")]
         public TerminalChallenge challenge;
     }
 
@@ -55,60 +30,42 @@ public class BossController : MonoBehaviour
     [Header("Dibujo (pack DRONES, dron 5)")]
     public SpriteRenderer body;
 
-    [Tooltip("Idle_0..3: los propulsores andando.")]
     public Sprite[] idleFrames;
 
-    [Tooltip("Death_0..5: la caja se abre. Los primeros cuadros son el núcleo " +
-             "expuesto (aturdido); los últimos, la caja rota (derrota).")]
     public Sprite[] openFrames;
 
-    [Tooltip("Hasta qué cuadro de openFrames se abre cuando queda aturdido.")]
     public int stunnedFrame = 3;
 
     [Header("La arena")]
-    [Tooltip("La pelea arranca cuando el jugador pasa esta x.")]
     public float startX = 125.6f;
 
-    [Tooltip("Entre qué x se mueve volando.")]
     public float leftX = 126.5f;
     public float rightX = 133.5f;
 
-    [Tooltip("Altura a la que vuela atacando.")]
     public float hoverY = -0.9f;
 
-    [Tooltip("Adónde va a quedarse cuando se recalienta (lejos de la consola).")]
     public float stunnedX = 132.6f;
     public float stunnedY = -1.75f;
 
-    [Tooltip("Altura del piso de la arena: ahí se estrella cuando pierde.")]
     public float groundY = -3.16f;
 
-    [Tooltip("Adónde mira la cámara durante la pelea.")]
     public Transform cameraFocus;
 
-    [Tooltip("Zoom de la cámara en la pelea. 2,7 entra la arena entera y el " +
-             "pixel art sigue nítido (cada pixel del dibujo = 4 de pantalla).")]
     public float cameraZoom = 2.7f;
 
-    [Tooltip("Dónde reaparece el jugador si muere en la pelea.")]
     public Transform respawnPoint;
 
-    [Tooltip("La puerta que se cierra detrás del jugador al empezar.")]
     public PoweredDoor arenaDoor;
 
     [Header("La consola")]
     public CodeTerminal console;
 
-    [Tooltip("El dibujo de la pantalla de la consola: apagado hasta que el " +
-             "jefe queda aturdido.")]
     public SpriteRenderer consoleScreen;
 
     [Header("Ataques")]
     public BossShot shotPrefab;
     public BossShot bombPrefab;
 
-    [Tooltip("Cuánto se recalienta por cada tiro del jugador, en segundos de " +
-             "ataque. Disparar no le saca vida, pero acorta la espera.")]
     public float heatPerShot = 0.35f;
 
     public Phase[] phases = new Phase[3];
@@ -117,17 +74,13 @@ public class BossController : MonoBehaviour
     public BossHealthBar bar;
 
     [Header("Al ganarle")]
-    [Tooltip("Lo que pasa cuando cae: se habilita la salida del mapa, etc.")]
     public UnityEvent onDefeated = new UnityEvent();
 
     [Header("Diálogo de entrada")]
-    [Tooltip("Opcional: si se deja vacío lo busca solo en la escena.")]
     public DialogueManager dialogue;
 
-    [Tooltip("Momento del StageData que sale apenas se cierra la puerta, antes de que el jefe baje.")]
     public string momentBeforeEntrance = "2.8";
 
-    [Tooltip("Momento que sale con el jefe ya en pantalla, antes de que empiece a atacar.")]
     public string momentAfterEntrance = "2.8b";
 
     enum State { Waiting, Intro, Attacking, Stunned, Hurt, Dead }
@@ -146,8 +99,6 @@ public class BossController : MonoBehaviour
 
     Phase Current { get { return phases[Mathf.Clamp(phase, 0, phases.Length - 1)]; } }
 
-    // ------------------------------------------------------------ arranque
-
     void Start()
     {
         PlayerMovement pm = FindFirstObjectByType<PlayerMovement>();
@@ -161,7 +112,6 @@ public class BossController : MonoBehaviour
 
         if (console != null)
         {
-            // Resolver la consola es lo único que lo lastima.
             console.onSolved.AddListener(OnConsoleSolved);
             console.reusable = true;
             console.freezeTime = true;
@@ -169,7 +119,6 @@ public class BossController : MonoBehaviour
         if (consoleScreen != null) consoleFlipbook = consoleScreen.GetComponent<SpriteFlipbook>();
         ConsoleOn(false);
 
-        // Espera fuera de cámara, arriba de la arena.
         transform.position = new Vector3((leftX + rightX) * 0.5f, hoverY + 4f, 0f);
     }
 
@@ -198,7 +147,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /// <summary>Lo llama la bala del jugador al pegarle.</summary>
     public void TakeShot()
     {
         if (state != State.Attacking) return;
@@ -206,13 +154,10 @@ public class BossController : MonoBehaviour
         StartCoroutine(Flash(new Color(1f, 0.8f, 0.6f), 0.05f));
     }
 
-    // ------------------------------------------------------------ las partes de la pelea
-
     IEnumerator Intro()
     {
         state = State.Intro;
 
-        // La puerta se cierra detrás: de acá no se sale hasta ganarle.
         if (arenaDoor != null)
         {
             arenaDoor.gameObject.SetActive(true);
@@ -225,10 +170,8 @@ public class BossController : MonoBehaviour
             cameraFollow.SetZoom(cameraZoom);
         }
 
-        // Si te mata, volvés a la arena, no al garage.
         PlayerHealth.RespawnOverride = OnPlayerDied;
 
-        // Kira se da cuenta de que algo viene, antes de que se vea.
         yield return PlayMoment(momentBeforeEntrance);
 
         if (bar != null)
@@ -237,19 +180,15 @@ public class BossController : MonoBehaviour
             bar.SetStatus("El programa que tuvo encadenada a KIRA 51 años.");
         }
 
-        // Baja desde arriba de la pantalla.
         yield return MoveTo((leftX + rightX) * 0.5f, hoverY, 2.2f);
         yield return new WaitForSeconds(0.6f);
 
-        // Ya en pantalla, habla él. Recién después ataca.
         yield return PlayMoment(momentAfterEntrance);
         yield return new WaitForSeconds(0.6f);
 
         BeginPhase();
     }
 
-    /// <summary>Dispara un momento de diálogo y espera a que termine. Si ya
-    /// salió en esta partida (o no hay diálogo en la escena), sigue de largo.</summary>
     IEnumerator PlayMoment(string id)
     {
         if (string.IsNullOrEmpty(id)) yield break;
@@ -290,7 +229,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /// <summary>Se pone rojo un momento (el aviso) y tira bolas hacia el jugador.</summary>
     IEnumerator Volley(Phase p)
     {
         yield return Telegraph(0.45f);
@@ -309,7 +247,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /// <summary>Cruza la arena de punta a punta soltando bombas.</summary>
     IEnumerator BombRun(Phase p)
     {
         bool fromLeft = transform.position.x > (leftX + rightX) * 0.5f;
@@ -330,8 +267,7 @@ public class BossController : MonoBehaviour
                 if (bombPrefab != null)
                 {
                     BossShot b = Instantiate(bombPrefab, Muzzle(), Quaternion.identity);
-                    // Sale con un poquito de la velocidad del jefe: cae en
-                    // diagonal suave, no a plomo.
+
                     b.Launch(new Vector2(Mathf.Sign(endXRun - startXRun) * 0.6f, 0f));
                 }
             }
@@ -339,7 +275,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /// <summary>Se recalentó: baja, abre el núcleo y prende la consola.</summary>
     void Stun()
     {
         StopAllCoroutines();
@@ -361,7 +296,6 @@ public class BossController : MonoBehaviour
         yield return PlayFrames(0, stunnedFrame, 0.12f);
         ConsoleOn(true);
 
-        // Mientras espera, el núcleo chisporrotea.
         while (state == State.Stunned)
         {
             if (body != null) body.color = Random.value < 0.5f ? Color.white : new Color(1f, 0.85f, 0.7f);
@@ -369,7 +303,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    /// <summary>Lo llama la consola al resolverse.</summary>
     void OnConsoleSolved()
     {
         if (state != State.Stunned) return;
@@ -381,7 +314,6 @@ public class BossController : MonoBehaviour
         phase++;
         if (phase >= phases.Length)
         {
-            // El último tramo lo rompen los golpes del while, no la consola.
             StartCoroutine(Defeat());
             return;
         }
@@ -390,7 +322,6 @@ public class BossController : MonoBehaviour
         StartCoroutine(Recover());
     }
 
-    /// <summary>Le pegaste: se sacude, cierra el núcleo y vuelve a subir.</summary>
     IEnumerator Recover()
     {
         state = State.Hurt;
@@ -398,7 +329,6 @@ public class BossController : MonoBehaviour
         if (bar != null)
             bar.SetStatus(left == 1 ? "¡Le rompiste otro tramo! Le queda uno." : "¡Le rompiste un tramo! Le quedan " + left + ".");
 
-        // De premio, los corazones llenos: la fase que viene es más difícil.
         if (playerHealth != null) playerHealth.Heal(playerHealth.maxHealth);
 
         yield return Shake(0.6f, 0.08f);
@@ -415,8 +345,6 @@ public class BossController : MonoBehaviour
         if (PlayerHealth.RespawnOverride == (System.Action<PlayerHealth>)OnPlayerDied)
             PlayerHealth.RespawnOverride = null;
 
-        // Cada renglón que imprimió el programa es un golpe de verdad: una
-        // vuelta del while, una sacudida. Si no, el bucle sería solo texto.
         TerminalChallenge last = phases[phases.Length - 1].challenge;
         if (last != null && !string.IsNullOrEmpty(last.expectedOutput))
         {
@@ -436,13 +364,11 @@ public class BossController : MonoBehaviour
 
         yield return Shake(1.2f, 0.12f);
 
-        // Se abre del todo y se viene abajo.
         if (bodyCollider != null) bodyCollider.enabled = false;
         StartCoroutine(PlayFrames(stunnedFrame, openFrames.Length - 1, 0.12f));
-        // (abierta, la caja cuelga ~1 unidad por debajo de su centro)
+
         yield return MoveTo(transform.position.x, groundY + 1.05f, 2.5f);
 
-        // Se apaga.
         float t = 0f;
         while (t < 1f)
         {
@@ -466,10 +392,6 @@ public class BossController : MonoBehaviour
         if (bar != null) bar.Hide();
     }
 
-    /// <summary>
-    /// El jugador se quedó sin corazones en la pelea: reaparece en la arena y
-    /// esta fase empieza de nuevo. Las fases ya ganadas siguen ganadas.
-    /// </summary>
     void OnPlayerDied(PlayerHealth health)
     {
         StopAllCoroutines();
@@ -497,8 +419,6 @@ public class BossController : MonoBehaviour
         BeginPhase();
     }
 
-    // ------------------------------------------------------------ ayudas
-
     void ConsoleOn(bool on)
     {
         if (console != null)
@@ -507,13 +427,11 @@ public class BossController : MonoBehaviour
             console.enabled = on;
             if (!on && console.promptIndicator != null) console.promptIndicator.SetActive(false);
         }
-        // Apagada se ve apagada: si la pantalla brillara todo el tiempo, el
-        // jugador iría a la consola cuando no sirve.
+
         if (consoleScreen != null) consoleScreen.color = on ? Color.white : new Color(0.3f, 0.3f, 0.38f, 1f);
         if (consoleFlipbook != null) consoleFlipbook.enabled = on;
     }
 
-    /// <summary>De dónde salen los disparos: la panza de la caja.</summary>
     Vector2 Muzzle()
     {
         return (Vector2)transform.position + Vector2.down * 0.62f;
@@ -530,7 +448,6 @@ public class BossController : MonoBehaviour
         transform.position = target;
     }
 
-    /// <summary>El aviso antes de atacar: titila en rojo. Es lo que lo hace esquivable.</summary>
     IEnumerator Telegraph(float duration)
     {
         float t = 0f;
@@ -566,7 +483,6 @@ public class BossController : MonoBehaviour
         body.color = Color.white;
     }
 
-    /// <summary>Pasa por los cuadros de openFrames de 'from' a 'to' (para adelante o para atrás).</summary>
     IEnumerator PlayFrames(int from, int to, float frameTime)
     {
         if (body == null || openFrames == null || openFrames.Length == 0) yield break;
@@ -578,11 +494,10 @@ public class BossController : MonoBehaviour
             if (i == to) break;
             yield return new WaitForSeconds(frameTime);
         }
-        // Cerrado del todo, vuelve a la animación de vuelo.
+
         if (to == 0) customFrames = false;
     }
 
-    /// <summary>Los propulsores (idle) y un vaivén suave mientras vuela.</summary>
     void Animate()
     {
         if (body == null) return;

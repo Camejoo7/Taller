@@ -1,16 +1,9 @@
 using UnityEngine;
 
-/// <summary>
-/// Hace temblar un objeto de costado y le cambia un poco el ancho, como un
-/// reflejo sobre el agua. Solo toca la posición local y la escala, nunca el
-/// color: así puede convivir con ZoneBackdrop o GlowFlicker en el mismo objeto.
-/// </summary>
 public class Wobble : MonoBehaviour
 {
-    [Tooltip("Cuánto se corre de costado, en unidades.")]
     public float amount = 0.04f;
 
-    [Tooltip("Cuánto cambia el ancho (0,2 = ±20%).")]
     public float stretch = 0.2f;
 
     public float speed = 1.5f;

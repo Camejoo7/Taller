@@ -1,6 +1,3 @@
-// Lo mismo que "Sprite Glow (Aditivo)", pero para sistemas de partículas: el
-// color sale solo del color del vértice (las partículas no tienen
-// unity_SpriteColor). Luciérnagas, polvo, chispas.
 Shader "CodeBreak/Particle Glow (Aditivo)"
 {
     Properties

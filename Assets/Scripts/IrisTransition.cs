@@ -3,20 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// Pasaje entre escenas con un círculo: la pantalla se cierra en un círculo
-/// negro que se achica sobre el jugador, carga la escena siguiente y se abre
-/// otra vez desde el jugador nuevo.
-///
-/// Se arma sola en runtime (no hay que poner nada en la escena) y sobrevive al
-/// cambio de escena con DontDestroyOnLoad. El círculo es una imagen negra con
-/// un agujero redondo, rodeada de cuatro paneles negros que tapan el resto:
-/// achicar la imagen achica el agujero y los paneles la siguen.
-/// Todo en tiempo real, por si se sale con el juego congelado.
-/// </summary>
 public class IrisTransition : MonoBehaviour
 {
-    /// <summary>Mientras hay un círculo en curso. El fundido viejo lo mira para no taparlo.</summary>
     public static bool Active { get; private set; }
 
     const float CloseTime = 0.9f;
@@ -29,7 +17,6 @@ public class IrisTransition : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetOnPlay() { Active = false; }
 
-    /// <summary>Cierra sobre <paramref name="focus"/>, carga la escena y abre sobre el jugador nuevo.</summary>
     public static void LoadScene(string sceneName, Transform focus)
     {
         if (Active) return;
@@ -58,12 +45,11 @@ public class IrisTransition : MonoBehaviour
 
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneName);
-        yield return null;   // que la escena nueva haga su Awake/Start
+        yield return null;
 
         PlayerMovement player = FindFirstObjectByType<PlayerMovement>();
         target = player != null ? player.transform : null;
 
-        // Un cuadro más para que la cámara se acomode sobre el jugador.
         yield return null;
 
         max = MaxRadius();
@@ -83,14 +69,12 @@ public class IrisTransition : MonoBehaviour
         return x * x * (3f - 2f * x);
     }
 
-    /// <summary>Dónde está el foco en la pantalla, en píxeles. Sin foco, el centro.</summary>
     Vector2 FocusOnScreen()
     {
         Camera cam = Camera.main;
         if (target == null || cam == null)
             return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 
-        // El centro del dibujo y no los pies del personaje.
         Vector3 world = target.position;
         SpriteRenderer sr = target.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) world = sr.bounds.center;
@@ -98,7 +82,6 @@ public class IrisTransition : MonoBehaviour
         return cam.WorldToScreenPoint(world);
     }
 
-    /// <summary>Radio que deja toda la pantalla a la vista desde el foco.</summary>
     float MaxRadius()
     {
         Vector2 c = FocusOnScreen();
@@ -113,28 +96,26 @@ public class IrisTransition : MonoBehaviour
         iris.sizeDelta = Vector2.one * Mathf.Max(0f, radius * 2f);
     }
 
-    // ------------------------------------------------------------ armado
-
     void Build()
     {
         Canvas canvas = gameObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 1000;   // por encima de todo, también de la pausa
+        canvas.sortingOrder = 1000;
 
         GameObject irisGO = new GameObject("Circulo", typeof(RectTransform), typeof(RawImage));
         iris = (RectTransform)irisGO.transform;
         iris.SetParent(transform, false);
-        iris.anchorMin = iris.anchorMax = Vector2.zero;   // posición en píxeles desde abajo a la izquierda
+        iris.anchorMin = iris.anchorMax = Vector2.zero;
         iris.pivot = new Vector2(0.5f, 0.5f);
         RawImage img = irisGO.GetComponent<RawImage>();
         img.texture = HoleTexture();
-        img.raycastTarget = true;   // que no se pueda clickear nada a través
+        img.raycastTarget = true;
 
         float big = 20000f;
-        // Izquierda y derecha: altísimos, tapan también las esquinas.
+
         Panel(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(big, big));
         Panel(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, 0.5f), new Vector2(big, big));
-        // Arriba y abajo: del ancho del círculo.
+
         Panel(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 0f), new Vector2(0f, big));
         Panel(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 1f), new Vector2(0f, big));
 
@@ -154,7 +135,6 @@ public class IrisTransition : MonoBehaviour
         go.GetComponent<Image>().color = Color.black;
     }
 
-    /// <summary>Negro con un círculo transparente que toca los bordes, con el borde suavizado.</summary>
     static Texture2D HoleTexture()
     {
         const int size = 256;

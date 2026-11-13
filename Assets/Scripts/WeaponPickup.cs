@@ -1,15 +1,8 @@
 using UnityEngine;
 
-/// <summary>
-/// El arma tirada en la puerta del garage. Flota de arriba abajo para que se
-/// note que es algo que se puede agarrar y no parte del decorado.
-/// Al tocarla, el jugador queda armado y (si hay diálogo cargado) Kira explica
-/// para qué sirve.
-/// </summary>
 public class WeaponPickup : MonoBehaviour
 {
     [Header("Partes")]
-    [Tooltip("El dibujo del arma. Flota; el collider se queda quieto.")]
     public Transform visual;
 
     [Header("Flotación")]
@@ -17,10 +10,8 @@ public class WeaponPickup : MonoBehaviour
     public float floatSpeed = 2f;
 
     [Header("Diálogo al agarrarla")]
-    [Tooltip("Opcional. Si está puesto, Kira habla cuando el jugador la levanta.")]
     public DialogueManager dialogueManager;
 
-    [Tooltip("El id del momento que dispara (2.2). Si está vacío, usa el segmento de abajo.")]
     public string momentOnPickup;
 
     public DialogueSegment segmentOnPickup = DialogueSegment.Mid;

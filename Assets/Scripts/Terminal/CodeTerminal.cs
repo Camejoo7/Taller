@@ -3,47 +3,25 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Una consola de NEXCORP plantada en el nivel. El jugador se le acerca, aprieta
-/// E, y escribe con el teclado de verdad la parte que falta de una línea de
-/// Python. Al acertar, la línea se ejecuta y **algo pasa en el mundo** — ese
-/// enganche (<see cref="onSolved"/>) es el punto de la mecánica: si acertar
-/// solo mostrara un cartel de "¡Correcto!", esto sería un formulario con
-/// pixeles encima.
-///
-/// Escribir en vez de elegir entre opciones cambia qué se evalúa: no es
-/// reconocer la respuesta entre cuatro, es acordarse de ella. Y el costo es que
-/// un error de tipeo se siente como un error de concepto, por eso el hueco es
-/// corto (una palabra) y los errores previstos tienen explicación propia.
-/// </summary>
 public class CodeTerminal : MonoBehaviour
 {
     [Header("Contenido")]
     public TerminalChallenge challenge;
 
     [Header("Pantalla")]
-    [Tooltip("Si se deja vacío, busca una en la escena.")]
     public CodeTerminalUI ui;
 
     [Header("Acercarse")]
-    [Tooltip("A qué distancia aparece el cartelito de 'E'.")]
     public float activationDistance = 0.9f;
 
-    [Tooltip("Opcional: el cartel que dice que se puede usar. Se prende y apaga solo.")]
     public GameObject promptIndicator;
 
     [Header("Qué pasa al resolverla")]
-    [Tooltip("Acá se engancha lo que tiene que pasar en el mundo: abrir una " +
-             "puerta, prender una luz, extender un puente.")]
     public UnityEvent onSolved;
 
-    [Tooltip("Se puede volver a usar después de resuelta.")]
     public bool reusable = false;
 
     [Header("Jefe")]
-    [Tooltip("Congela el juego mientras la terminal está abierta. Es para la del " +
-             "jefe: si hubiera que escribir bajo fuego, perdería el que escribe " +
-             "lento, no el que no sabe Python.")]
     public bool freezeTime = false;
 
     [Header("Tiempos")]
@@ -54,12 +32,8 @@ public class CodeTerminal : MonoBehaviour
     private PlayerMovement movement;
     private MonoBehaviour shooting;
 
-    /// <summary>Si hay alguna terminal abierta. Lo mira el diálogo: un
-    /// comentario de Kira se corta cuando el jugador abre una.</summary>
     public static bool AnyOpen { get; private set; }
 
-    /// <summary>Cuadro en que se cerró la última terminal. La pausa lo mira:
-    /// el ESC que cierra la terminal no tiene que abrir también la pausa.</summary>
     public static int ClosedFrame { get; private set; } = -1;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -79,8 +53,6 @@ public class CodeTerminal : MonoBehaviour
 
     void Start()
     {
-        // El hijo "Visual" del jugador también tiene el tag Player, así que
-        // buscamos el componente y subimos a su GameObject.
         movement = FindFirstObjectByType<PlayerMovement>();
         if (movement != null)
         {
@@ -91,19 +63,14 @@ public class CodeTerminal : MonoBehaviour
         if (ui == null) ui = FindFirstObjectByType<CodeTerminalUI>();
         if (promptIndicator != null) promptIndicator.SetActive(false);
 
-        // Sin ejercicio la consola no reacciona a nada. Con el prefab es el
-        // olvido más fácil de cometer, así que mejor que se note.
         if (challenge == null)
             Debug.LogWarning("CodeTerminal: '" + name + "' no tiene TerminalChallenge asignado.", this);
     }
 
     void Update()
     {
-        // Con el libro de Kira abierto, las teclas son del libro: A y D pasan
-        // de página y ESC lo cierra sin cerrar también la terminal.
         if (KiraBook.BlocksInput) return;
 
-        // Con el juego en pausa no se abre ninguna consola.
         if (PauseMenu.IsPaused) return;
 
         if (open)
@@ -125,15 +92,11 @@ public class CodeTerminal : MonoBehaviour
         if (promptIndicator != null && promptIndicator.activeSelf != near)
             promptIndicator.SetActive(near);
 
-        // Con el jugador frenado (Kira está hablando) la consola no se abre:
-        // al cerrarse lo soltaría en mitad de la escena.
         bool free = movement == null || movement.CanMove;
 
         if (near && free && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
             OpenTerminal();
     }
-
-    // ------------------------------------------------------------- apertura
 
     void OpenTerminal()
     {
@@ -148,8 +111,7 @@ public class CodeTerminal : MonoBehaviour
         busy = false;
         typed = "";
         attempts = 0;
-        // Tiempo real: con freezeTime el reloj del juego se queda quieto, y el
-        // registro igual tiene que saber cuánto tardó.
+
         startedAt = Time.unscaledTime;
 
         record = new QuestionAttempt();
@@ -158,12 +120,9 @@ public class CodeTerminal : MonoBehaviour
         record.stageNumber = challenge.stageNumber;
         record.question = challenge.prompt;
 
-        // Si el alumno abre el libro desde acá, se abre en la página de este tema.
         KiraBook.SetContext(challenge.concept);
         bookOpensAtStart = KiraBook.TimesOpened;
 
-        // Sin esto, las teclas A y D que el jugador escribe también lo hacen
-        // caminar, y el click del mouse le dispara a la pantalla.
         if (movement != null) movement.SetCanMove(false);
         if (shooting != null) shooting.enabled = false;
         if (promptIndicator != null) promptIndicator.SetActive(false);
@@ -202,18 +161,13 @@ public class CodeTerminal : MonoBehaviour
             Keyboard.current.onTextInput -= OnTextInput;
         if (open) AnyOpen = false;
 
-        // Nunca dejar el juego congelado si la consola desaparece abierta.
         if (open && freezeTime) Time.timeScale = timeScaleBefore;
     }
-
-    // --------------------------------------------------------------- tecleo
 
     void OnTextInput(char c)
     {
         if (!open || busy || KiraBook.BlocksInput) return;
 
-        // Los de control (enter, backspace, tab) llegan por acá también y no son
-        // texto: se manejan como teclas más abajo.
         if (c < ' ') return;
         if (typed.Length >= 24) return;
 
@@ -260,8 +214,6 @@ public class CodeTerminal : MonoBehaviour
         }
     }
 
-    // ------------------------------------------------------------ ejecución
-
     IEnumerator Submit()
     {
         busy = true;
@@ -270,15 +222,11 @@ public class CodeTerminal : MonoBehaviour
         string answer = typed.Trim();
         ui.SetTyped(challenge, typed, false);
 
-        // El eco de la línea, como cualquier consola. Un programa de varias
-        // líneas ya está entero en pantalla: repetirlo taparía la salida.
         if (challenge.IsMultiLine)
             ui.PushLine("> ejecutando...", ui.CodeColor);
         else
             ui.PushLine(">>> " + challenge.BuildLine(answer), ui.CodeColor);
 
-        // Todas las esperas de la terminal van en tiempo real: con freezeTime
-        // el juego está congelado, y la terminal tiene que seguir andando.
         yield return new WaitForSecondsRealtime(0.25f);
 
         if (challenge.IsCorrect(answer))
@@ -293,8 +241,6 @@ public class CodeTerminal : MonoBehaviour
     {
         solved = true;
 
-        // La salida del programa, tecleada. Que lo que escribiste IMPRIMA algo
-        // es lo que convierte el ejercicio en programar.
         if (!string.IsNullOrEmpty(challenge.expectedOutput))
             yield return StartCoroutine(ui.TypeLine(challenge.expectedOutput, ui.OutputColor, outputCharDelay));
 
@@ -308,14 +254,10 @@ public class CodeTerminal : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(pauseAfterSuccess);
 
-        // Si abrió el libro justo al acertar, se cierra la terminal cuando lo
-        // cierre: si no, los dos se pisan al devolverle el control al jugador.
         while (KiraBook.BlocksInput) yield return null;
 
         CloseTerminal();
 
-        // Lo último: que el mundo reaccione. La puerta se abre con el jugador
-        // mirando, no detrás de la pantalla de la terminal.
         if (onSolved != null) onSolved.Invoke();
     }
 
@@ -331,8 +273,6 @@ public class CodeTerminal : MonoBehaviour
             ? known.kiraSays
             : challenge.fallbackKiraSays;
 
-        // A partir del segundo error, Kira manda al libro. Si no se lo dice
-        // nadie, el riesgo es que el libro exista y ningún alumno lo abra.
         if (attempts >= 2)
         {
             string hint = KiraBook.HintFor(challenge.concept);
@@ -347,8 +287,6 @@ public class CodeTerminal : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.3f);
 
-        // Le dejamos lo que escribió para que lo corrija en vez de rehacerlo
-        // desde cero: equivocarse en una letra no debería costar la línea entera.
         ui.SetTyped(challenge, typed, true);
     }
 }

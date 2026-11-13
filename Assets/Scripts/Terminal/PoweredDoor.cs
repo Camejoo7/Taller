@@ -1,52 +1,30 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Una puerta blindada que solo se abre cuando algo del nivel la alimenta —
-/// normalmente una <see cref="CodeTerminal"/> resuelta.
-///
-/// Existe para que acertar tenga consecuencia física. Un cartel de "¡Correcto!"
-/// se puede hacer en cualquier página; una puerta de media tonelada que
-/// tiembla, rechina y se mete en el techo mientras el jugador la mira, no.
-/// </summary>
 public class PoweredDoor : MonoBehaviour
 {
     [Header("Apertura")]
-    [Tooltip("Los frames del postigo abriéndose, del cerrado al abierto. Si se " +
-             "cargan, la puerta se abre animando el dibujo. Es lo que corresponde " +
-             "cuando no hay techo donde meterla.")]
     public Sprite[] openFrames;
 
-    [Tooltip("Cuánto se corre al abrirse, relativo a donde está ahora. Dejar en " +
-             "cero si se usan los frames.")]
     public Vector2 openOffset = new Vector2(0f, 0.72f);
 
     public float openDuration = 1.1f;
 
-    [Tooltip("Tiembla un momento antes de arrancar, como si forzara los motores. " +
-             "Sin esto la puerta se desliza sola y parece una animación de CSS.")]
     public float shakeDuration = 0.45f;
 
     public float shakeAmount = 0.02f;
 
     [Header("Cerrarse")]
-    [Tooltip("Arranca abierta, sin bloquear. Es para la puerta de la arena del " +
-             "jefe, que se cierra de golpe detrás del jugador (Close).")]
     public bool startOpen = false;
 
-    [Tooltip("Lo que tarda en cerrarse. Corto: es un portazo.")]
     public float closeDuration = 0.25f;
 
     [Header("Luces")]
-    [Tooltip("Opcional: sprites que cambian de color cuando la puerta se habilita.")]
     public SpriteRenderer[] indicators;
 
     public Color lockedColor = new Color(1f, 0.25f, 0.25f, 1f);
     public Color unlockedColor = new Color(0.2f, 1f, 0.55f, 1f);
 
-    [Tooltip("Apagarlas cuando termina de abrirse. Hace falta si la puerta se " +
-             "retrae del todo: si no, las luces quedan flotando en el aire " +
-             "sobre una puerta que ya no está.")]
     public bool hideIndicatorsWhenOpen = true;
 
     private Collider2D blocker;
@@ -65,7 +43,6 @@ public class PoweredDoor : MonoBehaviour
         if (startOpen) ShowOpen();
     }
 
-    /// <summary>Queda abierta de una, sin animación.</summary>
     void ShowOpen()
     {
         transform.position = closedPos + (Vector3)openOffset;
@@ -78,7 +55,6 @@ public class PoweredDoor : MonoBehaviour
                 if (indicators[i] != null) indicators[i].enabled = false;
     }
 
-    /// <summary>Se cierra de golpe (la animación de abrir, al revés y rápida).</summary>
     public void Close()
     {
         StopAllCoroutines();
@@ -88,7 +64,6 @@ public class PoweredDoor : MonoBehaviour
 
     IEnumerator CloseRoutine()
     {
-        // Bloquea desde el primer cuadro: es un portazo, no se pasa por debajo.
         if (blocker != null) blocker.enabled = true;
         if (indicators != null)
             for (int i = 0; i < indicators.Length; i++)
@@ -114,7 +89,6 @@ public class PoweredDoor : MonoBehaviour
         transform.position = closedPos;
         if (sprite != null && closedSprite != null) sprite.sprite = closedSprite;
 
-        // El golpe: un sacudón corto, como algo pesado que llega al tope.
         t = 0f;
         while (t < 0.2f)
         {
@@ -125,7 +99,6 @@ public class PoweredDoor : MonoBehaviour
         transform.position = closedPos;
     }
 
-    /// <summary>Lo que engancha el <c>onSolved</c> de la terminal.</summary>
     public void Open()
     {
         if (opening) return;
@@ -150,7 +123,6 @@ public class PoweredDoor : MonoBehaviour
     {
         Tint(unlockedColor);
 
-        // Forcejeo: los motores arrancan antes de que la chapa ceda.
         float t = 0f;
         while (t < shakeDuration)
         {
@@ -168,8 +140,6 @@ public class PoweredDoor : MonoBehaviour
             t += Time.deltaTime;
             float p = Mathf.Clamp01(t / openDuration);
 
-            // SmoothStep: arranca pesada y frena al final, que es como se mueve
-            // algo con masa. Lineal parecería un panel deslizándose.
             transform.position = Vector3.Lerp(closedPos, target, Mathf.SmoothStep(0f, 1f, p));
 
             if (animar && sprite != null)
@@ -185,8 +155,6 @@ public class PoweredDoor : MonoBehaviour
         if (animar && sprite != null && openFrames[openFrames.Length - 1] != null)
             sprite.sprite = openFrames[openFrames.Length - 1];
 
-        // Recién acá deja pasar: si se desactiva al principio, el jugador puede
-        // cruzar a través de la puerta mientras todavía se está abriendo.
         if (blocker != null) blocker.enabled = false;
 
         if (hideIndicatorsWhenOpen && indicators != null)

@@ -2,15 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// Que el menú se pueda usar entero con teclado: arranca con un botón ya
-/// marcado (así las flechas y Enter funcionan desde el primer momento) y
-/// nunca se queda sin selección. Por defecto, un clic en el fondo deselecciona
-/// todo y el teclado deja de responder hasta que agarrás el mouse otra vez.
-/// </summary>
 public class MenuSelection : MonoBehaviour
 {
-    [Tooltip("El botón marcado al abrir el menú.")]
     public Selectable first;
 
     private GameObject last;

@@ -2,17 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Arma y dirige un encuentro Code Blaster: hace aparecer el dron, le pone
-/// alrededor los fragmentos de codigo de la pregunta girando en orbita, y
-/// decide que pasa cuando el jugador le pega a uno.
-///
-/// Todo el contenido (la pregunta, las opciones, cual es la correcta, lo que
-/// dice Kira) sale del CodeBlasterEncounter, no de este script: por eso el
-/// mismo componente sirve para las 6 stages cambiando solo el asset.
-///
-/// Se dispara al entrar el jugador en el trigger de este mismo objeto.
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class CodeBlasterFight : MonoBehaviour
 {
@@ -20,30 +9,22 @@ public class CodeBlasterFight : MonoBehaviour
     public CodeBlasterEncounter encounter;
 
     [Header("Referencias de escena")]
-    [Tooltip("Donde queda flotando el dron durante la pelea.")]
     public Transform dronePoint;
 
     public GameObject fragmentPrefab;
     public CodeBlasterUI ui;
     public CameraFollow cameraFollow;
 
-    [Tooltip("Opcional. Si está puesto, la pelea espera a que Kira termine de " +
-             "hablar antes de arrancar: si no, el cartel de la pregunta y el " +
-             "cuadro de diálogo se pisan en pantalla.")]
     public DialogueManager dialogueManager;
 
     [Header("Cámara")]
-    [Tooltip("Cuánto se aleja la cámara durante la pelea. 0 = no tocarla.")]
     public float combatZoom = 2.6f;
 
     [Header("Tiempos")]
-    [Tooltip("Segundos sin poder disparar después de errarle a un fragmento.")]
     public float wrongLockTime = 1f;
 
-    [Tooltip("Cuánto queda el comentario de Kira DESPUÉS de terminar de escribirse.")]
     public float feedbackTime = 1.5f;
 
-    [Tooltip("Cuánto se queda la explicación en pantalla al acertar, ya escrita.")]
     public float victoryTime = 1.8f;
 
     private const string GenericWrong = "Ese no. Leelo de nuevo, con calma.";
@@ -63,8 +44,6 @@ public class CodeBlasterFight : MonoBehaviour
     private float answerTimer;
     private Vector3 droneBasePos;
 
-    // Registro para el informe: cuantas respuestas dio, cuales fueron las
-    // equivocadas y cuanto tardo. Se arranca al empezar la pelea.
     private int answersGiven;
     private float questionStartTime;
     private List<string> wrongChoices = new List<string>();
@@ -78,7 +57,6 @@ public class CodeBlasterFight : MonoBehaviour
 
         triggered = true;
 
-        // Si Kira está explicando algo, la pelea espera su turno.
         if (dialogueManager != null && dialogueManager.IsActive)
         {
             pendingStart = true;
@@ -138,9 +116,6 @@ public class CodeBlasterFight : MonoBehaviour
 
         drone = Instantiate(encounter.enemyPrefab, droneBasePos, Quaternion.identity);
 
-        // El dron de la pelea se queda flotando en su lugar. Si persiguiera al
-        // jugador, los fragmentos girando a su alrededor se volverian imposibles
-        // de leer y de apuntar.
         EnemyAI ai = drone.GetComponent<EnemyAI>();
         if (ai != null) ai.enabled = false;
 
@@ -153,9 +128,6 @@ public class CodeBlasterFight : MonoBehaviour
         string[] options = encounter.question.options;
         int correct = encounter.question.correctIndex;
 
-        // Mezclamos en que lugar de la orbita cae cada opcion. Si no, la correcta
-        // siempre estaria en la misma posicion y el jugador podria acertar de
-        // memoria en vez de por leer el codigo, que es justo lo que queremos medir.
         List<int> order = new List<int>();
         for (int i = 0; i < options.Length; i++) order.Add(i);
         for (int i = order.Count - 1; i > 0; i--)
@@ -214,10 +186,6 @@ public class CodeBlasterFight : MonoBehaviour
         drone.transform.position = new Vector3(droneBasePos.x, y, droneBasePos.z);
     }
 
-    /// <summary>
-    /// Reparte los fragmentos en una orbita ovalada alrededor del dron. Es
-    /// ovalada y no redonda porque la camara muestra mucho mas ancho que alto.
-    /// </summary>
     void PlaceFragments()
     {
         if (fragments.Count == 0) return;
@@ -260,7 +228,6 @@ public class CodeBlasterFight : MonoBehaviour
             ui.ShowFeedback(line + "  (+" + record.Points + ")");
         }
 
-        // Los demas fragmentos se van; queda solo el correcto a la vista.
         foreach (CodeBlasterTarget other in fragments)
             if (other != null && other != target)
                 Destroy(other.gameObject);
@@ -286,8 +253,6 @@ public class CodeBlasterFight : MonoBehaviour
 
         ApplyWrongDamage();
 
-        // Pequeño castigo: unos segundos sin poder disparar, para que no se
-        // pueda acertar a fuerza de dispararle a todo.
         if (shooting != null)
             shooting.BlockFor(wrongLockTime);
 
@@ -319,11 +284,6 @@ public class CodeBlasterFight : MonoBehaviour
         acceptingAnswers = true;
     }
 
-    /// <summary>
-    /// Espera a que Kira termine de escribir y recien ahi cuenta el tiempo en
-    /// pantalla. Si contaramos desde el principio, una frase larga se cortaria
-    /// a la mitad — que es justo lo que pasaba antes.
-    /// </summary>
     IEnumerator WaitForFeedback(float holdAfterTyping)
     {
         if (ui != null)
@@ -333,11 +293,6 @@ public class CodeBlasterFight : MonoBehaviour
         yield return new WaitForSeconds(holdAfterTyping);
     }
 
-    /// <summary>
-    /// Guarda cómo le fue en esta pregunta. Se llama una sola vez, al acertar:
-    /// recién ahí se sabe cuántos intentos le llevó, que es el dato que después
-    /// separa al que sabía del que fue descartando.
-    /// </summary>
     QuestionAttempt RecordResult()
     {
         QuestionAttempt record = new QuestionAttempt();
@@ -355,10 +310,6 @@ public class CodeBlasterFight : MonoBehaviour
         return record;
     }
 
-    /// <summary>
-    /// Le pega al jugador si hay un sistema de vida puesto. Hoy no existe
-    /// ninguno, asi que no pasa nada; el dia que exista, esto ya esta conectado.
-    /// </summary>
     void ApplyWrongDamage()
     {
         if (player == null || encounter.damageOnWrong <= 0) return;

@@ -1,65 +1,35 @@
 using UnityEngine;
 
-/// <summary>
-/// Dron enemigo de NEXCORP. No se queda encima del jugador dándole sin parar:
-/// se acerca, embiste de golpe, y si pega (o si falla) se aleja un poco antes
-/// de volver a intentarlo. Ese respiro es lo que hace que se pueda esquivar y
-/// contraatacar en vez de ser un forcejeo.
-///
-/// Es un bicho volador, así que no usa gravedad: se mueve a mano con MovePosition.
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class DroneEnemy : MonoBehaviour
 {
     enum State { Idle, Approach, Lunge, Retreat }
 
     [Header("Distancias")]
-    [Tooltip("A partir de acá el dron se despierta y persigue.")]
     public float activationRange = 6f;
 
-    [Tooltip("A partir de acá embiste.")]
     public float lungeRange = 1.6f;
 
     [Header("Velocidades")]
     public float approachSpeed = 1.3f;
 
-    [Tooltip("Tiene que quedar POR DEBAJO de PlayerMovement.speed, que en este " +
-             "proyecto es 3 — OJO que el valor por defecto del script dice 5, " +
-             "pero el serializado del prefab es 3. Si embiste más rápido que " +
-             "eso no hay forma de zafar corriendo y la única salida es saltar " +
-             "de memoria.")]
     public float lungeSpeed = 2.5f;
 
     public float retreatSpeed = 3f;
 
     [Header("Tiempos")]
-    [Tooltip("Avanza lungeSpeed × esto. Tiene que alcanzar para TOCAR a un " +
-             "jugador quieto: con lungeRange 1,6 y los radios de los dos " +
-             "colliders (0,19 + 0,125) hay que recorrer 1,285. A 2,5 × 0,55 " +
-             "da 1,375, que llega justo. Si se baja de ahí el dron no pega " +
-             "nunca y deja de ser una amenaza.")]
     public float lungeDuration = 0.55f;
 
-    [Tooltip("Cuánto se aleja después de embestir. Es el respiro del jugador " +
-             "para disparar o correrse: si se baja mucho, el dron se pega encima " +
-             "y no hay forma de reaccionar.")]
     public float retreatDuration = 1.3f;
 
-    [Tooltip("Instante quieto antes de tirarse, que es el aviso para esquivar. " +
-             "Una persona tarda ~0,25 s en reaccionar, así que de acá hay que " +
-             "descontar eso para saber cuánto tiempo útil queda de verdad.")]
     public float pauseBeforeLunge = 0.6f;
 
-    [Tooltip("De qué color se pone mientras avisa. Que el dron solo se frene " +
-             "no alcanza como aviso: a este tamaño no se nota, y el ataque " +
-             "parece salir de la nada.")]
     public Color telegraphColor = new Color(1f, 0.35f, 0.3f, 1f);
 
     [Header("Daño")]
     public int contactDamage = 1;
 
     [Header("Movimiento")]
-    [Tooltip("Cuánto flota arriba y abajo mientras se acerca.")]
     public float bobAmount = 0.1f;
     public float bobSpeed = 3f;
 
@@ -84,9 +54,6 @@ public class DroneEnemy : MonoBehaviour
         sprite = GetComponentInChildren<SpriteRenderer>();
         if (sprite != null) baseColor = sprite.color;
 
-        // El hijo "Visual" del jugador también tiene el tag Player, así que
-        // buscamos el componente y subimos a su GameObject en vez de confiar
-        // en lo que devuelva FindWithTag.
         PlayerMovement pm = FindFirstObjectByType<PlayerMovement>();
         if (pm != null)
         {
@@ -106,11 +73,6 @@ public class DroneEnemy : MonoBehaviour
         float distance = Vector2.Distance(rb.position, player.position);
         FacePlayer();
 
-        // El jugador congelado está escribiendo en una terminal (o en medio de
-        // un diálogo) y no se puede defender: no se le ataca. El dron se
-        // aleja una vez y espera flotando hasta que vuelva a moverse. Sin
-        // esto, un alumno que tarda en escribir moría en la consola, con el
-        // teclado ocupado en Python (lo agarró la prueba de punta a punta).
         if (playerMovement != null && !playerMovement.CanMove)
         {
             if (state == State.Approach || state == State.Lunge) StartRetreat();
@@ -136,11 +98,6 @@ public class DroneEnemy : MonoBehaviour
         Telegraph();
     }
 
-    /// <summary>
-    /// Lo pinta mientras está por tirarse. Solo le toca el color durante el
-    /// aviso y un frame al salir: el resto del tiempo lo deja en paz para no
-    /// pisarle a <see cref="EnemyHealth"/> el parpadeo blanco del balazo.
-    /// </summary>
     void Telegraph()
     {
         if (sprite == null) return;
@@ -174,8 +131,6 @@ public class DroneEnemy : MonoBehaviour
 
         if (distance <= lungeRange)
         {
-            // Se queda un instante quieto antes de tirarse: ese aviso es lo que
-            // le da al jugador la chance de saltar o correrse.
             lungeDirection = ((Vector2)player.position - rb.position).normalized;
             state = State.Lunge;
             stateUntil = Time.time + lungeDuration + pauseBeforeLunge;
@@ -192,7 +147,6 @@ public class DroneEnemy : MonoBehaviour
 
     void TickLunge()
     {
-        // La pausa inicial: todavía no se mueve, solo avisa.
         if (Time.time < stateUntil - lungeDuration) return;
 
         if (Time.time >= stateUntil)
@@ -252,7 +206,7 @@ public class DroneEnemy : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         if (playerHealth == null || playerHealth.IsInvulnerable || playerHealth.IsDead) return;
-        if (playerMovement != null && !playerMovement.CanMove) return;   // escribiendo en una terminal
+        if (playerMovement != null && !playerMovement.CanMove) return;
 
         playerHealth.TakeDamageFrom(contactDamage, rb.position);
         StartRetreat();

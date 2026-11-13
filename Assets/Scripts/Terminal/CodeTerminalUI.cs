@@ -4,49 +4,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// La pantalla de la terminal. Se arma sola en runtime, así que alcanza con
-/// poner el componente en un GameObject vacío y asignarle la fuente y el sprite
-/// del monitor — no hay que montar un Canvas a mano para probarla en una escena
-/// nueva.
-///
-/// El look importa tanto como la mecánica acá: si esto parece un formulario,
-/// es un formulario. Por eso el texto va adentro de un monitor dibujado (pack
-/// "Consola"), el tubo se prende con el barrido vertical de un CRT de verdad,
-/// y acertar o errar deja un sello de ACCESS GRANTED / DENIED en el vidrio.
-/// </summary>
 public class CodeTerminalUI : MonoBehaviour
 {
     [Header("Fuente")]
-    [Tooltip("PressStart2P: es la del juego y tiene acentos y signos de " +
-             "apertura, que la Cyberpunk no tiene.")]
     public TMP_FontAsset font;
 
     [Header("El monitor")]
-    [Tooltip("El dibujo del monitor. Del pack: ASSETS/Consola/1 Monitor/. " +
-             "Si se deja vacío, cae a un marco dibujado por código.")]
     public Sprite monitorSprite;
 
-    [Tooltip("Alto del monitor en pixeles de canvas (referencia 1920x1080). " +
-             "El ancho sale solo del aspecto del sprite.\n" +
-             "1010 es 2.png a 5x exacto: el pixel art se ve nítido cuando la " +
-             "escala es entera, y borroneado cuando no.")]
     public float monitorHeight = 1010f;
 
-    [Tooltip("Dónde cae el vidrio DENTRO del sprite, en fracciones 0-1 " +
-             "(xMin, yMin, xMax, yMax) medidas desde abajo a la izquierda.\n" +
-             "Medidos sobre el pack:\n" +
-             "2.png = (0.046, 0.243, 0.956, 0.911)\n" +
-             "1.png = (0.032, 0.045, 0.972, 0.923)\n" +
-             "3.png = (0.135, 0.369, 0.888, 0.906)\n" +
-             "Si cambiás de sprite, cambiá estos cuatro números.")]
     public Vector4 glassRect = new Vector4(0.046f, 0.243f, 0.956f, 0.911f);
 
     [Header("Sellos")]
-    [Tooltip("ASSETS/Consola/3 Other/Access_granted.png")]
     public Sprite grantedSprite;
 
-    [Tooltip("ASSETS/Consola/3 Other/Access_denied.png")]
     public Sprite deniedSprite;
 
     [Header("Colores")]
@@ -57,8 +29,6 @@ public class CodeTerminalUI : MonoBehaviour
     public Color errorColor = new Color(1f, 0.33f, 0.33f, 1f);
     public Color kiraColor = new Color(0f, 1f, 1f, 1f);
 
-    // El layout de adentro está tuneado contra este tamaño y después se escala
-    // entero. Así cambiar monitorHeight no desacomoda nada.
     const float DesignWidth = 1154f;
     const float DesignHeight = 650f;
 
@@ -95,15 +65,13 @@ public class CodeTerminalUI : MonoBehaviour
         root.SetActive(false);
     }
 
-    // ---------------------------------------------------------------- armado
-
     void Build()
     {
         GameObject canvasGO = new GameObject("TerminalCanvas");
         canvasGO.transform.SetParent(transform, false);
         canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        // Por encima del HUD de corazones (que está en 40).
+
         canvas.sortingOrder = 90;
 
         CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
@@ -117,11 +85,9 @@ public class CodeTerminalUI : MonoBehaviour
         rootRect.SetParent(canvasGO.transform, false);
         Stretch(rootRect);
 
-        // Oscurecemos el mundo para que la pantalla sea lo único que importa.
         GameObject dim = NewImage("Dimmer", rootRect, new Color(0f, 0f, 0f, 0.78f));
         Stretch(dim.GetComponent<RectTransform>());
 
-        // ----- el mueble del monitor
         float aspect = monitorSprite != null
             ? monitorSprite.rect.width / monitorSprite.rect.height
             : DesignWidth / DesignHeight;
@@ -132,11 +98,9 @@ public class CodeTerminalUI : MonoBehaviour
         Center(monitor, new Vector2(monitorWidth, monitorHeight));
         Image monitorImage = monitorGO.GetComponent<Image>();
         monitorImage.sprite = monitorSprite;
-        // Sin sprite el mueble sobra: lo dejamos transparente y queda solo el
-        // vidrio, que es como se veía la terminal antes de tener el dibujo.
+
         if (monitorSprite == null) monitorImage.color = new Color(0f, 0f, 0f, 0f);
 
-        // ----- el vidrio, recortado adentro del dibujo
         GameObject glassGO = NewImage("Vidrio", monitor, screenColor);
         glass = glassGO.GetComponent<RectTransform>();
         glassImage = glassGO.GetComponent<Image>();
@@ -148,7 +112,6 @@ public class CodeTerminalUI : MonoBehaviour
         float glassWidth = monitorWidth * (glassRect.z - glassRect.x);
         glassHeight = monitorHeight * (glassRect.w - glassRect.y);
 
-        // Líneas de barrido del tubo. Es lo que más separa "monitor" de "div".
         GameObject scan = NewRawImage("Barrido", glass, ScanlineTexture());
         Stretch(scan.GetComponent<RectTransform>());
         RawImage scanRaw = scan.GetComponent<RawImage>();
@@ -156,34 +119,26 @@ public class CodeTerminalUI : MonoBehaviour
         scanRaw.uvRect = new Rect(0f, 0f, 1f, glassHeight / 3f);
         scanRaw.raycastTarget = false;
 
-        // La banda que recorre la pantalla de arriba a abajo: es el defecto de
-        // sincronismo de un CRT, y es lo que lo delata como tubo y no como LCD.
         GameObject rollGO = NewRawImage("Banda", glass, BandTexture());
         roll = rollGO.GetComponent<RectTransform>();
         roll.anchorMin = new Vector2(0f, 1f);
         roll.anchorMax = new Vector2(1f, 1f);
         roll.pivot = new Vector2(0.5f, 0.5f);
-        // Bien ancha y bien tenue: si se la ve como una franja, parece un error
-        // de dibujado en vez del tubo respirando.
+
         roll.sizeDelta = new Vector2(0f, glassHeight * 0.45f);
         rollGO.GetComponent<RawImage>().color = new Color(0.6f, 1f, 0.85f, 0.022f);
         rollGO.GetComponent<RawImage>().raycastTarget = false;
 
-        // Viñeta: el tubo es curvo, así que las esquinas pierden luz. Sin esto
-        // el vidrio se ve como un rectángulo plano pegado encima del dibujo.
         GameObject vig = NewRawImage("Vineta", glass, VignetteTexture());
         Stretch(vig.GetComponent<RectTransform>());
         RawImage vigRaw = vig.GetComponent<RawImage>();
         vigRaw.color = Color.white;
         vigRaw.raycastTarget = false;
 
-        // El tinte rojo del error va DEBAJO del texto: si va encima, el
-        // traceback — que es lo que hay que leer — queda lavado.
         GameObject flashGO = NewImage("Flash", glass, new Color(1f, 0.15f, 0.15f, 0f));
         Stretch(flashGO.GetComponent<RectTransform>());
         flashImage = flashGO.GetComponent<Image>();
 
-        // ----- el contenido, en su propio espacio de diseño
         GameObject contentGO = new GameObject("Contenido");
         content = contentGO.AddComponent<RectTransform>();
         content.SetParent(glass, false);
@@ -194,8 +149,7 @@ public class CodeTerminalUI : MonoBehaviour
 
         headerText = NewText("Header", content, 26f, frameColor, TextAlignmentOptions.Left);
         Place(headerText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -58f), new Vector2(-300f, -20f));
-        // "TERMINAL NEXCORP :: CONDICIONALES" no entra a 26: partida en dos se
-        // pisaba con la consigna. Así se achica y queda en un renglón.
+
         headerText.textWrappingMode = TextWrappingModes.NoWrap;
         headerText.enableAutoSizing = true;
         headerText.fontSizeMin = 16f;
@@ -209,13 +163,11 @@ public class CodeTerminalUI : MonoBehaviour
 
         codeText = NewText("Codigo", content, 40f, codeColor, TextAlignmentOptions.Left);
         Place(codeText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -274f), new Vector2(-44f, -198f));
-        // Una línea larga (el for) no entra a 40: se achica hasta caber en su
-        // franja en vez de partirse en tres y pisar la salida.
+
         codeText.enableAutoSizing = true;
         codeText.fontSizeMin = 18f;
         codeText.fontSizeMax = 40f;
 
-        // Raya separadora entre la consigna y lo que la consola va escupiendo.
         GameObject rule = NewImage("Raya", content, new Color(frameColor.r, frameColor.g, frameColor.b, 0.35f));
         ruleRect = rule.GetComponent<RectTransform>();
         Place(ruleRect, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, -286f), new Vector2(-44f, -284f));
@@ -225,8 +177,7 @@ public class CodeTerminalUI : MonoBehaviour
 
         kiraText = NewText("Kira", content, 21f, kiraColor, TextAlignmentOptions.BottomLeft);
         Place(kiraText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(44f, 64f), new Vector2(-44f, 170f));
-        // Desde el segundo error Kira suma un renglón (qué página del libro
-        // abrir): se achica para caber en vez de subirse encima de la salida.
+
         kiraText.enableAutoSizing = true;
         kiraText.fontSizeMin = 15f;
         kiraText.fontSizeMax = 21f;
@@ -235,19 +186,16 @@ public class CodeTerminalUI : MonoBehaviour
         Place(footerText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(44f, 22f), new Vector2(-44f, 52f));
         footerText.text = "ENTER ejecutar    ESC salir";
 
-        // ----- el sello, encima de todo el vidrio
         GameObject stampGO = NewImage("Sello", glass, new Color(1f, 1f, 1f, 0f));
         stampRect = stampGO.GetComponent<RectTransform>();
         stampImage = stampGO.GetComponent<Image>();
         stampImage.preserveAspect = true;
-        // Cae en el hueco que queda entre el traceback y la línea de Kira: el
-        // veredicto no puede taparle el error, que es lo que hay que leer.
+
         Center(stampRect, new Vector2(glassHeight * 0.68f, glassHeight * 0.21f));
         stampRect.anchoredPosition = new Vector2(0f, -glassHeight * 0.17f);
         stampGO.SetActive(false);
     }
 
-    /// <summary>Textura de 1x4 con una línea oscura: tileada da el barrido del tubo.</summary>
     Texture2D ScanlineTexture()
     {
         Texture2D tex = new Texture2D(1, 4, TextureFormat.RGBA32, false);
@@ -261,7 +209,6 @@ public class CodeTerminalUI : MonoBehaviour
         return tex;
     }
 
-    /// <summary>Degradé vertical suave para la banda que recorre el tubo.</summary>
     Texture2D BandTexture()
     {
         const int h = 32;
@@ -278,7 +225,6 @@ public class CodeTerminalUI : MonoBehaviour
         return tex;
     }
 
-    /// <summary>Oscurecimiento hacia los bordes: la curvatura del tubo.</summary>
     Texture2D VignetteTexture()
     {
         const int n = 64;
@@ -289,8 +235,6 @@ public class CodeTerminalUI : MonoBehaviour
         {
             for (int x = 0; x < n; x++)
             {
-                // Distancia al centro en coordenadas -1..1, pero por eje: así
-                // la pantalla se apaga más en las esquinas que en los lados.
                 float u = (x / (float)(n - 1)) * 2f - 1f;
                 float v = (y / (float)(n - 1)) * 2f - 1f;
                 float d = Mathf.Sqrt(u * u * u * u + v * v * v * v);
@@ -364,8 +308,6 @@ public class CodeTerminalUI : MonoBehaviour
         r.offsetMax = offMax;
     }
 
-    // ------------------------------------------------------------- operación
-
     public void Open(TerminalChallenge challenge)
     {
         outputLines.Clear();
@@ -390,12 +332,6 @@ public class CodeTerminalUI : MonoBehaviour
         StartCoroutine(PowerOn());
     }
 
-    /// <summary>
-    /// Una línea va en su franja de siempre, con el ">>>" de la consola. Un
-    /// programa de varias líneas (el jefe) baja la raya y achica la salida
-    /// para hacerle lugar, y numera los renglones como un editor: los
-    /// tracebacks de Python hablan de "line 3", y así se puede buscar.
-    /// </summary>
     void LayoutFor(TerminalChallenge challenge)
     {
         multiLine = challenge != null && challenge.IsMultiLine;
@@ -418,12 +354,10 @@ public class CodeTerminalUI : MonoBehaviour
 
         Place(codeText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, bottom), new Vector2(-44f, top));
         codeText.alignment = TextAlignmentOptions.TopLeft;
-        // Sin cortar renglones: una línea de código partida en dos parece otra
-        // línea. Si no entra, la letra se achica (autoSize).
+
         codeText.textWrappingMode = TextWrappingModes.NoWrap;
         codeText.fontSizeMax = 26f;
-        // La fuente pixel viene con los renglones pegados: con varias líneas,
-        // la de abajo se comía la de arriba.
+
         codeText.lineSpacing = 30f;
         Place(ruleRect, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(44f, bottom - 12f), new Vector2(-44f, bottom - 10f));
         Place(outputText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(44f, 176f), new Vector2(-44f, bottom - 22f));
@@ -437,12 +371,6 @@ public class CodeTerminalUI : MonoBehaviour
         root.SetActive(false);
     }
 
-    /// <summary>El tubo no se prende de golpe: primero es una raya y después se
-    /// abre. Son dos décimas, pero es la diferencia entre encender un monitor y
-    /// que aparezca un panel.
-    ///
-    /// Toda la pantalla anda en tiempo real (unscaled): la terminal del jefe
-    /// congela el juego, y la pantalla tiene que seguir viva igual.</summary>
     IEnumerator PowerOn()
     {
         contentGroup.alpha = 0f;
@@ -470,7 +398,6 @@ public class CodeTerminalUI : MonoBehaviour
         StartCoroutine(Blink());
     }
 
-    /// <summary>La banda de desincronismo bajando por el tubo.</summary>
     IEnumerator Roll()
     {
         float y = 0f;
@@ -483,7 +410,6 @@ public class CodeTerminalUI : MonoBehaviour
         }
     }
 
-    /// <summary>El led de "en línea" del encabezado.</summary>
     IEnumerator Blink()
     {
         bool on = true;
@@ -495,7 +421,6 @@ public class CodeTerminalUI : MonoBehaviour
         }
     }
 
-    /// <summary>Redibuja la línea con lo que lleva tecleado y el cursor.</summary>
     public void SetTyped(TerminalChallenge challenge, string typed, bool caretVisible)
     {
         if (challenge == null) return;
@@ -515,7 +440,6 @@ public class CodeTerminalUI : MonoBehaviour
             return;
         }
 
-        // Varias líneas: cada una con su número, apagadito, como un editor.
         string[] lines = code.Split('\n');
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         for (int i = 0; i < lines.Length; i++)
@@ -530,17 +454,11 @@ public class CodeTerminalUI : MonoBehaviour
     {
         outputLines.Add("<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">" + text + "</color>");
 
-        // La pantalla es chica: nos quedamos con lo último, como una consola real.
         while (outputLines.Count > 6) outputLines.RemoveAt(0);
 
         ShowOutput();
     }
 
-    /// <summary>
-    /// La salida tiene un alto fijo: si lo nuevo no entra, se caen los renglones
-    /// más viejos por arriba en vez de desbordarse sobre la línea de Kira. Se
-    /// mide en renglones de pantalla, no en entradas: un eco largo ocupa dos.
-    /// </summary>
     void ShowOutput()
     {
         Rect box = outputText.rectTransform.rect;
@@ -564,11 +482,6 @@ public class CodeTerminalUI : MonoBehaviour
     public Color ErrorColor { get { return errorColor; } }
     public Color CodeColor { get { return codeColor; } }
 
-    /// <summary>
-    /// Escribe una salida letra por letra, como una consola de verdad. Si
-    /// trae varias líneas (un for que imprime varias veces), va renglón por
-    /// renglón: cada uno ocupa su lugar en la pantalla y empuja los viejos.
-    /// </summary>
     public IEnumerator TypeLine(string text, Color color, float perChar)
     {
         string hex = ColorUtility.ToHtmlStringRGB(color);
@@ -580,7 +493,6 @@ public class CodeTerminalUI : MonoBehaviour
 
             for (int i = 1; i <= line.Length; i++)
             {
-                // Siempre el último: ShowOutput puede sacar renglones de arriba.
                 outputLines[outputLines.Count - 1] = "<color=#" + hex + ">" + line.Substring(0, i) + "</color>";
                 ShowOutput();
                 yield return new WaitForSecondsRealtime(perChar);
@@ -588,11 +500,6 @@ public class CodeTerminalUI : MonoBehaviour
         }
     }
 
-    // ----------------------------------------------------------------- sello
-
-    /// <summary>El veredicto estampado en el vidrio. Un cartel de "correcto" se
-    /// hace en cualquier página; que el monitor te lo escupa en la cara con el
-    /// tubo temblando, no.</summary>
     public void ShowStamp(bool granted)
     {
         Sprite sprite = granted ? grantedSprite : deniedSprite;
@@ -614,7 +521,6 @@ public class CodeTerminalUI : MonoBehaviour
         stampImage.sprite = sprite;
         stampImage.gameObject.SetActive(true);
 
-        // Errar sacude la pantalla en rojo; acertar no necesita castigo visual.
         if (!granted) StartCoroutine(RedFlash());
 
         float t = 0f;
@@ -645,9 +551,6 @@ public class CodeTerminalUI : MonoBehaviour
 
     IEnumerator RedFlash()
     {
-        // 0.09 parece poquísimo escrito, pero el proyecto renderiza en espacio
-        // lineal y un rojo saturado sobre el vidrio casi negro sube muchísimo:
-        // a 0.22 la pantalla entera se vuelve roja y no se lee nada.
         float t = 0f;
         while (t < 1f)
         {
@@ -658,8 +561,6 @@ public class CodeTerminalUI : MonoBehaviour
         flashImage.color = new Color(1f, 0.15f, 0.15f, 0f);
     }
 
-    /// <summary>El tubo no da una luz pareja: este temblor chiquito es la diferencia
-    /// entre un monitor y un rectángulo de color.</summary>
     IEnumerator Flicker()
     {
         Color baseColor = screenColor;
@@ -675,7 +576,6 @@ public class CodeTerminalUI : MonoBehaviour
         }
     }
 
-    /// <summary>TMP se come los signos &lt; como etiquetas: hay que neutralizarlos.</summary>
     static string Escape(string s)
     {
         if (string.IsNullOrEmpty(s)) return "";

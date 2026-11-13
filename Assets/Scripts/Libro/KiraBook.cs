@@ -5,20 +5,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-/// <summary>
-/// El libro de Kira: la explicación de cada tema, adentro del juego. Se abre
-/// con TAB en cualquier momento, también desde adentro de una terminal (y ahí
-/// se abre directo en la página de ese tema). Mientras está abierto el juego
-/// se congela: consultar no es trampa, la evaluación es formativa.
-///
-/// Igual que <see cref="CodeTerminalUI"/>, la pantalla se arma sola en
-/// runtime: alcanza con poner este componente en la escena (o el prefab
-/// LibroDeKira) con el contenido, la fuente y los sprites del pack.
-///
-/// Las páginas no vienen todas escritas: Kira las dicta al llegar a cada zona
-/// (<see cref="BookPageUnlock"/>), y lo escrito se guarda en
-/// <see cref="KiraBookProgress"/>.
-/// </summary>
 public class KiraBook : MonoBehaviour
 {
     public static KiraBook Instance { get; private set; }
@@ -27,42 +13,32 @@ public class KiraBook : MonoBehaviour
     public KiraBookContent content;
 
     [Header("Fuente")]
-    [Tooltip("PressStart2P: tiene acentos, ñ y signos de apertura.")]
     public TMP_FontAsset font;
 
     [Header("Sprites del pack (ASSETS/Libro/01_TravelBookLite/Sprites)")]
-    [Tooltip("UI_TravelBook_BookCover01a")]
     public Sprite coverSprite;
-    [Tooltip("UI_TravelBook_BookPageLeft01a")]
+
     public Sprite pageLeftSprite;
-    [Tooltip("UI_TravelBook_BookPageRight01a")]
+
     public Sprite pageRightSprite;
-    [Tooltip("UI_TravelBook_IconArrow01a")]
+
     public Sprite arrowSprite;
-    [Tooltip("UI_TravelBook_Marker01a")]
+
     public Sprite tabSprite;
-    [Tooltip("UI_TravelBook_Popup01a")]
+
     public Sprite toastSprite;
-    [Tooltip("UI_TravelBook_Frame01a")]
+
     public Sprite hudSprite;
 
     [Header("Tamaño")]
-    [Tooltip("Cuántos pixeles de pantalla (referencia 1920x1080) mide cada " +
-             "pixel del dibujo. Tiene que ser entero: el pixel art se ve " +
-             "nítido con escala entera y borroneado con decimales.")]
     public int pixelScale = 6;
 
-    [Tooltip("La misma idea para el cartel de TAB y el aviso de página nueva.")]
     public int hudPixelScale = 5;
 
-    [Tooltip("18 es lo más grande que entra en la página más cargada (la de " +
-             "variables). Más chico se pierde en monitores de 1366x768.")]
     public float bodySize = 18f;
     public float titleSize = 26f;
 
     [Header("Cartel de 'TAB LIBRO' en pantalla")]
-    [Tooltip("Aparece cuando Kira escribe una página nueva y se va cuando el " +
-             "jugador abre el libro. El libro se puede abrir igual sin él.")]
     public bool showHudHint = true;
 
     [Header("Colores (del mismo pack)")]
@@ -75,27 +51,16 @@ public class KiraBook : MonoBehaviour
     public Color errorColor = new Color32(255, 143, 122, 255);
     public Color kiraColor = new Color32(31, 110, 118, 255);
 
-    // ------------------------------------------------------------ estado
-
     static int closedFrame = -1;
     static string context;
 
-    /// <summary>Cuántas veces se abrió el libro en la partida. La terminal lo
-    /// usa para registrar si el alumno lo consultó mientras resolvía.</summary>
     public static int TimesOpened { get; private set; }
 
-    /// <summary>
-    /// Si el libro se está quedando con el teclado. Las terminales, la pausa y
-    /// los diálogos lo consultan para no reaccionar a las teclas que son del
-    /// libro, incluido el cuadro en que se cerró: si no, el ESC que lo cierra
-    /// también cierra la terminal que estaba abajo.
-    /// </summary>
     public static bool BlocksInput
     {
         get { return (Instance != null && Instance.isOpen) || Time.frameCount == closedFrame; }
     }
 
-    /// <summary>Si el jugador tiene el libro y se puede abrir en esta escena.</summary>
     public static bool Available
     {
         get { return Instance != null && Instance.content != null && KiraBookProgress.HasBook; }
@@ -153,15 +118,12 @@ public class KiraBook : MonoBehaviour
     float PageW { get { return pageLeftSprite != null ? pageLeftSprite.rect.width * pixelScale : 624f; } }
     float PageH { get { return pageLeftSprite != null ? pageLeftSprite.rect.height * pixelScale : 882f; } }
 
-    /// <summary>Una página dibujada: el papel y la columna donde se apilan los bloques.</summary>
     class PageView
     {
         public RectTransform rect;
         public Image paper;
         public RectTransform column;
     }
-
-    // ------------------------------------------------------------ ciclo de vida
 
     void Awake()
     {
@@ -180,8 +142,6 @@ public class KiraBook : MonoBehaviour
     {
         KiraBookProgress.Unlocked -= OnUnlocked;
 
-        // Nunca dejar el juego congelado: si la escena se descarga con el libro
-        // abierto, el Time.timeScale en 0 pasaría a la escena siguiente.
         if (isOpen)
         {
             isOpen = false;
@@ -232,13 +192,10 @@ public class KiraBook : MonoBehaviour
     {
         if (!Available) return false;
         if (PauseMenu.IsPaused) return false;
-        // El TAB que lo cerró no lo vuelve a abrir en el mismo cuadro.
+
         return Time.frameCount != closedFrame;
     }
 
-    // ------------------------------------------------------------ API para las terminales
-
-    /// <summary>La terminal avisa qué tema está abierto: el libro se abre ahí.</summary>
     public static void SetContext(string concept)
     {
         context = concept;
@@ -249,11 +206,6 @@ public class KiraBook : MonoBehaviour
         context = null;
     }
 
-    /// <summary>
-    /// El aviso de Kira para quien falló dos veces: qué página abrir. Null si
-    /// el libro no está o esa página todavía no se escribió (mandarlo a una
-    /// página en blanco sería peor que no decir nada).
-    /// </summary>
     public static string HintFor(string concept)
     {
         if (!Available) return null;
@@ -263,8 +215,6 @@ public class KiraBook : MonoBehaviour
 
         return string.Format(Instance.content.terminalHint, chapter.title);
     }
-
-    // ------------------------------------------------------------ abrir y cerrar
 
     public void Open()
     {
@@ -280,9 +230,6 @@ public class KiraBook : MonoBehaviour
         previousTimeScale = Time.timeScale;
         Time.timeScale = 0f;
 
-        // Con el tiempo en 0 la física no corre, pero el Update del jugador
-        // sí: las flechas que pasan de página lo darían vuelta y la barra
-        // espaciadora lo haría saltar apenas se cierra el libro.
         if (movement != null)
         {
             movementWasEnabled = movement.enabled;
@@ -299,8 +246,6 @@ public class KiraBook : MonoBehaviour
         toast.gameObject.SetActive(false);
         hud.gameObject.SetActive(false);
 
-        // Activo antes de escribir: un TMP apagado todavía no sabe medirse, y
-        // el armado de la página necesita el alto de cada renglón.
         rootGroup.alpha = 0f;
         root.SetActive(true);
         flipping = false;
@@ -324,8 +269,6 @@ public class KiraBook : MonoBehaviour
         if (movement != null) movement.enabled = movementWasEnabled;
         if (shooting != null) shooting.enabled = shootingWasEnabled;
 
-        // Una hoja a medio girar se queda donde está: al volver a abrir, las
-        // páginas se escriben de nuevo enteras.
         if (flipRoutine != null) StopCoroutine(flipRoutine);
         flipRoutine = null;
         flipping = false;
@@ -342,10 +285,6 @@ public class KiraBook : MonoBehaviour
             if (KiraBookProgress.IsUnlocked(c)) spreads.Add(c);
     }
 
-    /// <summary>
-    /// Dónde se abre: en el tema de la terminal si se abrió desde una; si no,
-    /// en la primera página nueva sin leer; si no, donde se dejó la última vez.
-    /// </summary>
     int PickStartSpread()
     {
         if (!string.IsNullOrEmpty(context))
@@ -371,8 +310,6 @@ public class KiraBook : MonoBehaviour
 
     IEnumerator OpenAnim()
     {
-        // Sube desde abajo de la pantalla y se pasa un poquito, como un libro
-        // que se apoya de golpe sobre la mesa.
         float t = 0f;
         while (t < 1f)
         {
@@ -412,8 +349,6 @@ public class KiraBook : MonoBehaviour
         return 1f + c3 * p * p * p + c1 * p * p;
     }
 
-    // ------------------------------------------------------------ pasar de página
-
     void Turn(int dir)
     {
         GoTo(current + dir);
@@ -446,11 +381,6 @@ public class KiraBook : MonoBehaviour
         LayoutTabs(index);
     }
 
-    /// <summary>
-    /// La hoja da vuelta sobre el lomo: la que se va se achica hacia el centro
-    /// y la que llega se abre desde ahí. Es una escala en X, pero con el papel
-    /// oscureciéndose al quedar de canto alcanza para leerse como una hoja.
-    /// </summary>
     IEnumerator Flip(int from, int to)
     {
         flipping = true;
@@ -461,7 +391,6 @@ public class KiraBook : MonoBehaviour
         PageView going = forward ? flipRight : flipLeft;
         PageView coming = forward ? flipLeft : flipRight;
 
-        // La pestaña salta apenas se pide la página, no cuando termina de girar.
         LayoutTabs(to);
 
         going.rect.localScale = Vector3.one;
@@ -494,7 +423,7 @@ public class KiraBook : MonoBehaviour
         {
             t += Time.unscaledDeltaTime / duration;
             float k = Mathf.Clamp01(t);
-            // Acelera al irse y frena al llegar.
+
             float e = from > to ? k * k : 1f - (1f - k) * (1f - k);
             float s = Mathf.Lerp(from, to, e);
             page.rect.localScale = new Vector3(Mathf.Max(0.001f, s), 1f, 1f);
@@ -506,12 +435,8 @@ public class KiraBook : MonoBehaviour
         page.paper.color = Color.white;
     }
 
-    // ------------------------------------------------------------ escribir una página
-
     void Fill(PageView page, List<BookBlock> blocks, BookChapter chapter)
     {
-        // Destroy recién borra al final del cuadro: si no se apagan antes, el
-        // layout de este cuadro los cuenta y la página nueva sale corrida.
         for (int i = page.column.childCount - 1; i >= 0; i--)
         {
             GameObject old = page.column.GetChild(i).gameObject;
@@ -532,8 +457,6 @@ public class KiraBook : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(page.column);
 
-        // Si alguien escribe de más, que se entere en la consola en vez de que
-        // el texto se salga del papel sin que nadie lo note.
         float need = LayoutUtility.GetPreferredHeight(page.column);
         if (need > page.column.rect.height + 1f)
             Debug.LogWarning("Libro de Kira: la página '" + (chapter != null ? chapter.id : "?") +
@@ -555,8 +478,7 @@ public class KiraBook : MonoBehaviour
 
             case BookBlockKind.Etiqueta:
                 TextMeshProUGUI label = AddText(column, b.text, bodySize, accentColor, true);
-                // Más aire arriba que abajo: el subtítulo es de lo que sigue,
-                // no de lo que vino antes.
+
                 if (!first) label.margin = new Vector4(0f, pixelScale * 1.5f, 0f, 0f);
                 break;
 
@@ -599,11 +521,6 @@ public class KiraBook : MonoBehaviour
         return t;
     }
 
-    /// <summary>
-    /// Un recuadro: claro para el código que se escribe, oscuro (como la
-    /// pantalla de la terminal) para lo que Python imprime. Que se distingan
-    /// de un vistazo es la mitad de entender un ejemplo.
-    /// </summary>
     void AddBox(Transform parent, string text, Color box, Color color)
     {
         GameObject go = NewImage("Recuadro", parent, box);
@@ -615,16 +532,9 @@ public class KiraBook : MonoBehaviour
         v.childForceExpandWidth = true;
         v.childForceExpandHeight = false;
 
-        // Sin formato: el código lleva < y > que TMP se comería como etiquetas.
         AddText(go.transform, text, bodySize, color, false);
     }
 
-    // ------------------------------------------------------------ pestañas
-
-    /// <summary>
-    /// Una pestaña por tema escrito, asomando del costado de la tapa. Es lo que
-    /// hace que se vea que el libro se va llenando: al principio hay una sola.
-    /// </summary>
     void RebuildTabs()
     {
         foreach (RectTransform t in tabs) Destroy(t.gameObject);
@@ -676,14 +586,11 @@ public class KiraBook : MonoBehaviour
             r.anchoredPosition = new Vector2(coverRight + visible, top - step * i);
             r.GetComponent<Image>().color = on ? Color.white : new Color(0.86f, 0.8f, 0.76f, 1f);
 
-            // El rótulo, centrado en lo que asoma de la tapa.
             RectTransform lr = (RectTransform)r.Find("Rotulo");
             lr.sizeDelta = new Vector2(visible - pixelScale, 0f);
             lr.anchoredPosition = new Vector2(-pixelScale * 0.5f, 0f);
         }
     }
-
-    // ------------------------------------------------------------ avisos
 
     void OnUnlocked(string id)
     {
@@ -693,8 +600,6 @@ public class KiraBook : MonoBehaviour
         BookChapter chapter = content.Find(id);
         if (chapter == null)
         {
-            // Sin tema (o con uno que no existe) es la entrega del libro: el
-            // aviso es el de la portada.
             foreach (BookChapter c in content.chapters)
                 if (c != null && c.alwaysUnlocked) { chapter = c; break; }
         }
@@ -746,10 +651,7 @@ public class KiraBook : MonoBehaviour
     void RefreshHud()
     {
         if (hud == null) return;
-        // Con la terminal abierta el cartel sobra (su pie ya dice "TAB libro")
-        // y además le tapa la esquina al monitor.
-        // Fijo en pantalla molestaba (Kevin, 26/10): solo aparece cuando Kira
-        // escribió algo que el jugador todavía no vio.
+
         bool terminalOpen = terminalUI != null && terminalUI.IsOpen;
         bool show = showHudHint && KiraBookProgress.HasNews && !isOpen && root != null && !root.activeSelf &&
                     !terminalOpen && Available;
@@ -758,7 +660,6 @@ public class KiraBook : MonoBehaviour
 
     IEnumerator BlinkAlert()
     {
-        // El signo de "hay algo sin leer" late, sin brillos: solo prende y apaga.
         while (true)
         {
             if (hudAlert != null) hudAlert.enabled = !hudAlert.enabled;
@@ -766,15 +667,13 @@ public class KiraBook : MonoBehaviour
         }
     }
 
-    // ------------------------------------------------------------ armado
-
     void Build()
     {
         GameObject canvasGO = new GameObject("LibroCanvas");
         canvasGO.transform.SetParent(transform, false);
         canvas = canvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        // Por encima de la terminal (90): el libro se abre desde adentro de ella.
+
         canvas.sortingOrder = 95;
 
         CanvasScaler scaler = canvasGO.AddComponent<CanvasScaler>();
@@ -791,7 +690,6 @@ public class KiraBook : MonoBehaviour
         Stretch(rootRect);
         rootGroup = root.AddComponent<CanvasGroup>();
 
-        // Hacer click afuera del libro también lo cierra.
         GameObject dim = NewImage("Fondo", rootRect, new Color(0f, 0f, 0f, 0.78f));
         Stretch(dim.GetComponent<RectTransform>());
         dim.GetComponent<Image>().raycastTarget = true;
@@ -802,7 +700,6 @@ public class KiraBook : MonoBehaviour
         book.SetParent(rootRect, false);
         Center(book, Vector2.zero);
 
-        // Las pestañas van antes que la tapa, así asoman por detrás de ella.
         GameObject tabsGO = new GameObject("Pestanas", typeof(RectTransform));
         tabsRoot = tabsGO.GetComponent<RectTransform>();
         tabsRoot.SetParent(book, false);
@@ -811,15 +708,12 @@ public class KiraBook : MonoBehaviour
         GameObject cover = NewImage("Tapa", book, Color.white);
         Image coverImg = cover.GetComponent<Image>();
         coverImg.sprite = coverSprite;
-        coverImg.raycastTarget = true; // que el click en la tapa no cierre el libro
+        coverImg.raycastTarget = true;
         Center(cover.GetComponent<RectTransform>(), coverSprite != null
             ? new Vector2(coverSprite.rect.width, coverSprite.rect.height) * pixelScale
             : new Vector2(1344f, 960f));
         if (coverSprite == null) coverImg.color = new Color32(183, 91, 95, 255);
 
-        // Las hojas se apoyan contra el lomo (x = 0): la izquierda pivotea en
-        // su borde derecho y la derecha en el izquierdo. Así la vuelta de
-        // página es solo escalar en X.
         leftPage = BuildPage("Hoja izquierda", pageLeftSprite, true);
         rightPage = BuildPage("Hoja derecha", pageRightSprite, false);
 
@@ -862,9 +756,6 @@ public class KiraBook : MonoBehaviour
         p.column = col.GetComponent<RectTransform>();
         p.column.SetParent(p.rect, false);
 
-        // El margen del lado del borde del libro es más ancho que el del lomo
-        // (ahí está el contorno), y abajo se come el canto de las hojas y el
-        // lugar de las flechas.
         float outer = pixelScale * 7f;
         float inner = pixelScale * 5f;
         p.column.anchorMin = Vector2.zero;
@@ -965,8 +856,6 @@ public class KiraBook : MonoBehaviour
         r.offsetMin = new Vector2(pad, -fromTop - bodySize * 1.6f);
         r.offsetMax = new Vector2(-pad, -fromTop);
     }
-
-    // ------------------------------------------------------------ helpers (los mismos que la terminal)
 
     GameObject NewImage(string name, Transform parent, Color color)
     {

@@ -2,12 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// La UI del combate: arriba queda fija la pregunta de Kira mientras dura la
-/// pelea, y abajo aparece su respuesta cuando el jugador acierta o se equivoca.
-/// Son dos cosas separadas a proposito: la pregunta tiene que poder leerse todo
-/// el tiempo, y el comentario es pasajero.
-/// </summary>
 public class CodeBlasterUI : MonoBehaviour
 {
     [Header("Partes")]
@@ -21,7 +15,6 @@ public class CodeBlasterUI : MonoBehaviour
 
     private Coroutine typing;
 
-    /// <summary>Si Kira todavía está escribiendo su línea.</summary>
     public bool IsTyping { get { return typing != null; } }
 
     void Awake()
@@ -29,7 +22,6 @@ public class CodeBlasterUI : MonoBehaviour
         Hide();
     }
 
-    /// <summary>Muestra la pregunta y deja el cartel de Kira escondido.</summary>
     public void ShowQuestion(string question)
     {
         if (root != null) root.SetActive(true);
@@ -37,7 +29,6 @@ public class CodeBlasterUI : MonoBehaviour
         HideFeedback();
     }
 
-    /// <summary>Kira dice algo: sale con el mismo tipeo que el diálogo normal.</summary>
     public void ShowFeedback(string text)
     {
         if (feedbackPanel == null || feedbackText == null) return;

@@ -1,23 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Un grupo de capas de fondo que pertenece a una zona del mapa: se ve
-/// mientras la cámara está entre fromX y toX y se funde en los bordes. Así
-/// cada zona tiene su propio horizonte (la ciudad, la central eléctrica...) y
-/// al cruzar de una a otra los fondos se cruzan en vez de cortarse.
-///
-/// Toca solo el alfa: los colores (el tinte violeta) se guardan la primera
-/// vez y se respetan.
-/// </summary>
 [ExecuteAlways]
-[DefaultExecutionOrder(110)] // después de la cámara y del parallax
+[DefaultExecutionOrder(110)]
 public class ZoneBackdrop : MonoBehaviour
 {
     public float fromX = -1000f;
     public float toX = 1000f;
 
-    [Tooltip("Ancho del fundido en cada borde, en unidades de mundo.")]
     public float fade = 4f;
 
     [SerializeField, HideInInspector] private SpriteRenderer[] renderers;
@@ -33,7 +23,6 @@ public class ZoneBackdrop : MonoBehaviour
 
     void OnDisable() { all.Remove(this); }
 
-    /// <summary>Guarda los colores actuales como los "de verdad". Llamar después de cambiar tintes.</summary>
     [ContextMenu("Guardar colores")]
     public void Capture()
     {

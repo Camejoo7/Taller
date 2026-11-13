@@ -1,16 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Vida de un enemigo. Sin esto las balas le pasaban por encima sin hacer nada.
-/// Parpadea en blanco al recibir un tiro para que se note que le pegaste, que
-/// es lo que hace que disparar se sienta bien.
-/// </summary>
 public class EnemyHealth : MonoBehaviour
 {
     public int maxHealth = 3;
 
-    [Tooltip("Opcional: algo que aparezca al morir.")]
     public GameObject deathEffect;
 
     public int Current { get; private set; }

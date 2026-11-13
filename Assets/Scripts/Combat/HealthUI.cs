@@ -1,10 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Los corazones de la esquina. Se dibuja solo cuando la vida cambia, no cada
-/// frame: escucha el aviso de <see cref="PlayerHealth"/>.
-/// </summary>
 public class HealthUI : MonoBehaviour
 {
     public PlayerHealth player;

@@ -55,7 +55,7 @@ ExportedObj/
 ignore.conf
 
 # ---------------------------------------------------
-# Screenshots (MCP / Editor captures)
+# Screenshots
 # ---------------------------------------------------
 /[Aa]ssets/[Ss]creenshots/
 
@@ -88,7 +88,7 @@ ehthumbs.db
 [Dd]esktop.ini
 
 # ---------------------------------------------------
-# Unity MCP
+# Editor
 # ---------------------------------------------------
 ~UnityDirMonSyncFile~*
 

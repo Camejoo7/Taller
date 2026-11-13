@@ -5,28 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-/// <summary>
-/// Herramientas de editor para armar el mapa del Stage 2 por código (las usa
-/// Claude vía MCP, pero se pueden llamar desde cualquier script de editor).
-///
-/// - Capture: renderiza una región del mundo a PNG, sin entrar en Play mode.
-/// - Ascii: vuelca una región de un tilemap como texto, un carácter por tile,
-///   para estudiar cómo está armado un tramo.
-/// - Tile / Set / Fill: pintar por nombre de sprite ("Tiles_12") en vez de
-///   por referencia, con Undo.
-///
-/// Las coordenadas de Set/Fill/Ascii son de CELDA del tilemap (no de mundo).
-/// Los tilemaps del Stage 2 están a escala 0,32: una celda = 0,32 unidades.
-/// </summary>
 public static class MapTools
 {
-    // ------------------------------------------------------------ captura
-
-    /// <summary>
-    /// Renderiza el rectángulo de mundo (x0,y0)-(x1,y1) con una cámara
-    /// temporal que copia la principal. ppu = píxeles por unidad del PNG
-    /// (50 = la densidad nativa del arte a escala 0,32).
-    /// </summary>
     public static string Capture(float x0, float y0, float x1, float y1, int ppu, string path)
     {
         Camera main = Camera.main;
@@ -37,8 +17,7 @@ public static class MapTools
             Camera cam = go.AddComponent<Camera>();
             if (main != null) cam.CopyFrom(main);
             cam.orthographic = true;
-            // CopyFrom no copia los datos de URP: sin esto la captura sale sin
-            // post-proceso aunque el juego lo tenga.
+
             var mainData = main != null ? main.GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>() : null;
             if (mainData != null)
             {
@@ -59,8 +38,6 @@ public static class MapTools
             rt.filterMode = FilterMode.Point;
             cam.targetTexture = rt;
 
-            // El fondo con parallax depende de dónde esté la cámara: lo
-            // acomodamos como si la del juego estuviera centrada acá.
             ParallaxLayer.ApplyAll(go.transform.position, cam.orthographicSize, cam.aspect);
             cam.Render();
             if (main != null) ParallaxLayer.ApplyAll(main.transform.position, main.orthographicSize, main.aspect);
@@ -88,11 +65,6 @@ public static class MapTools
         }
     }
 
-    /// <summary>
-    /// Si tiene el nombre de un tilemap, Capture le dibuja encima la grilla de
-    /// celdas de ese tilemap: línea tenue por celda, amarilla cada 5 y roja
-    /// cada 10 (en la celda 0, 10, 20...), para poder contar celdas en la foto.
-    /// </summary>
     public static string GridFor = null;
 
     static void DrawGrid(Texture2D tex, float x0, float y0, int ppu)
@@ -127,12 +99,6 @@ public static class MapTools
         tex.SetPixel(x, y, Color.Lerp(b, new Color(c.r, c.g, c.b, 1f), c.a));
     }
 
-    /// <summary>
-    /// Arma un mosaico de "lo que ve el jugador": un cuadro del tamaño de la
-    /// cámara del juego (orto 1,8, 16:9) centrado en cada celda de Piso dada,
-    /// en una grilla de 'cols' columnas. Las celdas son {x, y} del piso donde
-    /// estaría parado el jugador.
-    /// </summary>
     public static string Views(string path, int cols, int ppu, params int[] cells)
     {
         Tilemap piso = Map("Piso");
@@ -148,7 +114,7 @@ public static class MapTools
         for (int i = 0; i < n; i++)
         {
             Vector3 c = piso.GetCellCenterWorld(new Vector3Int(cells[i * 2], cells[i * 2 + 1], 0));
-            // el jugador está parado sobre la celda: la cámara lo centra ~0,3 más arriba
+
             float cx = c.x, cy = c.y + 0.33f;
             Capture(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2, ppu, tmp);
             Texture2D t = new Texture2D(2, 2);
@@ -163,11 +129,6 @@ public static class MapTools
         return path + " (" + sheet.width + "x" + sheet.height + ")";
     }
 
-    /// <summary>
-    /// Altura del piso en x: el primer collider sólido (no trigger, no del
-    /// jugador ni de un enemigo) que encuentra un rayo que baja desde fromY.
-    /// Devuelve float.NaN si abajo no hay nada.
-    /// </summary>
     public static float GroundY(float x, float fromY)
     {
         Physics2D.SyncTransforms();
@@ -182,11 +143,6 @@ public static class MapTools
         return float.NaN;
     }
 
-    /// <summary>
-    /// Como Views, pero en coordenadas de mundo: xy = {x, y, x, y...} con y =
-    /// los pies del jugador (la cámara del juego lo centra ahí). Si y es NaN
-    /// se usa el piso más alto en esa x (buscando desde fromY).
-    /// </summary>
     public static string ViewsXY(string path, int cols, int ppu, float fromY, params float[] xy)
     {
         float h = 3.6f, w = 6.4f;
@@ -219,12 +175,6 @@ public static class MapTools
         return path + " (" + (cols * (fw + 4)) + "x" + (rows * (fh + 4)) + ")" + log;
     }
 
-    // ------------------------------------------------------------ tilemaps
-
-    /// <summary>
-    /// Un tilemap por nombre: primero bajo "Grid" (el del Stage 2), si no,
-    /// cualquiera de la escena con ese nombre (ej. los de "GridCentral").
-    /// </summary>
     public static Tilemap Map(string name)
     {
         GameObject go = GameObject.Find("Grid/" + name);
@@ -237,11 +187,6 @@ public static class MapTools
     static Dictionary<string, TileBase> tileCache;
     static Dictionary<string, int> tileRank;
 
-    /// <summary>
-    /// Todas las Tile del proyecto, por clave de sprite. Si dos Tile usan el
-    /// mismo sprite, gana la de la paleta del Stage 2 (la que usa el mapa
-    /// pintado a mano), así lo nuevo queda con los mismos assets.
-    /// </summary>
     static Dictionary<string, TileBase> Tiles()
     {
         if (tileCache != null) return tileCache;
@@ -267,11 +212,6 @@ public static class MapTools
 
     public static void ResetCache() { tileCache = null; }
 
-    /// <summary>
-    /// Clave única de un sprite: "Hoja/Sprite", ej. "Tiles/Tiles_12" para el
-    /// pack Central City. Los sprites de otros packs llevan el pack adelante,
-    /// ej. "INDUSTRIA:Tiles/Tiles_12", porque hay hojas con el mismo nombre.
-    /// </summary>
     public static string SpriteKey(Sprite s)
     {
         string path = AssetDatabase.GetAssetPath(s);
@@ -295,7 +235,6 @@ public static class MapTools
         return t != null ? "asset:" + t.name : "";
     }
 
-    /// <summary>La Tile de un sprite. Acepta "Tiles/Tiles_12" o solo "Tiles_12" si no es ambiguo.</summary>
     public static TileBase Tile(string key)
     {
         if (string.IsNullOrEmpty(key) || key == ".") return null;
@@ -329,11 +268,6 @@ public static class MapTools
                 tm.SetTile(new Vector3Int(x, y, 0), t);
     }
 
-    /// <summary>
-    /// Pinta un bloque a partir de filas de texto (la primera fila es la de
-    /// ARRIBA). Cada carácter se traduce con el legend; '.' deja la celda
-    /// como está y ' ' la borra.
-    /// </summary>
     public static void Stamp(string map, int left, int top, string[] rows, Dictionary<char, string> legend)
     {
         Tilemap tm = Map(map);
@@ -348,7 +282,6 @@ public static class MapTools
             }
     }
 
-    /// <summary>Copia un bloque de celdas de un lugar a otro (mismo tilemap o no).</summary>
     public static void Copy(string fromMap, int x0, int y0, int x1, int y1, string toMap, int dx, int dy, bool skipEmpty)
     {
         Tilemap a = Map(fromMap), b = Map(toMap);
@@ -364,15 +297,8 @@ public static class MapTools
             }
     }
 
-    // ------------------------------------------------------------ lectura
-
     const string Symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%&*+=?@^~<>!";
 
-    /// <summary>
-    /// Vuelca una región como texto (fila de arriba primero) con su leyenda.
-    /// Las celdas vacías son '.'. Las tiles volteadas/rotadas se marcan en la
-    /// leyenda con su matriz.
-    /// </summary>
     public static string Ascii(string map, int x0, int y0, int x1, int y1)
     {
         Tilemap tm = Map(map);
