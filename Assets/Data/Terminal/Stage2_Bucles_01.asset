@@ -15,8 +15,8 @@ MonoBehaviour:
   challengeId: Stage2_Bucles_01
   concept: bucles
   stageNumber: 2
-  prompt: "RED DE NODOS \u2014 los nodos del patio est\xE1n ca\xEDdos. Complet\xE1
-    el for para reiniciarlos a todos: una vuelta por cada nodo que cruzaste."
+  prompt: "RED DE NODOS \u2014 los nodos del patio est\xE1n ca\xEDdos, complet\xE1
+    el for para reiniciarlos a todos, una vuelta por cada nodo que cruzaste."
   codeBefore: for nodo in range(
   codeAfter: '): print("REINICIANDO NODO", nodo)'
   blankWidth: 2
@@ -25,6 +25,11 @@ MonoBehaviour:
   - 0,4
   - 0, 4
   caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "{0} no es mayor que 50: la condici\xF3n dio False y el print
+    no corri\xF3."
   expectedOutput: 'REINICIANDO NODO 0
 
     REINICIANDO NODO 1
@@ -33,8 +38,7 @@ MonoBehaviour:
     2
 
     REINICIANDO NODO 3'
-  kiraOnSuccess: 'Cuatro vueltas, cuatro nodos. Fijate que range(4) cuenta 0, 1,
-    2, 3: arranca en cero, como casi todo en Python.'
+  kiraOnSuccess: 
   knownMistakes:
   - answer: 3
     pythonError: "REINICIANDO NODO 0, 1, 2 \u2192 el cuarto nodo sigue ca\xEDdo"
@@ -46,15 +50,15 @@ MonoBehaviour:
       hay cuatro nodos."
   - answer: cuatro
     pythonError: 'NameError: name ''cuatro'' is not defined'
-    kiraSays: "Python no lee n\xFAmeros escritos con letras: para \xE9l, cuatro es
+    kiraSays: "Python no lee n\xFAmeros escritos con letras, para \xE9l, cuatro es
       el nombre de una variable que no existe."
   - answer: '"4"'
     pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
-    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero. range necesita un
+    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero, range necesita un
       n\xFAmero de verdad."
   - answer: '''4'''
     pythonError: 'TypeError: ''str'' object cannot be interpreted as an integer'
-    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero. range necesita un
+    kiraSays: "Entre comillas, 4 es un TEXTO, no un n\xFAmero, range necesita un
       n\xFAmero de verdad."
   - answer: 4.0
     pythonError: 'TypeError: ''float'' object cannot be interpreted as an integer'
@@ -73,5 +77,6 @@ MonoBehaviour:
     kiraSays: "range(1, 4) arranca en 1 y se saltea el nodo 0. Con un solo n\xFAmero,
       range arranca solo en cero."
   fallbackError: 'SyntaxError: invalid syntax'
+  fallbackErrorForWords: 
   fallbackKiraSays: "Adentro de range va CU\xC1NTAS veces se repite. Cont\xE1 los
     nodos que cruzaste."

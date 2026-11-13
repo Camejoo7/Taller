@@ -386,7 +386,7 @@ MonoBehaviour:
     - kind: 6
       text: "print y len tambi\xE9n son funciones, alguien las escribi\xF3 una vez
         y desde entonces todo el mundo las llama. Ahora vos pod\xE9s hacer las tuyas."
-  toastHeader: "Kira anot\xF3:"
+  toastHeader: "KIRA anot\xF3:"
   toastHint: TAB  abrir
   terminalHint: "\xBFTrabado? Apret\xE1 TAB: est\xE1 en la p\xE1gina de {0}."
   footerHint: "A D  pasar p\xE1gina        TAB  cerrar"

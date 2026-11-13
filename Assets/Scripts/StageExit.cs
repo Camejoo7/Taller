@@ -28,6 +28,10 @@ public class StageExit : MonoBehaviour
              "en vez de cortar seco. El objeto tiene que estar activo.")]
     public SceneTransition transition;
 
+    [Tooltip("Salir con el círculo negro que se cierra sobre el jugador y se " +
+             "abre en la escena siguiente. Tiene prioridad sobre el fundido.")]
+    public bool irisTransition = true;
+
     private bool leaving;
 
     void Reset()
@@ -73,7 +77,17 @@ public class StageExit : MonoBehaviour
             player.SetCanMove(false);
         }
 
-        if (transition != null && transition.isActiveAndEnabled)
+        // Los corazones que le quedan pasan a la escena siguiente.
+        PlayerHealth health = player.GetComponent<PlayerHealth>();
+        if (health != null) PlayerHealth.CarryToNextScene(health.Current);
+
+        if (irisTransition)
+        {
+            // Quieto mientras se cierra el círculo.
+            player.SetCanMove(false);
+            IrisTransition.LoadScene(nextScene, player.transform);
+        }
+        else if (transition != null && transition.isActiveAndEnabled)
             transition.CargarEscena(nextScene);
         else
             SceneManager.LoadScene(nextScene);

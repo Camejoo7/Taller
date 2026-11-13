@@ -42,6 +42,14 @@ public static class DialogueProgress
         if (scene.name == "MainMenu") played.Clear();
     }
 
+    static string[] saved = new string[0];
+
+    /// <summary>Guarda qué momentos ya salieron al entrar a un stage (lo llama <see cref="RunProgress"/>).</summary>
+    public static void Snapshot() { saved = new string[played.Count]; played.CopyTo(saved); }
+
+    /// <summary>Botón Reiniciar de la pausa: los momentos de este stage vuelven a salir.</summary>
+    public static void RestoreSnapshot() { played.Clear(); played.UnionWith(saved); }
+
     public static bool WasPlayed(string key) { return played.Contains(key); }
     public static void MarkPlayed(string key) { played.Add(key); }
 }

@@ -58,6 +58,10 @@ public class CodeTerminal : MonoBehaviour
     /// comentario de Kira se corta cuando el jugador abre una.</summary>
     public static bool AnyOpen { get; private set; }
 
+    /// <summary>Cuadro en que se cerró la última terminal. La pausa lo mira:
+    /// el ESC que cierra la terminal no tiene que abrir también la pausa.</summary>
+    public static int ClosedFrame { get; private set; } = -1;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetOnPlay() { AnyOpen = false; }
 
@@ -98,6 +102,9 @@ public class CodeTerminal : MonoBehaviour
         // Con el libro de Kira abierto, las teclas son del libro: A y D pasan
         // de página y ESC lo cierra sin cerrar también la terminal.
         if (KiraBook.BlocksInput) return;
+
+        // Con el juego en pausa no se abre ninguna consola.
+        if (PauseMenu.IsPaused) return;
 
         if (open)
         {
@@ -177,6 +184,7 @@ public class CodeTerminal : MonoBehaviour
     {
         open = false;
         AnyOpen = false;
+        ClosedFrame = Time.frameCount;
         Keyboard.current.onTextInput -= OnTextInput;
         KiraBook.ClearContext();
 

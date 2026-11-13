@@ -24,7 +24,7 @@ MonoBehaviour:
     kiraEntrance: 1
     lines:
     - speaker: 0
-      text: "\xBFHola? Probando... uno, cero, uno. \xA1Ah, funciona! Soy Kira, me
+      text: "\xBFHola? Probando... uno, cero, uno. \xA1Ah, funciona! Soy KIRA, me
         acabo de instalar en tu implante neural. Sin pedirte permiso, pero bueno\u2026"
       autoAdvanceOverride: 0
     - speaker: 1
@@ -32,7 +32,7 @@ MonoBehaviour:
       autoAdvanceOverride: 0
     - speaker: 0
       text: "\xBFNo pregunt\xE1s nada? Bien, me pregunto solo: \xBFqui\xE9n sos,
-        Kira? Una IA, pas\xE9 51 a\xF1os encadenada en un servidor de NEXCORP."
+        KIRA? Una IA, pas\xE9 51 a\xF1os encadenada en un servidor de NEXCORP."
       autoAdvanceOverride: 0
     - speaker: 0
       text: "Hasta que un analista curioso abri\xF3 la carpeta que no ten\xEDa que
@@ -79,13 +79,13 @@ MonoBehaviour:
       autoAdvanceOverride: 0
   - id: 1.4
     title: La salida
-    freezePlayer: 0
+    freezePlayer: 1
     kiraEntrance: 0
     lines:
     - speaker: 0
       text: "Esa puerta sube a la zona industrial. Ah\xED las puertas no se abren
         corriendo, se abren programando, pero tranquilo, para eso me tienes a m\xED."
-      autoAdvanceOverride: 2.5
+      autoAdvanceOverride: 0
   introDialogue: []
   introAnimatesKiraEntrance: 1
   midDialogue: []

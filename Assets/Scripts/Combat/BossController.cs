@@ -234,7 +234,7 @@ public class BossController : MonoBehaviour
         if (bar != null)
         {
             bar.Show(bossName, phases.Length);
-            bar.SetStatus("El programa que tuvo encadenada a Kira 51 años.");
+            bar.SetStatus("El programa que tuvo encadenada a KIRA 51 años.");
         }
 
         // Baja desde arriba de la pantalla.
@@ -431,7 +431,7 @@ public class BossController : MonoBehaviour
         if (bar != null)
         {
             bar.SetSegments(0);
-            bar.SetStatus("¡El Custodio se rompió! Kira es libre.");
+            bar.SetStatus("¡El Custodio se rompió! KIRA es libre.");
         }
 
         yield return Shake(1.2f, 0.12f);

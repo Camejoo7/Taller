@@ -15,17 +15,21 @@ MonoBehaviour:
   challengeId: Stage2_Print_01
   concept: print
   stageNumber: 2
-  prompt: "CERRADURA NEXCORP v2.1 \u2014 esperando orden. Mandale el comando con
-    la funci\xF3n que imprime texto."
+  prompt: "CERRADURA NEXCORP v2.1 \u2014 Mandale el comando con la funci\xF3n que
+    imprime texto."
   codeBefore: 
   codeAfter: ("ABRIR")
   blankWidth: 5
   acceptedAnswers:
   - print
   caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "{0} no es mayor que 50: la condici\xF3n dio False y el print
+    no corri\xF3."
   expectedOutput: ABRIR
-  kiraOnSuccess: 'Eso era todo. La cerradura es vieja: le obedece a cualquiera que
-    sepa hablarle bien.'
+  kiraOnSuccess: 
   knownMistakes:
   - answer: Print
     pythonError: 'NameError: name ''Print'' is not defined'
@@ -48,7 +52,8 @@ MonoBehaviour:
   - answer: abrir
     pythonError: 'NameError: name ''abrir'' is not defined'
     kiraSays: "No le digas lo que quer\xE9s, decile c\xF3mo decirlo. El comando ya
-      est\xE1 entre comillas: falta la funci\xF3n que lo manda."
+      est\xE1 entre comillas, falta la funci\xF3n que lo manda."
   fallbackError: 'NameError: name ''{0}'' is not defined'
+  fallbackErrorForWords: 
   fallbackKiraSays: "La puerta no entendi\xF3 nada. La funci\xF3n que escribe en
     pantalla tiene cinco letras y arranca con p."

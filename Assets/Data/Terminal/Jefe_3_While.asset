@@ -15,8 +15,8 @@ MonoBehaviour:
   challengeId: Jefe_3_While
   concept: while
   stageNumber: 2
-  prompt: "CUSTODIO :: GOLPE FINAL \u2014 el while sigue mientras le quede vida.
-    Complet\xE1 la \xFAltima l\xEDnea: cada golpe le saca 1."
+  prompt: "GOLPE FINAL \u2014 el while sigue mientras le quede vida, completa la
+    \xFAltima l\xEDnea, cada golpe le saca 1."
   codeBefore: "vida = 3\nwhile vida > 0:\n    print(\"GOLPE\", vida)\n    vida = "
   codeAfter: 
   blankWidth: 8
@@ -37,8 +37,7 @@ MonoBehaviour:
     GOLPE 2
 
     GOLPE 1'
-  kiraOnSuccess: "Lleg\xF3 a 0, la condici\xF3n dio False y el while fren\xF3. Cincuenta
-    y un a\xF1os esperando ver ese cero."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: vida + 1
     pythonError: GOLPE 3, GOLPE 4, GOLPE 5... (el bucle no para nunca)
@@ -110,5 +109,5 @@ MonoBehaviour:
     kiraSays: "Los dos puntos van en la l\xEDnea del while, no en esta."
   fallbackError: 'SyntaxError: invalid syntax'
   fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
-  fallbackKiraSays: "Cada vuelta tiene que dejar a vida con 1 menos. Mir\xE1 c\xF3mo
-    cambia pasos en el ejemplo del libro: ac\xE1 hay que bajar, no subir."
+  fallbackKiraSays: "Cada vuelta tiene que dejar a vida con 1 menos, mira c\xF3mo
+    cambia pasos en el ejemplo del libro, ac\xE1 hay que bajar, no subir."

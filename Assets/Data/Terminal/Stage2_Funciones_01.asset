@@ -25,10 +25,13 @@ MonoBehaviour:
   - '"KIRA"'
   - '''KIRA'''
   caseSensitive: 0
+  acceptAnyNumberAbove: 0
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "{0} no es mayor que 50: la condici\xF3n dio False y el print
+    no corri\xF3."
   expectedOutput: KIRA es libre
-  kiraOnSuccess: "Cincuenta y un a\xF1os encadenada, y me sacaste con una funci\xF3n.
-    Escrib\xEDs algo una vez y lo us\xE1s cuando quieras, con lo que quieras: eso
-    es una funci\xF3n. Y ahora es tuya."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: KIRA
     pythonError: 'NameError: name ''KIRA'' is not defined'
@@ -55,6 +58,10 @@ MonoBehaviour:
     pythonError: <function liberar at 0x7f3b2c1e0040> es libre
     kiraSays: "Le pasaste la funci\xF3n a s\xED misma. Muy filos\xF3fico, pero no.
       Pasale un nombre."
+  - answer: Kira
+    pythonError: 'NameError: name ''Kira'' is not defined'
+    kiraSays: Mi nombre es KIRA no Kira.
   fallbackError: (la puerta no reconoce a {0})
+  fallbackErrorForWords: 
   fallbackKiraSays: "Llam\xE1 a la funci\xF3n con el nombre de quien tiene que salir.
     Pista: soy yo. Y los nombres, entre comillas."

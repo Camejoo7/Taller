@@ -16,7 +16,7 @@ MonoBehaviour:
   concept: variables
   stageNumber: 2
   prompt: "COMPUERTA DE CARGA \u2014 la cerradura lee la variable puerta y abre si
-    guarda el texto abierta. Guard\xE1selo."
+    guarda el texto abierta."
   codeBefore: 'puerta = '
   codeAfter: 
   blankWidth: 9
@@ -24,9 +24,13 @@ MonoBehaviour:
   - '"abierta"'
   - '''abierta'''
   caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "{0} no es mayor que 50: la condici\xF3n dio False y el print
+    no corri\xF3."
   expectedOutput: 
-  kiraOnSuccess: "Guardado. Una variable es eso: una caja con nombre. La cerradura
-    abri\xF3 la caja 'puerta' y encontr\xF3 justo lo que quer\xEDa."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: abierta
     pythonError: 'NameError: name ''abierta'' is not defined'
@@ -34,8 +38,8 @@ MonoBehaviour:
       y esa no existe. El texto va entre comillas.
   - answer: Abierta
     pythonError: 'NameError: name ''Abierta'' is not defined'
-    kiraSays: "Dos problemas: le faltan las comillas, y la cerradura compara letra
-      por letra. Todo en min\xFAscula y entre comillas."
+    kiraSays: "le faltan las comillas, y la cerradura compara letra por letra. Todo
+      en min\xFAscula y entre comillas."
   - answer: '"Abierta"'
     pythonError: "CERRADURA: puerta = 'Abierta' \u2192 ACCESO DENEGADO"
     kiraSays: "Python lo guard\xF3 sin quejarse, pero la cerradura compara letra
@@ -59,5 +63,6 @@ MonoBehaviour:
     kiraSays: True es un valor de verdad, no un texto. La cerradura quiere la palabra
       abierta.
   fallbackError: "CERRADURA: puerta = {0} \u2192 ACCESO DENEGADO"
+  fallbackErrorForWords: 
   fallbackKiraSays: La cerradura quiere el texto abierta. Y los textos, en Python,
     van entre comillas.

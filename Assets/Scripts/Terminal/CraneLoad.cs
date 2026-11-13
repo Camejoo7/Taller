@@ -36,6 +36,11 @@ public class CraneLoad : MonoBehaviour
     [Tooltip("Dónde se engancha el cable, relativo al carro (en y).")]
     public float hookOffset = -0.35f;
 
+    [Header("Pared invisible")]
+    [Tooltip("Collider que tapa el borde del pozo hasta que el contenedor queda " +
+             "apoyado. Sin esto, saltando mientras baja se caía al vacío.")]
+    public Collider2D blockUntilLowered;
+
     private Collider2D solid;
     private SpriteRenderer body;
     private Vector3 hangPos;
@@ -98,6 +103,7 @@ public class CraneLoad : MonoBehaviour
 
         // Ahora sí es piso.
         if (solid != null) solid.enabled = true;
+        if (blockUntilLowered != null) blockUntilLowered.enabled = false;
 
         // Un golpecito al apoyarse en el agua.
         t = 0f;

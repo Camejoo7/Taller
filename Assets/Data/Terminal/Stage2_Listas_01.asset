@@ -16,7 +16,7 @@ MonoBehaviour:
   concept: listas
   stageNumber: 2
   prompt: "GR\xDAA DEL MUELLE 7 \u2014 contenedores = [\"verde\", \"rojo\", \"gris\",
-    \"naranja\"]. La gr\xFAa baja el que imprimas: necesit\xE1s el NARANJA para cruzar."
+    \"naranja\"]. La gr\xFAa baja el que imprimas, necesit\xE1s el NARANJA para cruzar."
   codeBefore: print(contenedores[
   codeAfter: '])'
   blankWidth: 2
@@ -24,14 +24,18 @@ MonoBehaviour:
   - 3
   - -1
   caseSensitive: 1
+  acceptAnyNumberAbove: 0
+  numberAbove: 50
+  numberTooLowError: '(sin salida: {0} > 50 es False)'
+  numberTooLowKiraSays: "{0} no es mayor que 50: la condici\xF3n dio False y el print
+    no corri\xF3."
   expectedOutput: naranja
-  kiraOnSuccess: "El naranja estaba cuarto en la fila, pero su \xEDndice es 3: en
-    Python las listas se cuentan desde cero. La gr\xFAa ya lo est\xE1 bajando."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: 4
     pythonError: 'IndexError: list index out of range'
     kiraSays: 'La lista tiene 4 elementos, pero se cuentan desde 0: van del 0 al
-      3. El 4 no existe.'
+      3.'
   - answer: 2
     pythonError: gris
     kiraSays: "Imprimiste gris: la gr\xFAa agarrar\xEDa el que no es. Cont\xE1 desde
@@ -59,5 +63,6 @@ MonoBehaviour:
     kiraSays: "Los \xEDndices son enteros. 3.0 tiene coma decimal y a la lista no
       le gusta."
   fallbackError: 'SyntaxError: invalid syntax'
-  fallbackKiraSays: "Adentro de los corchetes va un n\xFAmero: la posici\xF3n del
+  fallbackErrorForWords: 
+  fallbackKiraSays: "Adentro de los corchetes va un n\xFAmero, la posici\xF3n del
     naranja en la lista, contando desde cero."

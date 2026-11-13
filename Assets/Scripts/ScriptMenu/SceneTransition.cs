@@ -10,6 +10,12 @@ public class SceneTransition : MonoBehaviour
 
     void Start()
     {
+        // Si se llegó con el círculo, el círculo ya se encarga de abrir.
+        if (IrisTransition.Active)
+        {
+            panelFade.color = new Color(0, 0, 0, 0);
+            return;
+        }
         StartCoroutine(FadeIn());
     }
 

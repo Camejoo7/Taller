@@ -45,6 +45,22 @@ public class PlayerHealth : MonoBehaviour, IPlayerDamageable
     /// </summary>
     public static Action<PlayerHealth> RespawnOverride;
 
+    // Corazones que trae el jugador de la escena anterior (-1 = ninguno).
+    static int carried = -1;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetOnPlay() { carried = -1; }
+
+    /// <summary>
+    /// La salida del stage lo llama antes de cargar el siguiente: el jugador
+    /// llega con los corazones que tenía. Morir o reiniciar sí lo devuelven
+    /// con la vida llena.
+    /// </summary>
+    public static void CarryToNextScene(int hearts) { carried = hearts; }
+
+    /// <summary>Partida nueva (volver al menú): nada que traer.</summary>
+    public static void ClearCarry() { carried = -1; }
+
     /// <summary>Avisa a la UI de corazones que algo cambió.</summary>
     public event Action OnHealthChanged;
 
@@ -60,6 +76,10 @@ public class PlayerHealth : MonoBehaviour, IPlayerDamageable
         movement = GetComponent<PlayerMovement>();
         visual = GetComponentInChildren<SpriteRenderer>();
         Current = maxHealth;
+
+        if (carried > 0)
+            Current = Mathf.Min(carried, maxHealth);
+        carried = -1;
     }
 
     void Start()

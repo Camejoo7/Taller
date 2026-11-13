@@ -65,6 +65,40 @@ public static class KiraBookProgress
         foreach (string id in ids) unlocked.Add(id);
     }
 
+    // ------------------------------------------------- foto para Reiniciar
+
+    static string[] savedUnlocked = new string[0];
+    static string[] savedRead = new string[0];
+    static bool savedHasBook, savedHasNews;
+
+    /// <summary>Guarda cómo está el libro al entrar a un stage (lo llama <see cref="RunProgress"/>).</summary>
+    public static void Snapshot()
+    {
+        savedUnlocked = new string[unlocked.Count]; unlocked.CopyTo(savedUnlocked);
+        savedRead = new string[read.Count]; read.CopyTo(savedRead);
+        savedHasBook = HasBook;
+        savedHasNews = HasNews;
+    }
+
+    /// <summary>Deja el libro como estaba al entrar al stage (botón Reiniciar de la pausa).</summary>
+    public static void RestoreSnapshot()
+    {
+        unlocked.Clear(); unlocked.UnionWith(savedUnlocked);
+        read.Clear(); read.UnionWith(savedRead);
+        HasBook = savedHasBook;
+        HasNews = savedHasNews;
+    }
+
+    /// <summary>Libro en blanco y sin entregar (volver al menú principal).</summary>
+    public static void ResetAll()
+    {
+        unlocked.Clear();
+        read.Clear();
+        HasBook = false;
+        HasNews = false;
+        Snapshot();
+    }
+
     /// <summary>El jugador abrió el libro: lo nuevo ya lo vio.</summary>
     public static void ClearNews()
     {

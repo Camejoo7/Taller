@@ -15,8 +15,8 @@ MonoBehaviour:
   challengeId: Jefe_1_Escudo
   concept: bucles
   stageNumber: 2
-  prompt: "CUSTODIO :: ESCUDO \u2014 tiene tantas capas como dice la variable capas.
-    Complet\xE1 el for para bajarlas todas."
+  prompt: "ESCUDO \u2014 tiene tantas capas como dice la variable capas. Complet\xE1
+    el for para bajarlas todas."
   codeBefore: 'capas = 3
 
     for capa in range('
@@ -35,8 +35,7 @@ MonoBehaviour:
     CAPA 1 ABAJO
 
     CAPA 2 ABAJO'
-  kiraOnSuccess: "\xA1Escudo abajo! Tres vueltas: 0, 1 y 2. Si usaste capas en vez
-    de 3, mejor: si le suman capas, el for se acomoda solo."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: capa
     pythonError: 'NameError: name ''capa'' is not defined. Did you mean: ''capas''?'
@@ -80,5 +79,5 @@ MonoBehaviour:
     kiraSays: 'Te pasaste: range(5) da cinco vueltas, y el escudo tiene tres capas.'
   fallbackError: 'SyntaxError: invalid syntax'
   fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
-  fallbackKiraSays: "Fijate en la primera l\xEDnea: ah\xED dice cu\xE1ntas capas
-    tiene el escudo. range necesita ese n\xFAmero."
+  fallbackKiraSays: "Fijate en la primera l\xEDnea, ah\xED dice cu\xE1ntas capas
+    tiene el escudo, range necesita ese n\xFAmero."

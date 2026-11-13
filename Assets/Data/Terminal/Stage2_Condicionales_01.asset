@@ -29,12 +29,11 @@ MonoBehaviour:
   numberTooLowKiraSays: "Con {0}, energia > 50 da False y el if se saltea el print.
     Necesit\xE1s un n\xFAmero m\xE1s grande que 50."
   expectedOutput: ABRIR
-  kiraOnSuccess: "La condici\xF3n dio True y el if dej\xF3 pasar el print. Fijate
-    que no tocaste el if: cambiaste el dato, y la m\xE1quina decidi\xF3 sola."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: 50
     pythonError: '(sin salida: 50 > 50 es False)'
-    kiraSays: "Casi. 50 no es MAYOR que 50, es igual. Ten\xE9s que pasarte aunque
+    kiraSays: "Casi\u2026 50 no es MAYOR que 50, es igual. Ten\xE9s que pasarte aunque
       sea por uno."
   - answer: '"80"'
     pythonError: 'TypeError: ''>'' not supported between instances of ''str'' and
@@ -70,5 +69,6 @@ MonoBehaviour:
     pythonError: 'SyntaxError: invalid syntax'
     kiraSays: "El = ya est\xE1 escrito. Vos solo pon\xE9 el n\xFAmero."
   fallbackError: 'SyntaxError: invalid syntax'
+  fallbackErrorForWords: 
   fallbackKiraSays: "En el hueco va un n\xFAmero, sin comillas. \xBFQu\xE9 n\xFAmero
     hace que energia > 50 d\xE9 True?"

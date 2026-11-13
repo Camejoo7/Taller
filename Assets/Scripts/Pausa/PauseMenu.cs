@@ -45,6 +45,10 @@ public class PauseMenu : MonoBehaviour
         // El ESC que cierra el libro no tiene que abrir también la pausa.
         if (KiraBook.BlocksInput) return;
 
+        // Adentro de una terminal ESC es de la terminal (la cierra), y en el
+        // cuadro en que se cierra tampoco cuenta para la pausa.
+        if (CodeTerminal.AnyOpen || CodeTerminal.ClosedFrame == Time.frameCount) return;
+
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (IsPaused)
@@ -87,6 +91,9 @@ public class PauseMenu : MonoBehaviour
 
     public void Reiniciar()
     {
+        // El stage arranca como cuando se entró: el libro con las páginas que
+        // tenía y los diálogos de este stage otra vez. (Morir no hace esto.)
+        RunProgress.RestartStage();
         Time.timeScale = 1f;
         IsPaused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

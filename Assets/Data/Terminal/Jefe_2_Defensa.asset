@@ -15,8 +15,8 @@ MonoBehaviour:
   challengeId: Jefe_2_Defensa
   concept: condicionales
   stageNumber: 2
-  prompt: "CUSTODIO :: DEFENSA \u2014 atacar solo le pega a lo que deja pasar el
-    if. Llamala con el texto exacto que espera."
+  prompt: "DEFENSA \u2014 atacar solo le pega a lo que deja pasar el if, llamala
+    con el texto exacto que espera."
   codeBefore: "def atacar(objetivo):\n    if objetivo == \"nucleo\":\n        print(\"NUCLEO
     ROTO\")\natacar("
   codeAfter: )
@@ -30,20 +30,19 @@ MonoBehaviour:
   numberTooLowError: 
   numberTooLowKiraSays: 
   expectedOutput: NUCLEO ROTO
-  kiraOnSuccess: "\xA1Directo al n\xFAcleo! El if compar\xF3 tu texto con \"nucleo\",
-    dio True y el print corri\xF3."
+  kiraOnSuccess: 
   knownMistakes:
   - answer: nucleo
     pythonError: 'NameError: name ''nucleo'' is not defined'
-    kiraSays: 'Sin comillas, Python busca una variable llamada nucleo, y no existe.
-      Es un texto: va entre comillas.'
+    kiraSays: Sin comillas, Python busca una variable llamada nucleo, y no existe,
+      es un texto, va entre comillas.
   - answer: '"NUCLEO"'
     pythonError: '(sin salida: "NUCLEO" == "nucleo" es False)'
-    kiraSays: "Para Python, \"NUCLEO\" y \"nucleo\" son textos distintos: las may\xFAsculas
+    kiraSays: "Para Python, \"NUCLEO\" y \"nucleo\" son textos distintos, las may\xFAsculas
       cuentan. El if dio False."
   - answer: '"Nucleo"'
     pythonError: '(sin salida: "Nucleo" == "nucleo" es False)'
-    kiraSays: "Para Python, \"Nucleo\" y \"nucleo\" son textos distintos: las may\xFAsculas
+    kiraSays: "Para Python, \"Nucleo\" y \"nucleo\" son textos distintos, las may\xFAsculas
       cuentan. El if dio False."
   - answer: "\"n\xFAcleo\""
     pythonError: "(sin salida: \"n\xFAcleo\" == \"nucleo\" es False)"
@@ -63,7 +62,7 @@ MonoBehaviour:
   - answer: nucleo"
     pythonError: 'SyntaxError: unterminated string literal (detected at line 4)'
     kiraSays: "Te falt\xF3 abrir las comillas: un texto abre y cierra con comillas."
-  fallbackError: '(sin salida: el if dio False y atacar no hizo nada)'
+  fallbackError: sin salida, el if dio False y atacar no hizo nada
   fallbackErrorForWords: 'NameError: name ''{0}'' is not defined'
   fallbackKiraSays: "El if solo deja pasar un texto: el que est\xE1 entre comillas
     al lado del ==. Pasale exactamente ese, con comillas."
